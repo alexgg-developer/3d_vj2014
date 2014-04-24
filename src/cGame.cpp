@@ -59,14 +59,9 @@ int Game::quit()
 int Game::main()
 {
   int error = init();
-  Texture background = Texture();
-  Texture monigote = Texture();
+  Texture t = Texture();
 
-  if(!monigote.load("../resources/img/foo.png", mRenderer, vec3(0, 255, 255))) {
-    return 4;
-  }
-
-  if(!background.load("../resources/img/background.png", mRenderer)) {
+  if(!t.load("../resources/img/sprites.png", mRenderer, vec3(0, 255, 255))) {
     return 4;
   }
 
@@ -74,14 +69,29 @@ int Game::main()
     mInput.read();
 
     SDL_RenderClear( mRenderer );
+    SDL_Rect clipRed = { 0, 0, t.mWidth/2, t.mHeight/2 };
+    SDL_Rect clipRedScreenPos = { 0, 0, t.mWidth/2, t.mHeight/2 };
 
-    SDL_Rect backQuad = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
+    SDL_RenderCopy( mRenderer, t.mTexture, &clipRed, &clipRedScreenPos );
 
-    SDL_RenderCopy( mRenderer, background.mTexture, NULL, &backQuad );
+    SDL_Rect clipGreen = { t.mWidth/2, 0, t.mWidth/2, t.mHeight/2 };
+    SDL_Rect clipGreenScreenPos = { WINDOW_WIDTH - t.mWidth/2, 0, t.mWidth/2, t.mHeight/2 };
 
-    SDL_Rect monigoteQuad = { WINDOW_WIDTH/2, WINDOW_HEIGHT/2, monigote.mWidth, monigote.mHeight };
 
-    SDL_RenderCopy( mRenderer, monigote.mTexture, NULL, &monigoteQuad );
+    SDL_RenderCopy( mRenderer, t.mTexture, &clipGreen, &clipGreenScreenPos );
+
+    SDL_Rect clipYellow = { 0, t.mHeight/2, t.mWidth/2, t.mHeight/2 };
+    SDL_Rect clipYellowScreenPos = { 0, WINDOW_HEIGHT - t.mHeight/2, t.mWidth/2, t.mHeight/2 };
+
+
+    SDL_RenderCopy( mRenderer, t.mTexture, &clipYellow, &clipYellowScreenPos );
+
+    SDL_Rect clipBlue = { t.mWidth/2, t.mHeight/2, t.mWidth/2, t.mHeight/2 };
+    SDL_Rect clipBlueScreenPos = { WINDOW_WIDTH - t.mWidth/2, WINDOW_HEIGHT - t.mHeight/2, t.mWidth/2, t.mHeight/2 };
+
+
+    SDL_RenderCopy( mRenderer, t.mTexture, &clipBlue, &clipBlueScreenPos );
+
 
     SDL_RenderPresent ( mRenderer );
   }
