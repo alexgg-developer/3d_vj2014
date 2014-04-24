@@ -3,7 +3,7 @@
 
 Game::Game()
 {
-  mScreenSurface = NULL;
+  mRenderer = NULL;
   mWindow = NULL;
 }
 
@@ -32,8 +32,14 @@ int Game::initSDL()
     }
     else
     {
-      mScreenSurface = SDL_GetWindowSurface( mWindow );
-
+      mRenderer = SDL_CreateRenderer( mWindow, -1, SDL_RENDERER_ACCELERATED );
+      if( mRenderer == NULL ) {
+          std::cout << "Renderer could not be created! SDL Error: " << SDL_GetError() << std::endl;
+          error = 3;
+      }
+      else {
+        SDL_SetRenderDrawColor( mRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+      }
     }
   }
 
@@ -43,6 +49,7 @@ int Game::initSDL()
 int Game::quit()
 {
   SDL_DestroyWindow( mWindow );
+  IMG_Quit();
   SDL_Quit();
 
   return 0;
@@ -53,12 +60,19 @@ int Game::main()
   int error = init();
   Texture t = Texture();
 
-  if(t.load("../resources/img/panda.bmp")) {
-    SDL_BlitSurface( t.mTextureSurface, NULL, mScreenSurface, NULL );
+  if(!t.load("../resources/img/lena.png", mRenderer)) {
+    return 4;
   }
 
-  SDL_UpdateWindowSurface( mWindow );
-  SDL_Delay( 2000 );
+  while(!mInput.check(Input::KESC)) {
+    mInput.read();
+
+    SDL_RenderClear( mRenderer );
+
+    SDL_RenderCopy( mRenderer, t.mTexture, NULL, NULL );
+
+    SDL_RenderPresent ( mRenderer );
+  }
 
   error = quit();
 

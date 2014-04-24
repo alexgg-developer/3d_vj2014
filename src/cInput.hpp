@@ -1,10 +1,24 @@
-#ifndef CINPUT_HPP
-#define CINPUT_HPP
+#pragma once
+#include "SDL.h"
+#include "TypesDefined.hpp"
 
 class Input
 {
 public:
-    Input();
-};
+  enum keysDefined{KUP, KDOWN, KRIGHT, KLEFT, KW, KA, KS, KD, KESC, nkeys};
 
-#endif // CINPUT_HPP
+  Input();
+  void read();
+  bool check(unsigned int key);
+  bool checkPressed(unsigned int key);
+  bool checkReleased(unsigned int key);
+
+private:
+  //KEY_OFF: The key hasn't been pressed
+  //KEY_ON: The key is being pressed
+  //KEY_RELEASED: The key has just been released
+  //KEY_PRESSED: The key has just been pressed
+  enum keyStatus{ KEY_OFF, KEY_ON, KEY_RELEASED, KEY_PRESSED };
+  unsigned int keys[nkeys];
+
+};

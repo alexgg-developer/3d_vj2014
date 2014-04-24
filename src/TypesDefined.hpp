@@ -1,4 +1,3 @@
-#ifndef TYPESDEFINED_HPP
-#define TYPESDEFINED_HPP
+#pragma once
 
-#endif // TYPESDEFINED_HPP
+typedef unsigned int uint;
