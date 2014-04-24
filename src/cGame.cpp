@@ -1,5 +1,6 @@
 #include "cGame.hpp"
 #include "cTexture.hpp"
+#include "vec3.hpp"
 
 Game::Game()
 {
@@ -58,9 +59,14 @@ int Game::quit()
 int Game::main()
 {
   int error = init();
-  Texture t = Texture();
+  Texture background = Texture();
+  Texture monigote = Texture();
 
-  if(!t.load("../resources/img/lena.png", mRenderer)) {
+  if(!monigote.load("../resources/img/foo.png", mRenderer, vec3(0, 255, 255))) {
+    return 4;
+  }
+
+  if(!background.load("../resources/img/background.png", mRenderer)) {
     return 4;
   }
 
@@ -69,7 +75,13 @@ int Game::main()
 
     SDL_RenderClear( mRenderer );
 
-    SDL_RenderCopy( mRenderer, t.mTexture, NULL, NULL );
+    SDL_Rect backQuad = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
+
+    SDL_RenderCopy( mRenderer, background.mTexture, NULL, &backQuad );
+
+    SDL_Rect monigoteQuad = { WINDOW_WIDTH/2, WINDOW_HEIGHT/2, monigote.mWidth, monigote.mHeight };
+
+    SDL_RenderCopy( mRenderer, monigote.mTexture, NULL, &monigoteQuad );
 
     SDL_RenderPresent ( mRenderer );
   }

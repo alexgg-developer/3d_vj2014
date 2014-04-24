@@ -12,7 +12,7 @@ struct vec3 {
   vec3 operator*(float const f) const {
     return vec3(x*f, y*f, z*f);
   }
-  vec3 & vec3::operator+=(const vec3 &v) {
+  vec3 & operator+=(const vec3 &v) {
       x += v.x;
       y += v.y;
       z += v.z;
@@ -27,3 +27,5 @@ struct vec3 {
       return (x == v.x && y == v.y && z == v.z);
   }
 };
+
+//TODO: r, g, b poiting to x,y,z
