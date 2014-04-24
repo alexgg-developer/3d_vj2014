@@ -12,11 +12,14 @@ HEADERS += \
     ../src/vec3.hpp \
     ../src/cGame.hpp \
     ../src/cInput.hpp \
-    ../src/cTexture.hpp
+    ../src/cTexture.hpp \
+    ../src/TypesDefined.hpp
 
 INCLUDEPATH += ../libs/SDL2/include/
 INCLUDEPATH += ../libs/SDL2/libs
 DEPENDPATH += ../libs/SDL2/libs
 
 LIBS += -L../libs/SDL2/libs/ -lSDL2
+LIBS += -L../libs/SDL2/libs/ -lSDL2_image
+
 
