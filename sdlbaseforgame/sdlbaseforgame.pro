@@ -6,14 +6,16 @@ CONFIG -= qt
 SOURCES += ../src/main.cpp \
     ../src/cGame.cpp \
     ../src/cInput.cpp \
-    ../src/cTexture.cpp
+    ../src/cTexture.cpp \
+    ../src/cAnimation2D.cpp
 
 HEADERS += \
     ../src/vec3.hpp \
     ../src/cGame.hpp \
     ../src/cInput.hpp \
     ../src/cTexture.hpp \
-    ../src/TypesDefined.hpp
+    ../src/TypesDefined.hpp \
+    ../src/cAnimation2D.hpp
 
 INCLUDEPATH += ../libs/SDL2/include/
 INCLUDEPATH += ../libs/SDL2/libs

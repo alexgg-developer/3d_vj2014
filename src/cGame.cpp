@@ -1,6 +1,7 @@
 #include "cGame.hpp"
 #include "cTexture.hpp"
 #include "vec3.hpp"
+#include "cAnimation2D.hpp"
 
 Game::Game()
 {
@@ -33,7 +34,7 @@ int Game::initSDL()
     }
     else
     {
-      mRenderer = SDL_CreateRenderer( mWindow, -1, SDL_RENDERER_ACCELERATED );
+      mRenderer = SDL_CreateRenderer( mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
       if( mRenderer == NULL ) {
           std::cout << "Renderer could not be created! SDL Error: " << SDL_GetError() << std::endl;
           error = 3;
@@ -61,39 +62,23 @@ int Game::main()
   int error = init();
   Texture t = Texture();
 
-  if(!t.load("../resources/img/sprites.png", mRenderer, vec3(0, 255, 255))) {
+  if(!t.load("../resources/img/foo_animation.png", mRenderer, vec3(0, 255, 255))) {
     return 4;
   }
 
+  Animation2D a(t, 4, 8, mRenderer);
+  a.setConstantSizeOfImage();
+  uint frame = 0;
+
   while(!mInput.check(Input::KESC)) {
     mInput.read();
+    a.update(frame);
+
 
     SDL_RenderClear( mRenderer );
-    SDL_Rect clipRed = { 0, 0, t.mWidth/2, t.mHeight/2 };
-    SDL_Rect clipRedScreenPos = { 0, 0, t.mWidth/2, t.mHeight/2 };
-
-    SDL_RenderCopy( mRenderer, t.mTexture, &clipRed, &clipRedScreenPos );
-
-    SDL_Rect clipGreen = { t.mWidth/2, 0, t.mWidth/2, t.mHeight/2 };
-    SDL_Rect clipGreenScreenPos = { WINDOW_WIDTH - t.mWidth/2, 0, t.mWidth/2, t.mHeight/2 };
-
-
-    SDL_RenderCopy( mRenderer, t.mTexture, &clipGreen, &clipGreenScreenPos );
-
-    SDL_Rect clipYellow = { 0, t.mHeight/2, t.mWidth/2, t.mHeight/2 };
-    SDL_Rect clipYellowScreenPos = { 0, WINDOW_HEIGHT - t.mHeight/2, t.mWidth/2, t.mHeight/2 };
-
-
-    SDL_RenderCopy( mRenderer, t.mTexture, &clipYellow, &clipYellowScreenPos );
-
-    SDL_Rect clipBlue = { t.mWidth/2, t.mHeight/2, t.mWidth/2, t.mHeight/2 };
-    SDL_Rect clipBlueScreenPos = { WINDOW_WIDTH - t.mWidth/2, WINDOW_HEIGHT - t.mHeight/2, t.mWidth/2, t.mHeight/2 };
-
-
-    SDL_RenderCopy( mRenderer, t.mTexture, &clipBlue, &clipBlueScreenPos );
-
-
+    a.draw();
     SDL_RenderPresent ( mRenderer );
+    ++frame;
   }
 
   error = quit();
