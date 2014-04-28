@@ -51,6 +51,10 @@ int Game::initSDL()
         std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
         error = 4;
     }
+    if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "2" ) ) {
+        std::cout << "Warning: Anisotropic texture filtering not enabled!" << std::endl;
+        error = 5;
+    }
   }
 
   return error;
