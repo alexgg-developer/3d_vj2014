@@ -2,6 +2,10 @@
 #include "cTexture.hpp"
 #include "vec3.hpp"
 #include "cAnimation2D.hpp"
+#include "cText.hpp"
+#include "TypesDefined.hpp"
+#include "SDL_ttf.h"
+
 
 Game::Game()
 {
@@ -43,6 +47,10 @@ int Game::initSDL()
         SDL_SetRenderDrawColor( mRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
       }
     }
+    if( TTF_Init() == -1 ) {
+        std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        error = 4;
+    }
   }
 
   return error;
@@ -50,7 +58,9 @@ int Game::initSDL()
 
 int Game::quit()
 {
+  SDL_DestroyRenderer(mRenderer);
   SDL_DestroyWindow( mWindow );
+  TTF_Quit();
   IMG_Quit();
   SDL_Quit();
 
@@ -69,6 +79,19 @@ int Game::main()
   Animation2D a(t, 4, 8, mRenderer);
   a.setConstantSizeOfImage();
   uint frame = 0;
+  Text text(mRenderer);
+  Text textMED(mRenderer);
+  Text textHIGH(mRenderer);
+  text.loadFont("../resources/fonts/lazy.ttf", 28);
+  textMED.loadFont("../resources/fonts/lazy.ttf", 28);
+  textHIGH.loadFont("../resources/fonts/lazy.ttf", 28);
+  SDL_Color textColor = { 255, 0, 0, 255 };
+  text.loadText("Such a text, much beauty LOW", textColor, LOW );
+  textMED.loadText("Such a text, much beauty MED", textColor, MED );
+  textHIGH.loadText("Such a text, much beauty HIGH", textColor, HIGH );
+  text.setPosition(vec3(WINDOW_WIDTH/2 - 50, WINDOW_HEIGHT/2 - 150));
+  textMED.setPosition(vec3(WINDOW_WIDTH/2 - 50, WINDOW_HEIGHT/2 - 100));
+  textHIGH.setPosition(vec3(WINDOW_WIDTH/2 - 50, WINDOW_HEIGHT/2 - 50));
 
   while(!mInput.check(Input::KESC)) {
     mInput.read();
@@ -77,6 +100,9 @@ int Game::main()
 
     SDL_RenderClear( mRenderer );
     a.draw();
+    text.draw();
+    textMED.draw();
+    textHIGH.draw();
     SDL_RenderPresent ( mRenderer );
     ++frame;
   }
