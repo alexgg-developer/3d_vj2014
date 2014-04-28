@@ -5,7 +5,7 @@
 #include "cText.hpp"
 #include "TypesDefined.hpp"
 #include "SDL_ttf.h"
-
+#include <sstream>
 
 Game::Game()
 {
@@ -102,6 +102,19 @@ int Game::main()
     a.draw();
     text.draw();
     textMED.draw();
+    if(mInput.checkMouse(Input::BLEFT)) {
+      std::stringstream ss;
+      ss << "mPosition: " << mInput.mPositionMousePressed << " LEFT BUTTON " << std::endl;
+      textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
+    } else if (mInput.checkMouse(Input::BRIGHT)) {
+      std::stringstream ss;
+      ss << "mPosition: " << mInput.mPositionMousePressed << " BRIGHT BUTTON " << std::endl;
+      textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
+    } else if(mInput.checkMouse(Input::BMIDDLE)) {
+      std::stringstream ss;
+      ss << "mPosition: " << mInput.mPositionMousePressed << " BMIDDLE BUTTON " << std::endl;
+      textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
+    }
     textHIGH.draw();
     SDL_RenderPresent ( mRenderer );
     ++frame;

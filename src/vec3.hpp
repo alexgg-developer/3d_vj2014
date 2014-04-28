@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 struct vec3 {
   float x, y, z;
@@ -25,6 +26,10 @@ struct vec3 {
   bool operator==(const vec3 &v) const
   {
       return (x == v.x && y == v.y && z == v.z);
+  }
+  friend std::ostream& operator<<(std::ostream& os, vec3 const& v) {
+    os << "( " << v.x << "," << v.y << "," << v.z << ")";
+    return os;
   }
 };
 
