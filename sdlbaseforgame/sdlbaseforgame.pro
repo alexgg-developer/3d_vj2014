@@ -2,6 +2,7 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
+CONFIG += warn_off
 
 SOURCES += ../src/main.cpp \
     ../src/cGame.cpp \

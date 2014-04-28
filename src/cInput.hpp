@@ -11,6 +11,7 @@ public:
 
   Input();
   void read();
+  void readWithScanCode();
   bool check(unsigned int key);
   bool checkPressed(unsigned int key);
   bool checkReleased(unsigned int key);

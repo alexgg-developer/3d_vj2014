@@ -94,7 +94,7 @@ int Game::main()
   textHIGH.setPosition(vec3(WINDOW_WIDTH/2 - 50, WINDOW_HEIGHT/2 - 50));
 
   while(!mInput.check(Input::KESC)) {
-    mInput.read();
+    mInput.readWithScanCode();
     a.update(frame);
 
 
@@ -113,6 +113,10 @@ int Game::main()
     } else if(mInput.checkMouse(Input::BMIDDLE)) {
       std::stringstream ss;
       ss << "mPosition: " << mInput.mPositionMousePressed << " BMIDDLE BUTTON " << std::endl;
+      textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
+    } else if(mInput.check(Input::KA)) {
+      std::stringstream ss;
+      ss << "mPosition: " << mInput.mPositionMousePressed << " KA " << std::endl;
       textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
     }
     textHIGH.draw();
