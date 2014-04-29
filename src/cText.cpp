@@ -7,7 +7,7 @@ Text::Text(SDL_Renderer * const renderer): mFont(NULL), mTexture(NULL), mWidth(0
 
 Text::~Text()
 {
-  free();
+  //free();
 }
 
 bool Text::loadFont(std::string path, uint size)

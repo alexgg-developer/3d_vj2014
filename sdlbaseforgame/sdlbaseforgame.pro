@@ -3,6 +3,7 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += warn_off
+CONFIG += c++11
 
 SOURCES += ../src/main.cpp \
     ../src/cGame.cpp \
@@ -25,9 +26,14 @@ HEADERS += \
     ../src/cMusic.hpp
 
 INCLUDEPATH += ../libs/SDL2/include/
+INCLUDEPATH += ../libs/SMPEG/include/
 INCLUDEPATH += ../libs/SDL2/libs/
+INCLUDEPATH += ../libs/SMPEG/libs/
 DEPENDPATH += ../libs/SDL2/libs/
+DEPENDPATH += ../libs/SMPEG/libs/
 
 LIBS += -L../libs/SDL2/libs/ -lSDL2
 LIBS += -L../libs/SDL2/libs/ -lSDL2_image
 LIBS += -L../libs/SDL2/libs/ -lSDL2_ttf
+LIBS += -L../libs/SDL2/libs/ -lSDL2_mixer
+LIBS += -L../libs/SMPEG/libs/ -lsmpeg2
