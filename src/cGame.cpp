@@ -83,80 +83,45 @@ int Game::main()
 
   if(!error) {
     uint frame = 0;
-    Text textHIGH(mRenderer);
-    textHIGH.loadFont("../resources/fonts/lazy.ttf", 28);
+    Text textTime(mRenderer);
+    Text textLoopTime(mRenderer);
+    textTime.loadFont("../resources/fonts/lazy.ttf", 28);
+    textLoopTime.loadFont("../resources/fonts/lazy.ttf", 28);
     SDL_Color textColor = { 255, 0, 0, 255 };
-    textHIGH.loadText("Such a text, much beauty HIGH", textColor, HIGH );
-    textHIGH.setPosition(vec3(WINDOW_WIDTH/2 - 50, WINDOW_HEIGHT/2 - 50));
+    textTime.loadText("Such a text, much beauty HIGH", textColor, HIGH );
+    textTime.setPosition(vec3(0, 0));
+    textLoopTime.loadText("Such a text, much beauty HIGH", textColor, HIGH );
+    textLoopTime.setPosition(vec3(0, textTime.mHeight));
 
-    Music m;
-    Sound s,s1,s2;
-    m.load("../resources/music/partedelganado.mp3");
-    s.load("../resources/sounds/high.wav");
-    s1.load("../resources/sounds/medium.wav");
-    s2.load("../resources/sounds/scratch.wav");
 
+    Timer timer;
+    timer.start();
     while(!mInput.check(Input::KESC)) {
       mInput.readWithScanCode();
-
+      mTimer.start();
       SDL_RenderClear( mRenderer );
-      if(mInput.checkMouse(Input::BLEFT)) {
-        std::stringstream ss;
-        ss << " PLAYING MUSIC" << std::endl;
-        textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
-        m.play(true);
-      } else if (mInput.checkMouse(Input::BRIGHT)) {
-        std::stringstream ss;
-        ss << "MUSIC PAUSED" << std::endl;
-        textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
-        m.pause();
-      } else if(mInput.checkMouse(Input::BMIDDLE)) {
-        std::stringstream ss;
-        ss << "MUSIC STOPPED " << std::endl;
-        textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
-        m.stop();
-      } else if(mInput.check(Input::KA)) {
-        std::stringstream ss;
-        ss << "ISITPLAYING? " << m.isItPlaying() << std::endl;
-        textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
-      } else if(mInput.check(Input::KS)) {
-        std::stringstream ss;
-        ss << "ISITPLAUSED? " << m.isItPaused() << std::endl;
-        textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
-      }else if(mInput.check(Input::KD)) {
-        std::stringstream ss;
-        ss << "RESUME" << std::endl;
-        textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
-        m.resume();
-      }else if(mInput.check(Input::KLEFT)) {
-        std::stringstream ss;
-        ss << "High sound" << std::endl;
-        textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
-        s.play();
-      }else if(mInput.check(Input::KDOWN)) {
-        std::stringstream ss;
-        ss << "Medium sound" << std::endl;
-        textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
-        s1.play();
-      }else if(mInput.check(Input::KRIGHT)) {
-        std::stringstream ss;
-        ss << "Scratch sound" << std::endl;
-        textHIGH.loadText(ss.str().c_str(), textColor, HIGH );
-        s2.play();
-      }
+      std::stringstream time;
+      time << " Time since beginning " << timer.getDeltaTime() << std::endl;
+      textTime.loadText(time.str().c_str(), textColor, HIGH );
 
-      textHIGH.draw();
+      std::stringstream ss;
+      ss << "Loop time " << mTimer.getTimeElapsed() << std::endl;
+      mTimer.restart();
+      textLoopTime.loadText(ss.str().c_str(), textColor, HIGH );
+
+      textTime.draw();
+      textLoopTime.draw();
       SDL_RenderPresent ( mRenderer );
       ++frame;
     }
-    m.free();
-    s.free();
-    s1.free();
-    s2.free();
-    textHIGH.free();
+
+
+    textTime.free();
+    textLoopTime.free();
     error = quit();
   }
   else quit();
 
   return error;
 }
+

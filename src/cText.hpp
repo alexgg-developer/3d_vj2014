@@ -16,10 +16,10 @@ public:
   void free();
   void draw();
   void setPosition(vec3 const & position);
+  uint mWidth, mHeight;
 private:
   TTF_Font* mFont;
   SDL_Texture* mTexture;
-  uint mWidth, mHeight;
   SDL_Renderer * const mRenderer;
   vec3 mPosition;
 };
