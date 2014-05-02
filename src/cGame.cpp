@@ -96,18 +96,23 @@ int Game::main()
 
     Timer timer;
     timer.start();
+    mTimer.start();
     while(!mInput.check(Input::KESC)) {
       mInput.readWithScanCode();
-      mTimer.start();
       SDL_RenderClear( mRenderer );
       std::stringstream time;
-      time << " Time since beginning " << timer.getDeltaTime() << std::endl;
+      time << " Loop time " << timer.getDeltaTime() << std::endl;
       textTime.loadText(time.str().c_str(), textColor, HIGH );
 
       std::stringstream ss;
-      ss << "Loop time " << mTimer.getTimeElapsed() << std::endl;
-      mTimer.restart();
+      ss << "Time since beginning " << mTimer.getTimeElapsed() << std::endl;
       textLoopTime.loadText(ss.str().c_str(), textColor, HIGH );
+
+      if(mInput.check(Input::KA)){
+        if(!mTimer.isPaused()) mTimer.pause();
+      } else if(mInput.check(Input::KS)){
+        if(mTimer.isPaused()) mTimer.resume();
+      }
 
       textTime.draw();
       textLoopTime.draw();
