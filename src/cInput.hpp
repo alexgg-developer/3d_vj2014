@@ -10,8 +10,8 @@ public:
   enum buttonsDefined{BLEFT, BMIDDLE, BRIGHT, nButtons};
 
   Input();
-  void read();
-  void readWithScanCode();
+  void read(SDL_Event const & event);
+  void readWithScanCode(SDL_Event const & event);
   bool check(unsigned int key);
   bool checkPressed(unsigned int key);
   bool checkReleased(unsigned int key);

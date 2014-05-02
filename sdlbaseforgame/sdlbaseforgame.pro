@@ -13,7 +13,8 @@ SOURCES += ../src/main.cpp \
     ../src/cText.cpp \
     ../src/cSound.cpp \
     ../src/cMusic.cpp \
-    ../src/cTimer.cpp
+    ../src/cTimer.cpp \
+    ../src/cWindow.cpp
 
 HEADERS += \
     ../src/vec3.hpp \
@@ -25,7 +26,8 @@ HEADERS += \
     ../src/cText.hpp \
     ../src/cSound.hpp \
     ../src/cMusic.hpp \
-    ../src/cTimer.hpp
+    ../src/cTimer.hpp \
+    ../src/cWindow.hpp
 
 INCLUDEPATH += ../libs/SDL2/include/
 INCLUDEPATH += ../libs/SMPEG/include/

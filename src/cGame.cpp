@@ -11,10 +11,7 @@
 #include <sstream>
 
 Game::Game()
-{
-  mRenderer = NULL;
-  mWindow = NULL;
-}
+{}
 
 int Game::init()
 {
@@ -26,27 +23,23 @@ int Game::init()
 int Game::initSDL()
 {
   int error = 0;
+
   if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 )
   {
     std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
     error = 1;
   }
-  else
-  {
-    mWindow = SDL_CreateWindow( "SDL Base for Gaem", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN );
-    if( mWindow == NULL ) {
-      std::cout <<  "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-      error = 2;
+
+  error = mWindow.init();
+
+  if(error == 0) {
+    mWindow.createRenderer();
+    if( mWindow.mRenderer == NULL ) {
+        std::cout << "Renderer could not be created! SDL Error: " << SDL_GetError() << std::endl;
+        error = 3;
     }
     else {
-      mRenderer = SDL_CreateRenderer( mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
-      if( mRenderer == NULL ) {
-          std::cout << "Renderer could not be created! SDL Error: " << SDL_GetError() << std::endl;
-          error = 3;
-      }
-      else {
-        SDL_SetRenderDrawColor( mRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-      }
+      SDL_SetRenderDrawColor( mWindow.mRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
     }
     if( TTF_Init() == -1 ) {
         std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
@@ -67,8 +60,8 @@ int Game::initSDL()
 
 int Game::quit()
 {
-  SDL_DestroyRenderer(mRenderer);
-  SDL_DestroyWindow( mWindow );
+  SDL_DestroyRenderer(mWindow.mRenderer);
+  mWindow.free();
   Mix_Quit();
   TTF_Quit();
   IMG_Quit();
@@ -83,8 +76,8 @@ int Game::main()
 
   if(!error) {
     uint frame = 0;
-    Text textTime(mRenderer);
-    Text textLoopTime(mRenderer);
+    Text textTime(mWindow.mRenderer);
+    Text textLoopTime(mWindow.mRenderer);
     textTime.loadFont("../resources/fonts/lazy.ttf", 28);
     textLoopTime.loadFont("../resources/fonts/lazy.ttf", 28);
     SDL_Color textColor = { 255, 0, 0, 255 };
@@ -98,26 +91,42 @@ int Game::main()
     timer.start();
     mTimer.start();
     while(!mInput.check(Input::KESC)) {
-      mInput.readWithScanCode();
-      SDL_RenderClear( mRenderer );
-      std::stringstream time;
-      time << " Loop time " << timer.getDeltaTime() << std::endl;
-      textTime.loadText(time.str().c_str(), textColor, HIGH );
-
-      std::stringstream ss;
-      ss << "Time since beginning " << mTimer.getTimeElapsed() << std::endl;
-      textLoopTime.loadText(ss.str().c_str(), textColor, HIGH );
-
-      if(mInput.check(Input::KA)){
-        if(!mTimer.isPaused()) mTimer.pause();
-      } else if(mInput.check(Input::KS)){
-        if(mTimer.isPaused()) mTimer.resume();
+      SDL_Event event;
+      while (SDL_PollEvent(&event)) {
+        if(event.type == SDL_WINDOWEVENT) {
+          mWindow.handleEvent(event);
+          if(mWindow.mMinimized) {
+            mTimer.pause();
+          }
+          else {
+            mTimer.resume();
+          }
+        }
+        else {
+          mInput.readWithScanCode(event);
+        }
       }
+      if(!mWindow.mMinimized) {
+        SDL_RenderClear( mWindow.mRenderer );
+        std::stringstream time;
+        time << " Loop time " << timer.getDeltaTime() << std::endl;
+        textTime.loadText(time.str().c_str(), textColor, HIGH );
 
-      textTime.draw();
-      textLoopTime.draw();
-      SDL_RenderPresent ( mRenderer );
-      ++frame;
+        std::stringstream ss;
+        ss << "Time since beginning " << mTimer.getTimeElapsed() << std::endl;
+        textLoopTime.loadText(ss.str().c_str(), textColor, HIGH );
+
+        if(mInput.check(Input::KA)){
+          if(!mTimer.isPaused()) mTimer.pause();
+        } else if(mInput.check(Input::KS)){
+          if(mTimer.isPaused()) mTimer.resume();
+        }
+
+        textTime.draw();
+        textLoopTime.draw();
+        SDL_RenderPresent ( mWindow.mRenderer );
+        ++frame;
+      }
     }
 
 

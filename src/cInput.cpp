@@ -7,145 +7,140 @@ Input::Input() : mPositionMousePressed(vec3(0,0)), mPositionMouseRealased(vec3(0
   for(uint i = 0; i < nButtons; ++i) mouse[i] = KEY_OFF;
 }
 
-void Input::read()
+void Input::read(SDL_Event const & event)
 {
   //Keys RELEASED become OFF
   //Keys PRESSED become ON
   //It is in case that a key stay pressed it doesn't poll and event so you have to be aware of it
   for (uint i = 0; i < nkeys; ++i) keys[i] = keys[i] & 0x0001;
-
-  SDL_Event event;
-
-  while (SDL_PollEvent(&event)) {
-    switch(event.type) {
-      case SDL_KEYDOWN:
-        switch(event.key.keysym.sym) {
-          case SDLK_UP:
-            keys[KUP] = KEY_PRESSED;
-            break;
-          case SDLK_DOWN:
-            keys[KDOWN] = KEY_PRESSED;
-            break;
-          case SDLK_RIGHT:
-            keys[KRIGHT] = KEY_PRESSED;
-            break;
-          case SDLK_LEFT:
-            keys[KLEFT] = KEY_PRESSED;
-            break;
-          case SDLK_w:
-            keys[KW] = KEY_PRESSED;
-            break;
-          case SDLK_a:
-            keys[KA] = KEY_PRESSED;
-            break;
-          case SDLK_s:
-            keys[KS] = KEY_PRESSED;
-            break;
-          case SDLK_d:
-            keys[KD] = KEY_PRESSED;
-            break;
-          case SDLK_ESCAPE:
-            keys[KESC] = KEY_PRESSED;
-            break;
-        }
-        break;
-      case SDL_KEYUP:
-        switch(event.key.keysym.sym) {
-          case SDLK_UP:
-            keys[KUP] = KEY_RELEASED;
-            break;
-          case SDLK_DOWN:
-            keys[KDOWN] = KEY_RELEASED;
-            break;
-          case SDLK_RIGHT:
-            keys[KRIGHT] = KEY_RELEASED;
-            break;
-          case SDLK_LEFT:
-            keys[KLEFT] = KEY_RELEASED;
-            break;
-          case SDLK_w:
-            keys[KW] = KEY_RELEASED;
-            break;
-          case SDLK_a:
-            keys[KA] = KEY_RELEASED;
-            break;
-          case SDLK_s:
-            keys[KS] = KEY_RELEASED;
-            break;
-          case SDLK_d:
-            keys[KD] = KEY_RELEASED;
-            break;
-          case SDLK_ESCAPE:
-            keys[KESC] = KEY_RELEASED;
-            break;
-        }
-        break;
-      case SDL_MOUSEBUTTONDOWN:
-        switch(event.button.button) {
-          case SDL_BUTTON_LEFT: {
-            mouse[BLEFT] = KEY_PRESSED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMousePressed.x = static_cast<float>(x);
-            mPositionMousePressed.y = static_cast<float>(y);
-          }
+  switch(event.type) {
+    case SDL_KEYDOWN:
+      switch(event.key.keysym.sym) {
+        case SDLK_UP:
+          keys[KUP] = KEY_PRESSED;
           break;
-          case SDL_BUTTON_MIDDLE: {
-            mouse[BMIDDLE] = KEY_PRESSED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMousePressed.x = static_cast<float>(x);
-            mPositionMousePressed.y = static_cast<float>(y);
-          }
+        case SDLK_DOWN:
+          keys[KDOWN] = KEY_PRESSED;
           break;
-          case SDL_BUTTON_RIGHT: {
-            mouse[BRIGHT] = KEY_PRESSED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMousePressed.x = static_cast<float>(x);
-            mPositionMousePressed.y = static_cast<float>(y);
-          }
+        case SDLK_RIGHT:
+          keys[KRIGHT] = KEY_PRESSED;
           break;
-          default:
-            std::cout << "Event: " << static_cast<int>(event.button.button) << std::endl;
+        case SDLK_LEFT:
+          keys[KLEFT] = KEY_PRESSED;
           break;
-        }
+        case SDLK_w:
+          keys[KW] = KEY_PRESSED;
+          break;
+        case SDLK_a:
+          keys[KA] = KEY_PRESSED;
+          break;
+        case SDLK_s:
+          keys[KS] = KEY_PRESSED;
+          break;
+        case SDLK_d:
+          keys[KD] = KEY_PRESSED;
+          break;
+        case SDLK_ESCAPE:
+          keys[KESC] = KEY_PRESSED;
+          break;
+      }
       break;
-      case SDL_MOUSEBUTTONUP:
-        switch(event.button.button) {
-          case SDL_BUTTON_LEFT: {
-            mouse[BLEFT] = KEY_RELEASED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMouseRealased.x = static_cast<float>(x);
-            mPositionMouseRealased.y = static_cast<float>(y);
-          }
+    case SDL_KEYUP:
+      switch(event.key.keysym.sym) {
+        case SDLK_UP:
+          keys[KUP] = KEY_RELEASED;
           break;
-          case SDL_BUTTON_MIDDLE: {
-            mouse[BMIDDLE] = KEY_RELEASED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMouseRealased.x = static_cast<float>(x);
-            mPositionMouseRealased.y = static_cast<float>(y);
-          }
+        case SDLK_DOWN:
+          keys[KDOWN] = KEY_RELEASED;
           break;
-          case SDL_BUTTON_RIGHT: {
-            mouse[BRIGHT] = KEY_RELEASED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMouseRealased.x = static_cast<float>(x);
-            mPositionMouseRealased.y = static_cast<float>(y);
-          }
+        case SDLK_RIGHT:
+          keys[KRIGHT] = KEY_RELEASED;
           break;
-          default:
-            std::cout << "Event: " << static_cast<int>(event.button.button) << std::endl;
+        case SDLK_LEFT:
+          keys[KLEFT] = KEY_RELEASED;
           break;
-        }
+        case SDLK_w:
+          keys[KW] = KEY_RELEASED;
+          break;
+        case SDLK_a:
+          keys[KA] = KEY_RELEASED;
+          break;
+        case SDLK_s:
+          keys[KS] = KEY_RELEASED;
+          break;
+        case SDLK_d:
+          keys[KD] = KEY_RELEASED;
+          break;
+        case SDLK_ESCAPE:
+          keys[KESC] = KEY_RELEASED;
+          break;
+      }
       break;
-      case SDL_QUIT:
-        keys[KESC] = KEY_ON;
+    case SDL_MOUSEBUTTONDOWN:
+      switch(event.button.button) {
+        case SDL_BUTTON_LEFT: {
+          mouse[BLEFT] = KEY_PRESSED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMousePressed.x = static_cast<float>(x);
+          mPositionMousePressed.y = static_cast<float>(y);
+        }
         break;
-    }
+        case SDL_BUTTON_MIDDLE: {
+          mouse[BMIDDLE] = KEY_PRESSED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMousePressed.x = static_cast<float>(x);
+          mPositionMousePressed.y = static_cast<float>(y);
+        }
+        break;
+        case SDL_BUTTON_RIGHT: {
+          mouse[BRIGHT] = KEY_PRESSED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMousePressed.x = static_cast<float>(x);
+          mPositionMousePressed.y = static_cast<float>(y);
+        }
+        break;
+        default:
+          std::cout << "Event: " << static_cast<int>(event.button.button) << std::endl;
+        break;
+      }
+    break;
+    case SDL_MOUSEBUTTONUP:
+      switch(event.button.button) {
+        case SDL_BUTTON_LEFT: {
+          mouse[BLEFT] = KEY_RELEASED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMouseRealased.x = static_cast<float>(x);
+          mPositionMouseRealased.y = static_cast<float>(y);
+        }
+        break;
+        case SDL_BUTTON_MIDDLE: {
+          mouse[BMIDDLE] = KEY_RELEASED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMouseRealased.x = static_cast<float>(x);
+          mPositionMouseRealased.y = static_cast<float>(y);
+        }
+        break;
+        case SDL_BUTTON_RIGHT: {
+          mouse[BRIGHT] = KEY_RELEASED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMouseRealased.x = static_cast<float>(x);
+          mPositionMouseRealased.y = static_cast<float>(y);
+        }
+        break;
+        default:
+          std::cout << "Event: " << static_cast<int>(event.button.button) << std::endl;
+        break;
+      }
+    break;
+    case SDL_QUIT:
+      keys[KESC] = KEY_ON;
+      break;
   }
 }
 
@@ -181,147 +176,143 @@ bool Input::checkMouseReleased(uint button)
 }
 
 
-void Input::readWithScanCode()
+void Input::readWithScanCode(SDL_Event const & event)
 {
   //Keys RELEASED become OFF
   //Keys PRESSED become ON
   //It is in case that a key stay pressed it doesn't poll and event so you have to be aware of it
   for (uint i = 0; i < nkeys; ++i) keys[i] = keys[i] & 0x0001;
-
-  SDL_Event event;
-
-  while (SDL_PollEvent(&event)) {
-    switch(event.type) {
-      case SDL_KEYDOWN:
-        switch(event.key.keysym.scancode) {
-          case SDL_SCANCODE_UP:
-            keys[KUP] = KEY_PRESSED;
-            break;
-          case SDL_SCANCODE_DOWN:
-            keys[KDOWN] = KEY_PRESSED;
-            break;
-          case SDL_SCANCODE_RIGHT:
-            keys[KRIGHT] = KEY_PRESSED;
-            break;
-          case SDL_SCANCODE_LEFT:
-            keys[KLEFT] = KEY_PRESSED;
-            break;
-          case SDL_SCANCODE_W:
-            keys[KW] = KEY_PRESSED;
-            break;
-          case SDL_SCANCODE_A:
-            keys[KA] = KEY_PRESSED;
-            break;
-          case SDL_SCANCODE_S:
-            keys[KS] = KEY_PRESSED;
-            break;
-          case SDL_SCANCODE_D:
-            keys[KD] = KEY_PRESSED;
-            break;
-          case SDL_SCANCODE_ESCAPE:
-            keys[KESC] = KEY_PRESSED;
-            break;
-        }
-          default:
+  switch(event.type) {
+    case SDL_KEYDOWN:
+      switch(event.key.keysym.scancode) {
+        case SDL_SCANCODE_UP:
+          keys[KUP] = KEY_PRESSED;
           break;
+        case SDL_SCANCODE_DOWN:
+          keys[KDOWN] = KEY_PRESSED;
+          break;
+        case SDL_SCANCODE_RIGHT:
+          keys[KRIGHT] = KEY_PRESSED;
+          break;
+        case SDL_SCANCODE_LEFT:
+          keys[KLEFT] = KEY_PRESSED;
+          break;
+        case SDL_SCANCODE_W:
+          keys[KW] = KEY_PRESSED;
+          break;
+        case SDL_SCANCODE_A:
+          keys[KA] = KEY_PRESSED;
+          break;
+        case SDL_SCANCODE_S:
+          keys[KS] = KEY_PRESSED;
+          break;
+        case SDL_SCANCODE_D:
+          keys[KD] = KEY_PRESSED;
+          break;
+        case SDL_SCANCODE_ESCAPE:
+          keys[KESC] = KEY_PRESSED;
+          break;
+      }
+        default:
         break;
-      case SDL_KEYUP:
-        switch(event.key.keysym.scancode) {
-          case SDL_SCANCODE_UP:
-            keys[KUP] = KEY_RELEASED;
-            break;
-          case SDL_SCANCODE_DOWN:
-            keys[KDOWN] = KEY_RELEASED;
-            break;
-          case SDL_SCANCODE_RIGHT:
-            keys[KRIGHT] = KEY_RELEASED;
-            break;
-          case SDL_SCANCODE_LEFT:
-            keys[KLEFT] = KEY_RELEASED;
-            break;
-          case SDL_SCANCODE_W:
-            keys[KW] = KEY_RELEASED;
-            break;
-          case SDL_SCANCODE_A:
-            keys[KA] = KEY_RELEASED;
-            break;
-          case SDL_SCANCODE_S:
-            keys[KS] = KEY_RELEASED;
-            break;
-          case SDL_SCANCODE_D:
-            keys[KD] = KEY_RELEASED;
-            break;
-          case SDL_SCANCODE_ESCAPE:
-            keys[KESC] = KEY_RELEASED;
-            break;
-        }
-        break;
-      case SDL_MOUSEBUTTONDOWN:
-        switch(event.button.button) {
-          case SDL_BUTTON_LEFT: {
-            mouse[BLEFT] = KEY_PRESSED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMousePressed.x = static_cast<float>(x);
-            mPositionMousePressed.y = static_cast<float>(y);
-          }
-          break;
-          case SDL_BUTTON_MIDDLE: {
-            mouse[BMIDDLE] = KEY_PRESSED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMousePressed.x = static_cast<float>(x);
-            mPositionMousePressed.y = static_cast<float>(y);
-          }
-          break;
-          case SDL_BUTTON_RIGHT: {
-            mouse[BRIGHT] = KEY_PRESSED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMousePressed.x = static_cast<float>(x);
-            mPositionMousePressed.y = static_cast<float>(y);
-          }
-          break;
-          default:
-            std::cout << "Event: " << static_cast<int>(event.button.button) << std::endl;
-          break;
-        }
       break;
-      case SDL_MOUSEBUTTONUP:
-        switch(event.button.button) {
-          case SDL_BUTTON_LEFT: {
-            mouse[BLEFT] = KEY_RELEASED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMouseRealased.x = static_cast<float>(x);
-            mPositionMouseRealased.y = static_cast<float>(y);
-          }
+    case SDL_KEYUP:
+      switch(event.key.keysym.scancode) {
+        case SDL_SCANCODE_UP:
+          keys[KUP] = KEY_RELEASED;
           break;
-          case SDL_BUTTON_MIDDLE: {
-            mouse[BMIDDLE] = KEY_RELEASED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMouseRealased.x = static_cast<float>(x);
-            mPositionMouseRealased.y = static_cast<float>(y);
-          }
+        case SDL_SCANCODE_DOWN:
+          keys[KDOWN] = KEY_RELEASED;
           break;
-          case SDL_BUTTON_RIGHT: {
-            mouse[BRIGHT] = KEY_RELEASED;
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mPositionMouseRealased.x = static_cast<float>(x);
-            mPositionMouseRealased.y = static_cast<float>(y);
-          }
+        case SDL_SCANCODE_RIGHT:
+          keys[KRIGHT] = KEY_RELEASED;
           break;
-          default:
-            std::cout << "Event: " << static_cast<int>(event.button.button) << std::endl;
+        case SDL_SCANCODE_LEFT:
+          keys[KLEFT] = KEY_RELEASED;
           break;
-        }
+        case SDL_SCANCODE_W:
+          keys[KW] = KEY_RELEASED;
+          break;
+        case SDL_SCANCODE_A:
+          keys[KA] = KEY_RELEASED;
+          break;
+        case SDL_SCANCODE_S:
+          keys[KS] = KEY_RELEASED;
+          break;
+        case SDL_SCANCODE_D:
+          keys[KD] = KEY_RELEASED;
+          break;
+        case SDL_SCANCODE_ESCAPE:
+          keys[KESC] = KEY_RELEASED;
+          break;
+      }
       break;
-      case SDL_QUIT:
-        keys[KESC] = KEY_ON;
+    case SDL_MOUSEBUTTONDOWN:
+      switch(event.button.button) {
+        case SDL_BUTTON_LEFT: {
+          mouse[BLEFT] = KEY_PRESSED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMousePressed.x = static_cast<float>(x);
+          mPositionMousePressed.y = static_cast<float>(y);
+        }
         break;
-    }
+        case SDL_BUTTON_MIDDLE: {
+          mouse[BMIDDLE] = KEY_PRESSED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMousePressed.x = static_cast<float>(x);
+          mPositionMousePressed.y = static_cast<float>(y);
+        }
+        break;
+        case SDL_BUTTON_RIGHT: {
+          mouse[BRIGHT] = KEY_PRESSED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMousePressed.x = static_cast<float>(x);
+          mPositionMousePressed.y = static_cast<float>(y);
+        }
+        break;
+        default:
+          std::cout << "Event: " << static_cast<int>(event.button.button) << std::endl;
+        break;
+      }
+    break;
+    case SDL_MOUSEBUTTONUP:
+      switch(event.button.button) {
+        case SDL_BUTTON_LEFT: {
+          mouse[BLEFT] = KEY_RELEASED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMouseRealased.x = static_cast<float>(x);
+          mPositionMouseRealased.y = static_cast<float>(y);
+        }
+        break;
+        case SDL_BUTTON_MIDDLE: {
+          mouse[BMIDDLE] = KEY_RELEASED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMouseRealased.x = static_cast<float>(x);
+          mPositionMouseRealased.y = static_cast<float>(y);
+        }
+        break;
+        case SDL_BUTTON_RIGHT: {
+          mouse[BRIGHT] = KEY_RELEASED;
+          int x, y;
+          SDL_GetMouseState(&x, &y);
+          mPositionMouseRealased.x = static_cast<float>(x);
+          mPositionMouseRealased.y = static_cast<float>(y);
+        }
+        break;
+        default:
+          std::cout << "Event: " << static_cast<int>(event.button.button) << std::endl;
+        break;
+      }
+    break;
+    case SDL_QUIT:
+      keys[KESC] = KEY_ON;
+      break;
   }
+
 }
 
