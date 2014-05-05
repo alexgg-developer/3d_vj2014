@@ -11,13 +11,15 @@ public:
   bool mFullScreen;
   bool mMinimized;
   SDL_Renderer* mRenderer;
+  SDL_Window*    mWindow;
 
   Window();
   int init();
   SDL_Renderer* createRenderer();
+  bool createGLContext();
   void free();
   void handleEvent(SDL_Event const & event);
   void switchFullScreen();
 private:
-  SDL_Window*   mWindow;
+  SDL_GLContext mContext;
 };

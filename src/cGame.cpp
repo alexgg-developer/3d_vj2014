@@ -16,6 +16,8 @@ Game::Game()
 int Game::init()
 {
   int error = initSDL();
+  if(error == 0) error = initGLEW();
+  if(error == 0) error = initGL();
 
   return error;
 }
@@ -33,28 +35,51 @@ int Game::initSDL()
   error = mWindow.init();
 
   if(error == 0) {
-    mWindow.createRenderer();
+    /*    mWindow.createRenderer();
     if( mWindow.mRenderer == NULL ) {
         std::cout << "Renderer could not be created! SDL Error: " << SDL_GetError() << std::endl;
         error = 3;
     }
     else {
       SDL_SetRenderDrawColor( mWindow.mRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-    }
+    }*/
     if( TTF_Init() == -1 ) {
         std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
         error = 4;
     }
-    if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "2" ) ) {
+    /*if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "2" ) ) {
         std::cout << "Warning: Anisotropic texture filtering not enabled!" << std::endl;
         error = 5;
-    }
+    }*/
+
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
        std::cout << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError();
        error = 6;
     }
   }
 
+  return error;
+}
+
+int Game::initGLEW()
+{
+  int error = 0;
+  glewExperimental = GL_TRUE;
+  GLenum glewError = glewInit();
+  if( glewError != GLEW_OK ) {
+    std::cout << "Error initializing GLEW! " << glewGetErrorString( glewError ) << std::endl;
+    error = 10;
+  }
+
+  return error;
+}
+
+int Game::initGL()
+{
+  int error = 0;
+  if(!mRenderer.initGL()) {
+    error = 20;
+  }
   return error;
 }
 
@@ -107,25 +132,8 @@ int Game::main()
         }
       }
       if(!mWindow.mMinimized) {
-        SDL_RenderClear( mWindow.mRenderer );
-        std::stringstream time;
-        time << " Loop time " << timer.getDeltaTime() << std::endl;
-        textTime.loadText(time.str().c_str(), textColor, HIGH );
-
-        std::stringstream ss;
-        ss << "Time since beginning " << mTimer.getTimeElapsed() << std::endl;
-        textLoopTime.loadText(ss.str().c_str(), textColor, HIGH );
-
-        if(mInput.check(Input::KA)){
-          if(!mTimer.isPaused()) mTimer.pause();
-        } else if(mInput.check(Input::KS)){
-          if(mTimer.isPaused()) mTimer.resume();
-        }
-
-        textTime.draw();
-        textLoopTime.draw();
-        SDL_RenderPresent ( mWindow.mRenderer );
-        ++frame;
+        mRenderer.render();
+        SDL_GL_SwapWindow( mWindow.mWindow );
       }
     }
 

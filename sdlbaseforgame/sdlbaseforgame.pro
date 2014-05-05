@@ -14,7 +14,9 @@ SOURCES += ../src/main.cpp \
     ../src/cSound.cpp \
     ../src/cMusic.cpp \
     ../src/cTimer.cpp \
-    ../src/cWindow.cpp
+    ../src/cWindow.cpp \
+    ../src/cRenderer.cpp \
+    ../src/cGLShader.cpp
 
 HEADERS += \
     ../src/vec3.hpp \
@@ -27,7 +29,9 @@ HEADERS += \
     ../src/cSound.hpp \
     ../src/cMusic.hpp \
     ../src/cTimer.hpp \
-    ../src/cWindow.hpp
+    ../src/cWindow.hpp \
+    ../src/cRenderer.hpp \
+    ../src/cGLShader.hpp
 
 INCLUDEPATH += ../libs/SDL2/include/
 INCLUDEPATH += ../libs/SMPEG/include/
@@ -41,3 +45,4 @@ LIBS += -L../libs/SDL2/libs/ -lSDL2_image
 LIBS += -L../libs/SDL2/libs/ -lSDL2_ttf
 LIBS += -L../libs/SDL2/libs/ -lSDL2_mixer
 LIBS += -L../libs/SMPEG/libs/ -lsmpeg2
+LIBS += -lGLEW -lGL -lGLU
