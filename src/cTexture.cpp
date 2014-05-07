@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-Texture::Texture(): mTexture(NULL), mWidth(0), mHeight(0)
+Texture::Texture(): mTexture(0), mWidth(0), mHeight(0), mTextureSurface(nullptr)
 {}
 
 Texture::~Texture()
@@ -10,7 +10,7 @@ Texture::~Texture()
   free();
 }
 
-bool Texture::load(std::string fileName, SDL_Renderer * renderer )
+bool Texture::load(std::string fileName)
 {
    bool success = true;
    free();
@@ -20,28 +20,39 @@ bool Texture::load(std::string fileName, SDL_Renderer * renderer )
        success = false;
    }
    else {
-     SDL_Surface* textureSurface = IMG_Load( fileName.c_str() );
-     if( textureSurface == NULL )
-     {
+     mTextureSurface = IMG_Load( fileName.c_str() );
+     if( mTextureSurface == nullptr ) {
          std::cout << "Unable to load image " <<  fileName.c_str() << " SDL Error: " << SDL_GetError() << std::endl;
          success = false;
      }
      else {
-       mWidth  = textureSurface->w;
-       mHeight = textureSurface->h;
-       mTexture = SDL_CreateTextureFromSurface(renderer, textureSurface);
-       if( mTexture == NULL ) {
-         std::cout << "Unable create texture " <<  fileName.c_str() << " SDL Error: " << SDL_GetError() << std::endl;
-         success = false;
+       mWidth  = mTextureSurface->w;
+       mHeight = mTextureSurface->h;
+       glGenTextures( 1, &mTexture );
+       glBindTexture( GL_TEXTURE_2D, mTexture );
+       glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, mTextureSurface->pixels );
+       glBindTexture( GL_TEXTURE_2D, 0 );
+       //Check for error
+       GLenum error = glGetError();
+       if( error != GL_NO_ERROR ) {
+           std::cout << "Error loading texture" << gluErrorString( error ) << std::endl;
+           success = false;
        }
+       /* glBindTexture( GL_TEXTURE_2D, mTexture );
+       GLuint size = mWidth * mHeight;
+       GLuint* mPixels = new GLuint[ size ];
+       glGetTexImage( GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, mPixels );
+
+       //Unbind texture
+       glBindTexture( GL_TEXTURE_2D, NULL );*/
+
      }
-     SDL_FreeSurface( textureSurface );
    }
 
    return success;
 }
 
-bool Texture::load(std::string fileName, SDL_Renderer * renderer, vec3 const & colorKey )
+bool Texture::load(std::string fileName, vec3 const & colorKey )
 {
    bool success = true;
    free();
@@ -51,28 +62,52 @@ bool Texture::load(std::string fileName, SDL_Renderer * renderer, vec3 const & c
        success = false;
    }
    else {
-     SDL_Surface* textureSurface = IMG_Load( fileName.c_str() );
-     if( textureSurface == NULL )
-     {
+     mTextureSurface = IMG_Load( fileName.c_str() );
+     if( mTextureSurface == nullptr ) {
          std::cout << "Unable to load image " <<  fileName.c_str() << " SDL Error: " << SDL_GetError() << std::endl;
          success = false;
      }
      else {
-       SDL_SetColorKey( textureSurface, SDL_TRUE, SDL_MapRGB( textureSurface->format, colorKey.x, colorKey.y, colorKey.z ) );
-       mWidth  = textureSurface->w;
-       mHeight = textureSurface->h;
-       mTexture = SDL_CreateTextureFromSurface(renderer, textureSurface);
-       if( mTexture == NULL ) {
-         std::cout << "Unable create texture " <<  fileName.c_str() << " SDL Error: " << SDL_GetError() << std::endl;
-         success = false;
+       SDL_SetColorKey( mTextureSurface, SDL_TRUE, SDL_MapRGB( mTextureSurface->format, colorKey.x, colorKey.y, colorKey.z ) );
+       mWidth  = mTextureSurface->w;
+       mHeight = mTextureSurface->h;
+       glGenTextures( 1, &mTexture );
+       glBindTexture( GL_TEXTURE_2D, mTexture );
+       glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mTextureSurface->pixels );
+       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+       glBindTexture( GL_TEXTURE_2D, 0 );
+       //Check for error
+       GLenum error = glGetError();
+       if( error != GL_NO_ERROR ) {
+           std::cout << "Error loading texture" << gluErrorString( error ) << std::endl;
+           success = false;
        }
      }
-     SDL_FreeSurface( textureSurface );
    }
 
    return success;
 }
 
-void Texture::free() {
-    SDL_DestroyTexture( mTexture );
+void Texture::free() {  
+  if( mTexture != 0 ) {
+    glDeleteTextures( 1, &mTexture );
+    mTexture = 0;
+  }
+  SDL_FreeSurface( mTextureSurface );
+  mTextureSurface = nullptr;
+}
+
+void Texture::draw()
+{
+  glBindTexture( GL_TEXTURE_2D, mTexture );
+  glBegin( GL_QUADS );
+    glTexCoord2f( 0.f, 0.f ); glVertex2f(           0.f,            0.f );
+    glTexCoord2f( 1.f, 0.f ); glVertex2f( mWidth,            0.f );
+    glTexCoord2f( 1.f, 1.f ); glVertex2f( mWidth, mHeight );
+    glTexCoord2f( 0.f, 1.f ); glVertex2f(           0.f, mHeight );
+  glEnd();
+  glBindTexture( GL_TEXTURE_2D, 0 );
 }

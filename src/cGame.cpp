@@ -35,23 +35,10 @@ int Game::initSDL()
   error = mWindow.init();
 
   if(error == 0) {
-    /*    mWindow.createRenderer();
-    if( mWindow.mRenderer == NULL ) {
-        std::cout << "Renderer could not be created! SDL Error: " << SDL_GetError() << std::endl;
-        error = 3;
-    }
-    else {
-      SDL_SetRenderDrawColor( mWindow.mRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-    }*/
     if( TTF_Init() == -1 ) {
         std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
         error = 4;
     }
-    /*if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "2" ) ) {
-        std::cout << "Warning: Anisotropic texture filtering not enabled!" << std::endl;
-        error = 5;
-    }*/
-
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
        std::cout << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError();
        error = 6;
@@ -85,7 +72,6 @@ int Game::initGL()
 
 int Game::quit()
 {
-  SDL_DestroyRenderer(mWindow.mRenderer);
   mWindow.free();
   Mix_Quit();
   TTF_Quit();
@@ -101,15 +87,17 @@ int Game::main()
 
   if(!error) {
     uint frame = 0;
-    Text textTime(mWindow.mRenderer);
-    Text textLoopTime(mWindow.mRenderer);
+    Text textTime;
+    Text textLoopTime;
     textTime.loadFont("../resources/fonts/lazy.ttf", 28);
     textLoopTime.loadFont("../resources/fonts/lazy.ttf", 28);
     SDL_Color textColor = { 255, 0, 0, 255 };
-    textTime.loadText("Such a text, much beauty HIGH", textColor, HIGH );
+    textTime.loadText("Such a text, much beauty HIGH", textColor, LOW );
     textTime.setPosition(vec3(0, 0));
     textLoopTime.loadText("Such a text, much beauty HIGH", textColor, HIGH );
     textLoopTime.setPosition(vec3(0, textTime.mHeight));
+    Texture texture;
+    texture.load("../resources/img/nehe.bmp");
 
 
     Timer timer;
@@ -131,13 +119,17 @@ int Game::main()
           mInput.readWithScanCode(event);
         }
       }
-      if(!mWindow.mMinimized) {
+      if(!mWindow.mMinimized) {        
+        glClearColor( 0.f, 0.f, 0.f, 1.f );
+        glClear( GL_COLOR_BUFFER_BIT );
+        //textTime.draw();
         mRenderer.render();
+        //texture.draw();
         SDL_GL_SwapWindow( mWindow.mWindow );
       }
     }
 
-
+    texture.free();
     textTime.free();
     textLoopTime.free();
     error = quit();

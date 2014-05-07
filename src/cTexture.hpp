@@ -3,16 +3,20 @@
 #include "SDL_image.h"
 #include "vec3.hpp"
 #include <string>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 class Texture
 {
 public:
   Texture();
   ~Texture();
-  bool load(std::string fileName, SDL_Renderer* renderer );
-  bool load(std::string fileName, SDL_Renderer * renderer, vec3 const & colorKey );
+  bool load(std::string fileName);
+  bool load(std::string fileName, vec3 const & colorKey );
+  void draw();
   void free();
 
-  SDL_Texture* mTexture;
+  GLuint mTexture;
+  SDL_Surface* mTextureSurface;
   int mWidth, mHeight;
 };

@@ -19,5 +19,11 @@ private:
   std::vector<GLuint> mIBO;
   bool link();
   void printProgramLog(GLuint program);
+
+  struct LVertexPos2D
+  {
+      GLfloat x;
+      GLfloat y;
+  };
 };
 

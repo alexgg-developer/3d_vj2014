@@ -18,9 +18,9 @@ void Animation2D::setConstantSizeOfImage()
 
 void Animation2D::draw()
 {
-  if(mSizeConstantOfImage) {
+  /*if(mSizeConstantOfImage) {
     SDL_Rect rectPos = { 400, 300, mClip[0].w, mClip[0].h };
     SDL_Rect rectToDraw = {0 + mClip[0].w * int(mFrame / mFramesPerAnimation), 0, mClip[0].w, mClip[0].h };
     SDL_RenderCopy( mRenderer, mTexture.mTexture, &rectToDraw, &rectPos );
-  }
+  }*/
 }
