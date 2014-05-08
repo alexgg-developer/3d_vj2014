@@ -64,7 +64,7 @@ int Game::initGLEW()
 int Game::initGL()
 {
   int error = 0;
-  if(!mRenderer.initGL()) {
+  if(!mRenderer.initGL() || !mRenderer.initApp()) {
     error = 20;
   }
   return error;
@@ -73,6 +73,7 @@ int Game::initGL()
 int Game::quit()
 {
   mWindow.free();
+  mRenderer.free();
   Mix_Quit();
   TTF_Quit();
   IMG_Quit();
@@ -87,21 +88,8 @@ int Game::main()
 
   if(!error) {
     uint frame = 0;
-    Text textTime;
-    Text textLoopTime;
-    textTime.loadFont("../resources/fonts/lazy.ttf", 28);
-    textLoopTime.loadFont("../resources/fonts/lazy.ttf", 28);
-    SDL_Color textColor = { 255, 0, 0, 255 };
-    textTime.loadText("Such a text, much beauty HIGH", textColor, LOW );
-    textTime.setPosition(vec3(0, 0));
-    textLoopTime.loadText("Such a text, much beauty HIGH", textColor, HIGH );
-    textLoopTime.setPosition(vec3(0, textTime.mHeight));
-    Texture texture;
-    texture.load("../resources/img/nehe.bmp");
+    //mWindow.switchFullScreen();
 
-
-    Timer timer;
-    timer.start();
     mTimer.start();
     while(!mInput.check(Input::KESC)) {
       SDL_Event event;
@@ -119,19 +107,14 @@ int Game::main()
           mInput.readWithScanCode(event);
         }
       }
-      if(!mWindow.mMinimized) {        
+      if(!mWindow.mMinimized) {
         glClearColor( 0.f, 0.f, 0.f, 1.f );
         glClear( GL_COLOR_BUFFER_BIT );
-        //textTime.draw();
         mRenderer.render();
-        //texture.draw();
         SDL_GL_SwapWindow( mWindow.mWindow );
       }
     }
 
-    texture.free();
-    textTime.free();
-    textLoopTime.free();
     error = quit();
   }
   else quit();

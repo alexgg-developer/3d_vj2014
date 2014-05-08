@@ -6,7 +6,6 @@ Music::Music(): mMusic(nullptr)
 
 Music::~Music()
 {
-  free();
 }
 
 void Music::load(std::string path)
@@ -20,7 +19,7 @@ void Music::load(std::string path)
 
 void Music::free()
 {
-  //Mix_FreeMusic( mMusic );
+  Mix_FreeMusic( mMusic );
 }
 
 void Music::play(bool loop)

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <GL/gl.h>
 #include <iostream>
 #include <string>
 #include "TypesDefined.hpp"
@@ -19,6 +17,10 @@ public:
   void unsetAttribute(GLuint attributeLocation);
   void printShaderLog( GLuint shader );
   bool compile();
+  void set();
+  bool link(GLuint program);
+  static bool linkProgram(GLuint program);
+  static void printProgramLog(GLuint program);
 private:
   uint mID;
   std::string mShaderSource;

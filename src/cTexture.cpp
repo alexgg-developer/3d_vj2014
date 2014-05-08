@@ -2,12 +2,57 @@
 #include <iostream>
 
 
-Texture::Texture(): mTexture(0), mWidth(0), mHeight(0), mTextureSurface(nullptr)
-{}
+Texture::Texture(): mTexture(0), mWidth(0), mHeight(0), mTextureSurface(nullptr), mProgramID(0)
+{
+}
 
 Texture::~Texture()
+{}
+
+bool Texture::init()
 {
-  free();
+  bool success = true;
+  mProgramID = glCreateProgram();
+  GLShader defaultVertexShader;
+  defaultVertexShader.init(GLShader::VERTEX, mProgramID);
+  success = defaultVertexShader.compile();
+  mVertexShader.push_back(defaultVertexShader);
+  GLShader defaultFragmentShader;
+  defaultFragmentShader.init(GLShader::FRAGMENT, mProgramID);
+  success = defaultFragmentShader.compile();
+  mFragmentShader.push_back(defaultFragmentShader);
+  success = GLShader::linkProgram(mProgramID);
+
+  GLfloat vertexData[] =
+  {
+    -0.5f, -0.5f,
+     0.5f, -0.5f,
+     0.5f,  0.5f,
+    -0.5f,  0.5f
+  };
+
+  GLuint indexData[] = { 0, 1, 2, 3 };
+
+  GLuint vbo = 0;
+  glGenBuffers( 1, &vbo );
+  glBindBuffer( GL_ARRAY_BUFFER, vbo );
+  glBufferData( GL_ARRAY_BUFFER, 2 * 4 * sizeof(GLfloat), vertexData, GL_STATIC_DRAW );
+  mVBO.push_back(vbo);
+
+  GLuint ibo = 0;
+  glGenBuffers( 1, &ibo );
+  glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ibo );
+  glBufferData( GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indexData, GL_STATIC_DRAW );
+  mIBO.push_back(ibo);
+
+  glBindBuffer( GL_ARRAY_BUFFER, NULL ); glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, NULL );
+
+  GLenum error = glGetError();
+  if( error != GL_NO_ERROR ) {
+      std::cout << "Error initializing App!" << gluErrorString( error ) << std::endl;
+      success = false;
+  }
+  return success;
 }
 
 bool Texture::load(std::string fileName)
@@ -30,7 +75,11 @@ bool Texture::load(std::string fileName)
        mHeight = mTextureSurface->h;
        glGenTextures( 1, &mTexture );
        glBindTexture( GL_TEXTURE_2D, mTexture );
-       glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, mTextureSurface->pixels );
+       glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, mTextureSurface->pixels );
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
        glBindTexture( GL_TEXTURE_2D, 0 );
        //Check for error
        GLenum error = glGetError();
@@ -38,14 +87,7 @@ bool Texture::load(std::string fileName)
            std::cout << "Error loading texture" << gluErrorString( error ) << std::endl;
            success = false;
        }
-       /* glBindTexture( GL_TEXTURE_2D, mTexture );
-       GLuint size = mWidth * mHeight;
-       GLuint* mPixels = new GLuint[ size ];
-       glGetTexImage( GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, mPixels );
-
-       //Unbind texture
-       glBindTexture( GL_TEXTURE_2D, NULL );*/
-
+       success = init();
      }
    }
 
@@ -85,6 +127,7 @@ bool Texture::load(std::string fileName, vec3 const & colorKey )
            std::cout << "Error loading texture" << gluErrorString( error ) << std::endl;
            success = false;
        }
+       success = init();
      }
    }
 
@@ -95,19 +138,40 @@ void Texture::free() {
   if( mTexture != 0 ) {
     glDeleteTextures( 1, &mTexture );
     mTexture = 0;
-  }
+  }  
   SDL_FreeSurface( mTextureSurface );
-  mTextureSurface = nullptr;
+  mTextureSurface = nullptr;  
+  glDeleteProgram( mProgramID );
+
+  for(uint i = 0; i < mVBO.size(); ++i) {
+    glDeleteBuffers( 1, &mVBO[0] );
+  }
+  for(uint i = 0; i < mIBO.size(); ++i) {
+    glDeleteBuffers( 1, &mIBO[0] );
+  }
+}
+
+void Texture::bind()
+{
+    glBindTexture(GL_TEXTURE_2D, mTexture);
+}
+
+void Texture::unbind()
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture::draw()
 {
-  glBindTexture( GL_TEXTURE_2D, mTexture );
-  glBegin( GL_QUADS );
-    glTexCoord2f( 0.f, 0.f ); glVertex2f(           0.f,            0.f );
-    glTexCoord2f( 1.f, 0.f ); glVertex2f( mWidth,            0.f );
-    glTexCoord2f( 1.f, 1.f ); glVertex2f( mWidth, mHeight );
-    glTexCoord2f( 0.f, 1.f ); glVertex2f(           0.f, mHeight );
-  glEnd();
-  glBindTexture( GL_TEXTURE_2D, 0 );
+  glUseProgram( mProgramID );
+  bind();
+  GLuint attributeLocation = mVertexShader[0].setAttribute("LVertexPos2D");
+  glEnableVertexAttribArray( attributeLocation );
+  glBindBuffer( GL_ARRAY_BUFFER, mVBO[0] );
+  glVertexAttribPointer( attributeLocation, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), NULL );
+  glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, mIBO[0] );
+  glDrawElements( GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL );
+  mVertexShader[0].unsetAttribute(attributeLocation);
+  unbind();
+  glUseProgram( NULL );
 }

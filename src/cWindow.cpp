@@ -2,8 +2,7 @@
 #include "SDL_opengl.h"
 #include <iostream>
 
-Window::Window(): mWidth(DEFAULT_WINDOW_WIDTH), mHeight(DEFAULT_WINDOW_HEIGHT), mWindow(nullptr), mMinimized(false), mFullScreen(false),
-  mRenderer(nullptr)
+Window::Window(): mWidth(DEFAULT_WINDOW_WIDTH), mHeight(DEFAULT_WINDOW_HEIGHT), mWindow(nullptr), mMinimized(false), mFullScreen(false)
 {
 
 }
@@ -24,15 +23,6 @@ int Window::init()
   }
 
   return error;
-}
-
-SDL_Renderer* Window::createRenderer()
-{
-  if(mRenderer == nullptr) {
-    mRenderer = SDL_CreateRenderer( mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
-  }
-
-  return mRenderer;
 }
 
 bool Window::createGLContext()
@@ -59,7 +49,6 @@ bool Window::createGLContext()
 
 void Window::free()
 {
-  if(mRenderer != nullptr) SDL_DestroyRenderer( mRenderer );
   SDL_DestroyWindow( mWindow );
 }
 
@@ -69,10 +58,8 @@ void Window::handleEvent(SDL_Event const & event)
     case SDL_WINDOWEVENT_SIZE_CHANGED:
       mWidth  = event.window.data1;
       mHeight = event.window.data2;
-      SDL_RenderPresent( mRenderer );
     break;
     case SDL_WINDOWEVENT_EXPOSED:
-      SDL_RenderPresent( mRenderer );
     break;
     case SDL_WINDOWEVENT_MAXIMIZED:
       mMinimized = false;
