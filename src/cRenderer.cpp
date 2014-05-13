@@ -11,7 +11,7 @@ bool Renderer::initApp()
     /*texUniform = glGetUniformLocation(mProgramID, "teximg");
     std::cerr << "uniform tex: " << texUniform << std::endl;*/
     Texture tex;
-    if (!tex.load("../resources/img/nehe.png")) {
+    if (!tex.load("C:\\Users\\w7home\\VJ\\3d_vj2014\\resources\\img\\sprites.png")) {
         std::cerr << "ERROR! shiet tex" << std::endl;
         success = false;
     }
