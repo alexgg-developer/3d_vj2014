@@ -65,7 +65,7 @@ bool Texture::load(std::string fileName)
        success = false;
    }
    else {
-     mTextureSurface = IMG_Load( fileName.c_str() );
+	 mTextureSurface = IMG_Load(fileName.c_str());
      if( mTextureSurface == nullptr ) {
          std::cout << "Unable to load image " <<  fileName.c_str() << " SDL Error: " << SDL_GetError() << std::endl;
          success = false;
@@ -75,8 +75,12 @@ bool Texture::load(std::string fileName)
        mHeight = mTextureSurface->h;
        glGenTextures( 1, &mTexture );
        glBindTexture( GL_TEXTURE_2D, mTexture );
-       glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, mTextureSurface->pixels );
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+       GLenum format = GL_RGB;
+	     if (isBMP(fileName))  {
+         format = GL_BGR;
+	     }
+	     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, mTextureSurface->pixels);
+	     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -110,12 +114,16 @@ bool Texture::load(std::string fileName, vec3 const & colorKey )
          success = false;
      }
      else {
+       GLenum format = GL_RGBA;
+       if (isBMP(fileName))  {
+         format = GL_BGRA;
+       }
        SDL_SetColorKey( mTextureSurface, SDL_TRUE, SDL_MapRGB( mTextureSurface->format, colorKey.x, colorKey.y, colorKey.z ) );
        mWidth  = mTextureSurface->w;
        mHeight = mTextureSurface->h;
        glGenTextures( 1, &mTexture );
        glBindTexture( GL_TEXTURE_2D, mTexture );
-       glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mTextureSurface->pixels );
+       glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, mTextureSurface->pixels );
        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -177,4 +185,13 @@ void Texture::draw()
   mVertexShader[0].unsetAttribute(attributeLocation);
   unbind();
   glUseProgram( NULL );
+}
+
+bool Texture::isBMP(std::string fileName)
+{
+  bool isB = fileName.at(fileName.size() - 3) == 'b' || fileName.at(fileName.size() - 3) == 'B';
+  bool isM = fileName.at(fileName.size() - 2) == 'm' || fileName.at(fileName.size() - 2) == 'M';
+  bool isP = fileName.at(fileName.size() - 1) == 'p' || fileName.at(fileName.size() - 1) == 'P';
+
+  return isB && isM && isP;
 }

@@ -29,4 +29,5 @@ private:
   std::vector<GLShader> mVertexShader;
   std::vector<GLShader> mFragmentShader;
   bool init();
+  bool isBMP(std::string fileName);
 };

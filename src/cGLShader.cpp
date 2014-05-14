@@ -15,7 +15,7 @@ void GLShader::init(KindOfShader kind, uint programID)
     break;
     case FRAGMENT: {
       mID = glCreateShader( GL_FRAGMENT_SHADER );
-      mShaderSource = "#version 130\nin vec2 texcoords; uniform sampler2D teximg; out vec4 LFragment; void main() { LFragment = texture(teximg, texcoords.xy); }";
+      mShaderSource = "#version 130\nin vec2 texcoords; uniform sampler2D teximg; out vec4 LFragment; void main() { LFragment = vec4(texture(teximg, texcoords.xy).rgba); }";
       const char* source = mShaderSource.c_str();
       glShaderSource( mID, 1, &source, NULL );
     }
