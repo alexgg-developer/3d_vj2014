@@ -11,12 +11,28 @@ bool Renderer::initApp()
     /*texUniform = glGetUniformLocation(mProgramID, "teximg");
     std::cerr << "uniform tex: " << texUniform << std::endl;*/
     Texture tex;
-    if (!tex.load("C:\\Users\\w7home\\VJ\\3d_vj2014\\resources\\img\\sprites.png")) {
+    if (!tex.load("C:\\Users\\w7home\\VJ\\3d_vj2014\\resources\\img\\foo.png")) {
         std::cerr << "ERROR! shiet tex" << std::endl;
         success = false;
     }
     else {
       mTexture.push_back(tex);
+    }
+
+    Text text;
+    if (!text.loadFont("C:\\Users\\w7home\\VJ\\3d_vj2014\\resources\\fonts\\lazy.ttf", 50)) {
+      std::cerr << "ERROR! shiet font" << std::endl;
+      success = false;
+    }
+    else {
+      SDL_Color textColor = { 255, 0, 0, 255};
+      if (!text.loadText("good text", textColor , HIGH)) {
+        std::cerr << "ERROR! shiet text" << std::endl;
+        success = false;
+      }
+      else {
+        mText.push_back(text);
+      }
     }
     return success;
 }
@@ -24,8 +40,10 @@ bool Renderer::initApp()
 bool Renderer::initGL()
 {
   bool success = true;
-  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_TEXTURE_2D); 
   glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glDisable(GL_DEPTH_TEST);
   glShadeModel( GL_SMOOTH );
 
   GLenum error = glGetError();
@@ -70,7 +88,12 @@ bool Renderer::link(GLuint program)
 void Renderer::render()
 {
   //glUseProgram(NULL);   //Se podría crear un group de shaders y meter esto y enlazar el program a un vertex/fragment/geometry
-  mTexture[0].draw();
+  //mTexture[0].draw();
+
+  glClearColor(1.f, 1.f, 1.f, 1.f);
+  glClear(GL_COLOR_BUFFER_BIT);  
+  mText[0].draw();
+  //mTexture[0].draw();
   //glUseProgram(NULL);
 }
 
@@ -78,6 +101,10 @@ void Renderer::free()
 {
   for(uint i = 0; i < mTexture.size(); ++i) {
     mTexture[i].free();
+  }
+
+  for (uint i = 0; i < mText.size(); ++i) {
+    mText[i].free();
   }
 }
 

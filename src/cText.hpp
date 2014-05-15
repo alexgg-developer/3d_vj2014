@@ -3,6 +3,7 @@
 #include "SDL.h"
 #include "TypesDefined.hpp"
 #include "vec3.hpp"
+#include "cGLShader.hpp"
 #include <string>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -13,6 +14,7 @@ class Text
 public:
   Text();
   ~Text();
+  bool init();
   bool loadFont(std::string path, uint size);
   bool loadText(std::string text, SDL_Color color, Quality q);
   void free();
@@ -24,4 +26,7 @@ private:
   GLuint mTexture;
   SDL_Surface* mTextureSurface;
   vec3 mPosition;
+  GLuint mProgramID;
+  GLShader mVertexShader, mFragmentShader;
+  GLuint mVBO, mIBO;
 };

@@ -108,8 +108,6 @@ int Game::main()
         }
       }
       if(!mWindow.mMinimized) {
-        glClearColor( 0.f, 0.f, 0.f, 1.f );
-        glClear( GL_COLOR_BUFFER_BIT );
         mRenderer.render();
         SDL_GL_SwapWindow( mWindow.mWindow );
       }

@@ -1,13 +1,51 @@
 #include "cText.hpp"
 #include <iostream>
 
-Text::Text(): mFont(nullptr), mTexture(0), mWidth(0), mHeight(0), mPosition(vec3(0,0)), mTextureSurface(nullptr)
+Text::Text() : mFont(nullptr), mTexture(0), mWidth(0), mHeight(0), mPosition(vec3(0, 0)), mTextureSurface(nullptr), mProgramID(0), mIBO(0), mVBO(0)
 {
 }
 
 Text::~Text()
 {
   //free();
+}
+
+bool Text::init()
+{
+  bool success = true;
+  mProgramID = glCreateProgram();
+  mVertexShader.init(GLShader::VERTEX, mProgramID);
+  success = mVertexShader.compile();
+  mFragmentShader.init(GLShader::FRAGMENT, mProgramID);
+  success = mFragmentShader.compile();
+  success = GLShader::linkProgram(mProgramID);
+
+  GLfloat vertexData[] =
+  {
+    -0.5f, -0.5f,
+    0.5f, -0.5f,
+    0.5f, 0.5f,
+    -0.5f, 0.5f
+  };
+
+  GLuint indexData[] = { 0, 1, 2, 3 };
+
+  glGenBuffers(1, &mVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+  glBufferData(GL_ARRAY_BUFFER, 2 * 4 * sizeof(GLfloat), vertexData, GL_STATIC_DRAW);
+
+  glGenBuffers(1, &mIBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indexData, GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ARRAY_BUFFER, NULL); glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
+
+  GLenum error = glGetError();
+  if (error != GL_NO_ERROR) {
+    std::cout << "Error initializing App!" << gluErrorString(error) << std::endl;
+    success = false;
+  }
+  return success;
 }
 
 bool Text::loadFont(std::string path, uint size)
@@ -29,7 +67,7 @@ bool Text::loadText(std::string text, SDL_Color color, Quality q)
       mTextureSurface = TTF_RenderText_Solid( mFont, text.c_str(), color);
     break;
     case MED: {
-      SDL_Color bg = {255, 255, 255, 0};
+      SDL_Color bg = {1, 1, 1, 1};
       mTextureSurface = TTF_RenderText_Shaded( mFont, text.c_str(), color, bg );
     }
     break;
@@ -44,17 +82,23 @@ bool Text::loadText(std::string text, SDL_Color color, Quality q)
   else {
     mWidth  = mTextureSurface->w;
     mHeight = mTextureSurface->h;
+    
     glGenTextures( 1, &mTexture );
-    glBindTexture( GL_TEXTURE_2D, mTexture );
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mTextureSurface->pixels );
-    glBindTexture( GL_TEXTURE_2D, 0 );
+    glBindTexture(GL_TEXTURE_2D, mTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, mTextureSurface->pixels);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glBindTexture(GL_TEXTURE_2D, NULL);
+
     //Check for error
     GLenum error = glGetError();
     if( error != GL_NO_ERROR ) {
         std::cout << "Error loading texture" << gluErrorString( error ) << std::endl;
         success = false;
     }
-
+    success = init();
   }
 
   return success;
@@ -62,15 +106,24 @@ bool Text::loadText(std::string text, SDL_Color color, Quality q)
 
 void Text::free()
 {
-  //SDL_DestroyTexture( mTexture );
   if( mTexture != 0 ) {
     glDeleteTextures( 1, &mTexture );
     mTexture = 0;
   }
-  SDL_FreeSurface( mTextureSurface );
-  mTextureSurface = nullptr;
-  TTF_CloseFont( mFont );
-  mFont = nullptr;
+  if (mVBO != 0) {
+    glDeleteBuffers(1, &mVBO);
+  }
+  if (mIBO != 0) {
+    glDeleteBuffers(1, &mIBO);
+  }
+  if (mTextureSurface != nullptr) {
+    SDL_FreeSurface(mTextureSurface);
+    mTextureSurface = nullptr;
+  }
+  if (mFont != nullptr) {
+    TTF_CloseFont(mFont);
+    mFont = nullptr;
+  }
 }
 
 void Text::setPosition(vec3 const & position)
@@ -80,12 +133,15 @@ void Text::setPosition(vec3 const & position)
 
 void Text::draw()
 {
-  SDL_Rect rectPos = { static_cast<int>(mPosition.x), static_cast<int>(mPosition.y), static_cast<int>(mWidth), static_cast<int>(mHeight) };
-  glBindTexture( GL_TEXTURE_2D, mTexture );
-  glBegin( GL_QUADS );
-    glTexCoord2f( 0.f, 0.f ); glVertex2f(           0.f,            0.f );
-    glTexCoord2f( 1.f, 0.f ); glVertex2f( mWidth,            0.f );
-    glTexCoord2f( 1.f, 1.f ); glVertex2f( mWidth, mHeight );
-    glTexCoord2f( 0.f, 1.f ); glVertex2f(           0.f, mHeight );
-  glEnd();
+  glUseProgram(mProgramID);
+  glBindTexture(GL_TEXTURE_2D, mTexture);
+  GLuint attributeLocation = mVertexShader.setAttribute("LVertexPos2D");
+  glEnableVertexAttribArray(attributeLocation);
+  glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+  glVertexAttribPointer(attributeLocation, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), NULL);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+  glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
+  mVertexShader.unsetAttribute(attributeLocation);
+  glBindTexture(GL_TEXTURE_2D, NULL);
+  glUseProgram(NULL);
 }
