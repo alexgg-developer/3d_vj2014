@@ -10,7 +10,7 @@ bool Renderer::initApp()
 
     /*texUniform = glGetUniformLocation(mProgramID, "teximg");
     std::cerr << "uniform tex: " << texUniform << std::endl;*/
-    Texture tex;
+    /*Texture tex;
     if (!tex.load("C:\\Users\\w7home\\VJ\\3d_vj2014\\resources\\img\\foo.png")) {
         std::cerr << "ERROR! shiet tex" << std::endl;
         success = false;
@@ -33,18 +33,28 @@ bool Renderer::initApp()
       else {
         mText.push_back(text);
       }
-    }
+    }*/
+    Terrain terr;
+    terr.init();
+    mTerrain.push_back(terr);
+
+
     return success;
 }
 
 bool Renderer::initGL()
 {
   bool success = true;
-  glEnable(GL_TEXTURE_2D); 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glDisable(GL_DEPTH_TEST);
+  //glEnable(GL_TEXTURE_2D); 
+  //glEnable(GL_BLEND);
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //glDisable(GL_DEPTH_TEST);
   glShadeModel( GL_SMOOTH );
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LEQUAL);
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+  glClearColor(1.f, 1.f, 1.f, 1.f);
+  glClearDepth(1.0f);
 
   GLenum error = glGetError();
   if( error != GL_NO_ERROR ) {
@@ -89,12 +99,8 @@ void Renderer::render()
 {
   //glUseProgram(NULL);   //Se podría crear un group de shaders y meter esto y enlazar el program a un vertex/fragment/geometry
   //mTexture[0].draw();
-
-  glClearColor(1.f, 1.f, 1.f, 1.f);
-  glClear(GL_COLOR_BUFFER_BIT);  
-  mText[0].draw();
-  //mTexture[0].draw();
-  //glUseProgram(NULL);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
+  mTerrain[0].render();
 }
 
 void Renderer::free()
@@ -102,9 +108,11 @@ void Renderer::free()
   for(uint i = 0; i < mTexture.size(); ++i) {
     mTexture[i].free();
   }
-
   for (uint i = 0; i < mText.size(); ++i) {
     mText[i].free();
+  }
+  for (uint i = 0; i < mTerrain.size(); ++i) {
+    mTerrain[i].free();
   }
 }
 

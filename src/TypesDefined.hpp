@@ -6,8 +6,16 @@
 
 typedef unsigned int uint;
 enum Quality { LOW, MED, HIGH };
+
 struct LVertexPos2D
 {
     float x;
     float y;
+};
+
+struct LVertexPos3D
+{
+  float x;
+  float y;
+  float z;
 };

@@ -5,6 +5,7 @@
 #include "cGLShader.hpp"
 #include "cTexture.hpp"
 #include "cText.hpp"
+#include "cTerrain.hpp"
 
 class Renderer
 {
@@ -23,7 +24,7 @@ private:
   //std::vector<GLuint> mIBO;
   std::vector<Texture> mTexture;
   std::vector<Text> mText;
-
+  std::vector<Terrain> mTerrain;
   GLuint texUniform;
 
   bool link();
