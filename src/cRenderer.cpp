@@ -1,5 +1,6 @@
 #include "cRenderer.hpp"
 
+
 Renderer::Renderer(): mProgramID(0)
 {
 }
@@ -37,12 +38,17 @@ bool Renderer::initApp()
     Terrain terr;
     terr.init();
     mTerrain.push_back(terr);
+    glm::vec3 position, lookAt, up;
+    position = glm::vec3(4, 3, 3);
+    lookAt = glm::vec3(0, 0, 0);
+    up = glm::vec3(0, 1, 0);
+    mCamera.init(position, lookAt, up);
 
 
     return success;
 }
 
-bool Renderer::initGL()
+bool Renderer::initGL(const uint mWidth, const uint mHeight)
 {
   bool success = true;
   //glEnable(GL_TEXTURE_2D); 
@@ -51,10 +57,12 @@ bool Renderer::initGL()
   //glDisable(GL_DEPTH_TEST);
   glShadeModel( GL_SMOOTH );
   glEnable(GL_DEPTH_TEST);
-  glDepthFunc(GL_LEQUAL);
+  glDepthFunc(GL_LESS);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
   glClearColor(1.f, 1.f, 1.f, 1.f);
   glClearDepth(1.0f);
+
+  mProjection = glm::perspective(45.0f, float(mWidth) / float(mHeight), 0.1f, 100.0f);
 
   GLenum error = glGetError();
   if( error != GL_NO_ERROR ) {
@@ -63,6 +71,12 @@ bool Renderer::initGL()
   }
 
   return success;
+}
+
+
+void Renderer::updateProjection(const uint mWidth, const uint mHeight)
+{
+  mProjection = glm::perspective(45.0f, mWidth / float(mHeight), 0.1f, 100.0f);
 }
 
 bool Renderer::link()
@@ -100,6 +114,10 @@ void Renderer::render()
   //glUseProgram(NULL);   //Se podría crear un group de shaders y meter esto y enlazar el program a un vertex/fragment/geometry
   //mTexture[0].draw();
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
+  glm::mat4 viewMatrix;
+  mCamera.getViewMatrix(viewMatrix);
+  mTerrain[0].setMatrix(mProjection, viewMatrix);
+  // mTerrain[0].setMatrix(glm::mat4(1.0f), glm::mat4(1.0f));
   mTerrain[0].render();
 }
 

@@ -25,4 +25,5 @@ private:
   int initGLEW();
   int initGL();
   int quit();
+  int prueba;
 };

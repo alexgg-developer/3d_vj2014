@@ -9,6 +9,7 @@
 #include "cMusic.hpp"
 #include "cSound.hpp"
 #include <sstream>
+#include <glm\glm.hpp>
 
 Game::Game()
 {}
@@ -64,7 +65,7 @@ int Game::initGLEW()
 int Game::initGL()
 {
   int error = 0;
-  if(!mRenderer.initGL() || !mRenderer.initApp()) {
+  if (!mRenderer.initGL(mWindow.mWidth, mWindow.mHeight) || !mRenderer.initApp()) {
     error = 20;
   }
   return error;
@@ -85,7 +86,6 @@ int Game::quit()
 int Game::main()
 {
   int error = init();
-
   if(!error) {
     uint frame = 0;
     //mWindow.switchFullScreen();
@@ -108,6 +108,7 @@ int Game::main()
         }
       }
       if(!mWindow.mMinimized) {
+        
         mRenderer.render();
         SDL_GL_SwapWindow( mWindow.mWindow );
       }
