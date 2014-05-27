@@ -10,6 +10,7 @@
 #include "cText.hpp"
 #include "cTerrain.hpp"
 #include "cCamera.hpp"
+#include "cInput.hpp"
 #include <iostream>
 
 class Renderer
@@ -22,6 +23,7 @@ public:
   void free();
   static bool link(GLuint program);
   void updateProjection(const uint mWidth, const uint mHeight);
+  void moveCamera(Input const &i);
 private:
   GLuint mProgramID;
   //std::vector<GLShader> mVertexShader;

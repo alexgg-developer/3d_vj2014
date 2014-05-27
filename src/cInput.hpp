@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "TypesDefined.hpp"
 #include "vec3.hpp"
+#include <glm\glm.hpp>
 
 class Input
 {
@@ -15,11 +16,12 @@ public:
   bool check(unsigned int key);
   bool checkPressed(unsigned int key);
   bool checkReleased(unsigned int key);
-  bool checkMouse(uint button);
+  bool checkMouse(uint button) const;
   bool checkMousePressed(uint button);
   bool checkMouseReleased(uint button);
 
   vec3 mPositionMousePressed, mPositionMouseRealased;
+  glm::vec2 mMouseMovement;
 
 private:
   //KEY_OFF: The key hasn't been pressed

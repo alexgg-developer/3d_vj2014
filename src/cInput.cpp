@@ -160,7 +160,7 @@ bool Input::checkReleased(unsigned int key)
   return keys[key] == KEY_RELEASED;
 }
 
-bool Input::checkMouse(uint button)
+bool Input::checkMouse(uint button) const
 {
   return mouse[button] == KEY_ON || mouse[button] == KEY_PRESSED;
 }
@@ -308,6 +308,23 @@ void Input::readWithScanCode(SDL_Event const & event)
           std::cout << "Event: " << static_cast<int>(event.button.button) << std::endl;
         break;
       }
+
+    case SDL_MOUSEMOTION: {
+      switch (event.button.button) {
+        case SDL_BUTTON_LEFT: {
+          if (checkMouse(BLEFT)) {
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+            std::cout << "X: " << x << " Y: " << y << std::endl;
+            //SDL_GetRelativeMouseState(&x, &y);
+            //std::cout << "XREL: " << event.motion.xrel << " YREL: " << event.motion.yrel << std::endl;
+            //std::cout << "XREL2: " << x << " YREL2: " << y << std::endl;
+            mMouseMovement = glm::vec2(event.motion.xrel, event.motion.yrel);
+          }
+        }
+        break;
+      }
+    }
     break;
     case SDL_QUIT:
       keys[KESC] = KEY_ON;
@@ -315,4 +332,5 @@ void Input::readWithScanCode(SDL_Event const & event)
   }
 
 }
+
 

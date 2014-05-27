@@ -108,7 +108,7 @@ int Game::main()
         }
       }
       if(!mWindow.mMinimized) {
-        
+        mRenderer.moveCamera(mInput);
         mRenderer.render();
         SDL_GL_SwapWindow( mWindow.mWindow );
       }

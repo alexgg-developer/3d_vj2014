@@ -2,6 +2,9 @@
 #include "TypesDefined.hpp"
 #include "cGLShader.hpp"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp> 
+#include <glm/gtx/transform.hpp>
+#include <vector>
 
 class Terrain
 {
@@ -14,6 +17,7 @@ public:
 private:
   GLuint mVBO;
   GLuint mIBO;
+  GLuint mNBO;
   uint mWidth, mHeight;
   GLuint mProgramID;
   GLShader mVertexShader, mFragmentShader;

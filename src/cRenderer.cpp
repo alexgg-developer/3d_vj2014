@@ -36,14 +36,15 @@ bool Renderer::initApp()
       }
     }*/
     Terrain terr;
-    terr.init();
-    mTerrain.push_back(terr);
-    glm::vec3 position, lookAt, up;
-    position = glm::vec3(4, 3, 3);
-    lookAt = glm::vec3(0, 0, 0);
-    up = glm::vec3(0, 1, 0);
-    mCamera.init(position, lookAt, up);
-
+    success = terr.init();
+    if (success) { 
+      mTerrain.push_back(terr);
+      glm::vec3 position, lookAt, up;
+      position = glm::vec3(4, 3, 3);
+      lookAt = glm::vec3(0, 0, 0);
+      up = glm::vec3(0, 1, 0);
+      mCamera.init(position, lookAt, up);
+    }
 
     return success;
 }
@@ -71,6 +72,13 @@ bool Renderer::initGL(const uint mWidth, const uint mHeight)
   }
 
   return success;
+}
+
+void Renderer::moveCamera(Input const & i)
+{  
+  if (i.checkMouse(Input::BLEFT)) {
+    //std::cout << i.mPositionMousePressed << std::endl;
+  }
 }
 
 

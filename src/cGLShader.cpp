@@ -10,7 +10,7 @@ void GLShader::init(KindOfShader kind, uint programID)
       mID = glCreateShader(GL_VERTEX_SHADER); 
       //mShaderSource = "#version 130\nin vec2 LVertexPos2D; out vec2 texcoords; void main() { texcoords = LVertexPos2D.xy + 0.5; texcoords.y = 1.0 - texcoords.y; gl_Position = vec4( LVertexPos2D.x, LVertexPos2D.y, 0, 1 ); }";
       //mShaderSource = "#version 130\nin vec3 LVertexPos3D; uniform mat4 MVP; void main() { gl_Position = MVP * vec4( LVertexPos3D.x, LVertexPos3D.y, LVertexPos3D.z, 1 );}";
-      //mShaderSource = "#version 130\nin vec3 LVertexPos3D; out vec3 Normal; uniform mat4 MVP; void main() { Normal = gl_NormalMatrix * vec3(1,1,1); gl_Position = MVP * vec4( LVertexPos3D.x, LVertexPos3D.y, LVertexPos3D.z, 1 );}";
+      mShaderSource = "#version 130\nin vec3 LVertexPos3D; in vec3 vNormal; out vec4 fNormal; uniform mat4 MVP; uniform mat4 NormalMatrix; void main() { fNormal = NormalMatrix * vec4(vNormal, 0); gl_Position = MVP * vec4( LVertexPos3D.x, LVertexPos3D.y, LVertexPos3D.z, 1 ); }";
       const char* source = mShaderSource.c_str();
       glShaderSource( mID, 1, &source, NULL );
     }
@@ -19,7 +19,7 @@ void GLShader::init(KindOfShader kind, uint programID)
       mID = glCreateShader( GL_FRAGMENT_SHADER );
       //mShaderSource = "#version 130\nin vec2 texcoords; uniform sampler2D teximg; out vec4 LFragment; void main() { LFragment = vec4(texture(teximg, texcoords.xy).rgba); }";
       //mShaderSource = "#version 130\n out vec4 LFragment; void main() { LFragment = vec4(1, 0, 0, 1 ); }";
-      //mShaderSource = "#version 130\n out vec4 LFragment; in vec3 Normal; void main() { vec3 n = normalize(Normal);	LFragment = vec4(1, 0, 0, 1 ) * n.z; }";
+      mShaderSource = "#version 130\nin vec4 fNormal; out vec4 LFragment; void main() { vec4 n = normalize(fNormal);	LFragment = fNormal; }";
       const char* source = mShaderSource.c_str();
       glShaderSource( mID, 1, &source, NULL );
     }
