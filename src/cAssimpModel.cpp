@@ -35,8 +35,7 @@ glm::vec3 *cAssimpModel::GetBoundingBox()
 	return bbox;
 }
 
-void cAssimpModel::Render()
-{
+void cAssimpModel::Render() const {
 	glPushMatrix();
 	glScalef(1/height, 1/height, 1/height);
 	glTranslatef(-center.x, -center.y, -center.z);

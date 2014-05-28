@@ -1,8 +1,7 @@
 #pragma once
 #include "SDL.h"
 
-class Timer
-{
+class Timer {
 public:
   Timer();
   void start();
@@ -13,6 +12,8 @@ public:
   void resume();
   bool isStarted() const;
   bool isPaused() const;
+
+  float getLastTimeMS() const { return mLastTime; }
 
 private:
   Uint32 mStartTime, mPausedTime, mLastTime;
