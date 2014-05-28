@@ -1,0 +1,16 @@
+<!-- These are all the enemies available to the game. We can't define enemies at any other place than here.-->
+<enemies_list>
+  <!-- Enemy description-->
+  <enemy species="marciano"
+	 tiles_per_minute="30">
+    <weapon_ref name="simple_gun"/>
+  </enemy>
+  <enemy species="rambo"
+	 tiles_per_minute="20">
+    <weapon_ref name="shotgun"/>
+  </enemy>
+  <enemy species="runner"
+	 tiles_per_minute="20">
+    <weapon_ref name="shotgun"/>
+  </enemy>
+</enemies_list>

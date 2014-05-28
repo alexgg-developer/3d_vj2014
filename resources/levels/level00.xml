@@ -1,0 +1,65 @@
+<!-- Every xml document contains a single level formed by: map, -->
+<level name="First contact">
+  <!-- Tile types are: (B)uildable, (P)assable and (U)seless-->
+  <map
+      map_sizeX="10"
+      map_sizeY="10"
+      map_tile_types=
+      "
+       UUUUUUUUUU
+       UUUUBBUPUU
+       UUUBPPPPPB
+       UUBPPBBBPB
+       UUBPBBBBPB
+       UUBPPPPPPB
+       UUUUBPBBBU
+       UUUUBPBUUU
+       UUUUBPBUUU
+       UUUUBPBUUU
+       ">
+    <path name="LeftPath">
+      <start_point x="9" y="5"/>
+      <order code="up"/>
+      <order code="left"/>
+      <order code="up"/>
+      <order code="right"/>
+      <order code="up"/>
+      <order code="right" quantity="3"/> <!-- Qhen quantity is not specified it continues indefinitely-->
+      <order code="up" quantity="1"/>
+      <order code="attack-base"/> <!-- Specified as order for flexibility: they may attack us through magic portals, isn't it? :-P -->
+    </path>
+    <path name="RightPath">
+      <start_point x="9" y="5"/>
+      <order code="up"/>
+      <order code="right"/>
+      <order code="up"/>
+      <order code="left" quantity="1"/>
+      <order code="up"/>
+    </path>
+  </map>
+
+  <!-- I can't find a better word. Most of the time it defines a bunch of enemies running to your base.-->
+  <!-- First example is a SIMPLE avalancha: 20 marciano, 1 every 3 seconds.-->
+  <avalancha order="0">
+    <enemy_ref species="marciano"/>
+    <frequency per_minute="20"/>
+    <temporal_length seconds="60"/>
+  </avalancha>
+  <!-- Empty avalancha for letting the user build and upgrade shit and stuff.-->
+  <avalancha order="1">
+    <temporal_length seconds="30"/>
+  </avalancha>
+  <!-- Next example is a COMPOUND avalancha. We want 20 marcianos and 20 rambo interleaving.-->
+  <avalancha order="2"><!-- This "container" avalancha does not need temporal_length: it will be calculated on the fly.-->
+    <avalancha start_time_ms="0">
+      <enemy_ref species="marciano"/>
+      <frequency per_minute="20"/>
+      <temporal_length seconds="60"/>
+    </avalancha>
+    <avalancha start_time_ms="1500">
+      <enemy_ref species="rambo"/>
+      <frequency per_minute="20"/>
+      <temporal_length seconds="60"/>
+    </avalancha>
+  </avalancha>
+</level>
