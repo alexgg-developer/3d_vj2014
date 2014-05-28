@@ -1,0 +1,22 @@
+<!-- These are all the weapons available to the game. We can't define weapons at any other place than here.-->
+<weapon_list>
+  <!-- Weapon description. Weapons can be used by enemies and turrets.-->
+  <weapon name="simple_gun"
+	  fire_rate_per_minute="60"
+	  damage_per_bullet="10"
+	  range_tiles="2"/>
+  <weapon name="metralleta"
+	  fire_rate_per_minute="600"
+	  damage_per_bullet="2"
+	  range_tiles="1"/>
+  <weapon name="shotgun"
+	  fire_rate_per_minute="6"
+	  damage_per_bullet="170"
+	  range_tiles="1"/>
+  <weapon name="ice_gun"
+	  fire_rate_per_minute="30"
+	  damage_per_bullet="10"
+	  range_tiles="1"
+	  special_effect="ice"
+	  special_effect_duration_miliseconds="500"/>
+</weapon_list>

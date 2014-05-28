@@ -25,13 +25,18 @@ int Window::init()
   return error;
 }
 
-bool Window::createGLContext()
-{
+bool Window::createGLContext() {
   //Use OpenGL 3.1 core
-  SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
-  SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+  if(SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 )!=0) {
+    std::cout << "Can't set GL version 3" << std::endl;
+    return false; }
+  if(SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 )!=0) {
+    std::cout << "Can't set GL minor version 1" << std::endl;
+    return false; }
   //SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
-  SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY );
+  /*if(SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY )!=0) {
+    std::cout << "Can't set SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_COMPATIBILITY" << std::endl;
+    return false; }*/
   mContext = SDL_GL_CreateContext( mWindow );
   if(mContext == nullptr) {
     std::cout << "OpenGL context could not be created! SDL Error: " << SDL_GetError() << std::endl;

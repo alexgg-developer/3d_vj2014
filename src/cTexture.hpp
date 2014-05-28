@@ -7,8 +7,7 @@
 #include "cGLShader.hpp"
 
 
-class Texture
-{
+class Texture {
 public:
   Texture();
   ~Texture();

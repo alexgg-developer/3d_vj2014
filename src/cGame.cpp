@@ -10,6 +10,7 @@
 #include "cSound.hpp"
 #include <sstream>
 #include <glm\glm.hpp>
+#include "cAssimpModel.h"
 
 Game::Game()
 {}
@@ -83,9 +84,10 @@ int Game::quit()
   return 0;
 }
 
-int Game::main()
-{
+int Game::main() {
   int error = init();
+	cAssimpModel model;
+	model.LoadFromFile("./objs/turret_2_separated.obj");
   if(!error) {
     uint frame = 0;
     //mWindow.switchFullScreen();
@@ -110,13 +112,17 @@ int Game::main()
       if(!mWindow.mMinimized) {
         mRenderer.moveCamera(mInput);
         mRenderer.render();
+        model.Render();
         SDL_GL_SwapWindow( mWindow.mWindow );
       }
     }
 
     error = quit();
   }
-  else quit();
+  else {
+    std::cout << "Error initiating things" << std::endl;
+    quit();
+  }
 
   return error;
 }

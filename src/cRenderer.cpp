@@ -52,9 +52,9 @@ bool Renderer::initApp()
 bool Renderer::initGL(const uint mWidth, const uint mHeight)
 {
   bool success = true;
-  //glEnable(GL_TEXTURE_2D); 
-  //glEnable(GL_BLEND);
-  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_TEXTURE_2D); 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   //glDisable(GL_DEPTH_TEST);
   glShadeModel( GL_SMOOTH );
   glEnable(GL_DEPTH_TEST);
