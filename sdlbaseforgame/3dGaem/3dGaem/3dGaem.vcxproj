@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AE4D6BE8-2E84-4E66-B5D1-33F473E85418}</ProjectGuid>
+    <RootNamespace>My3dGaem</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\pugixml-1.4\src;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\assimp--3.0.1270-source-only\include;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\glm;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\windows\glew-1.10.0\include;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\windows\SDL2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\windows;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\assimp--3.0.1270-source-only\lib\assimp_Debug_Win32;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\windows\glew-1.10.0\lib\Release\Win32;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\windows\SDL2\libs\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\pugixml-1.4\src;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\assimp--3.0.1270-source-only\include;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\glm;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\windows\glew-1.10.0\include;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\windows\SDL2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\windows;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\assimp--3.0.1270-sdk\lib\assimp_release-dll_win32;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\windows\glew-1.10.0\lib\Release\Win32;C:\Users\GdelP\Desktop\GIT\3d_vj2014\libs\windows\SDL2\libs\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>false</SDLCheck>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <AdditionalOptions>  -D_ITERATOR_DEBUG_LEVEL=0 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glew32.lib;corona.lib;SDL2_mixer.lib;SDL2_ttf.lib;SDL2_image.lib;SDL2.lib;SDL2test.lib;opengl32.lib;glu32.lib;SDL2main.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>  -D_ITERATOR_DEBUG_LEVEL=0 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib  -D_ITERATOR_DEBUG_LEVEL=0 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>glew32.lib;corona.lib;SDL2_mixer.lib;SDL2_ttf.lib;SDL2_image.lib;SDL2.lib;SDL2test.lib;opengl32.lib;glu32.lib;SDL2main.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\libs\pugixml-1.4\src\pugiconfig.hpp" />
+    <ClInclude Include="..\..\..\libs\pugixml-1.4\src\pugixml.hpp" />
+    <ClInclude Include="..\..\..\src\cAnimation2D.hpp" />
+    <ClInclude Include="..\..\..\src\cAssimpModel.h" />
+    <ClInclude Include="..\..\..\src\cCamera.hpp" />
+    <ClInclude Include="..\..\..\src\cGame.hpp" />
+    <ClInclude Include="..\..\..\src\cGLShader.hpp" />
+    <ClInclude Include="..\..\..\src\cInput.hpp" />
+    <ClInclude Include="..\..\..\src\cMesh.hpp" />
+    <ClInclude Include="..\..\..\src\cMusic.hpp" />
+    <ClInclude Include="..\..\..\src\cRenderer.hpp" />
+    <ClInclude Include="..\..\..\src\cSound.hpp" />
+    <ClInclude Include="..\..\..\src\cTerrain.hpp" />
+    <ClInclude Include="..\..\..\src\cText.hpp" />
+    <ClInclude Include="..\..\..\src\cTexture.hpp" />
+    <ClInclude Include="..\..\..\src\cTimer.hpp" />
+    <ClInclude Include="..\..\..\src\cWindow.hpp" />
+    <ClInclude Include="..\..\..\src\TypesDefined.hpp" />
+    <ClInclude Include="..\..\..\src\vec3.hpp" />
+    <ClInclude Include="Level.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\libs\pugixml-1.4\src\pugixml.cpp" />
+    <ClCompile Include="..\..\..\src\cAnimation2D.cpp" />
+    <ClCompile Include="..\..\..\src\cAssimpModel.cpp" />
+    <ClCompile Include="..\..\..\src\cCamera.cpp" />
+    <ClCompile Include="..\..\..\src\cGame.cpp" />
+    <ClCompile Include="..\..\..\src\cGLShader.cpp" />
+    <ClCompile Include="..\..\..\src\cInput.cpp" />
+    <ClCompile Include="..\..\..\src\cMusic.cpp" />
+    <ClCompile Include="..\..\..\src\cRenderer.cpp" />
+    <ClCompile Include="..\..\..\src\cSound.cpp" />
+    <ClCompile Include="..\..\..\src\cTerrain.cpp" />
+    <ClCompile Include="..\..\..\src\cText.cpp" />
+    <ClCompile Include="..\..\..\src\cTexture.cpp" />
+    <ClCompile Include="..\..\..\src\cTimer.cpp" />
+    <ClCompile Include="..\..\..\src\cWindow.cpp" />
+    <ClCompile Include="..\..\..\src\main.cpp" />
+    <ClCompile Include="Level.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
