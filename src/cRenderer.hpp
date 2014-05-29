@@ -23,7 +23,7 @@ public:
   void free();
   static bool link(GLuint program);
   void updateProjection(const uint mWidth, const uint mHeight);
-  void moveCamera(Input const &i);
+  Camera mCamera;
 private:
   GLuint mProgramID;
   //std::vector<GLShader> mVertexShader;
@@ -33,7 +33,6 @@ private:
   std::vector<Texture> mTexture;
   std::vector<Text> mText;
   std::vector<Terrain> mTerrain;
-  Camera mCamera;
   GLuint texUniform;
   glm::mat4 mProjection;
   bool link();

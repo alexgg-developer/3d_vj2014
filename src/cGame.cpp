@@ -119,9 +119,10 @@ int Game::main() {
         }
       }
       if(!mWindow.mMinimized) {
+        float const dt = mTimer.getDeltaTime();
         float const te_ms = mTimer.getLastTimeMS();
-        float const dt_ms = mTimer.getDeltaTime()*1000.0f;
-        mRenderer.moveCamera(mInput);
+        float const dt_ms = dt *1000.0f;
+        logic(dt);
         mRenderer.render();
         model.Render();
         aLevelLogic.advanceTime(te_ms, dt_ms);
@@ -138,5 +139,21 @@ int Game::main() {
   }
 
   return error;
+}
+
+void Game::logic(float const dt)
+{
+  if (mInput.check(Input::KLEFT)) {
+    mRenderer.mCamera.pan(glm::vec3(-1, 0, 0), dt);
+  }
+  if (mInput.check(Input::KRIGHT)) {
+    mRenderer.mCamera.pan(glm::vec3(1, 0, 0), dt);
+  }
+  if (mInput.check(Input::KDOWN)) {
+    mRenderer.mCamera.pan(glm::vec3(0, 0, 1), dt);
+  }
+  if (mInput.check(Input::KUP)) {
+    mRenderer.mCamera.pan(glm::vec3(0, 0, -1), dt);
+  }
 }
 

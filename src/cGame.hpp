@@ -25,5 +25,6 @@ private:
   int initGLEW();
   int initGL();
   int quit();
-  int prueba;
+  void logic(float const dt);
+
 };

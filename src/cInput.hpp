@@ -13,7 +13,7 @@ public:
   Input();
   void read(SDL_Event const & event);
   void readWithScanCode(SDL_Event const & event);
-  bool check(unsigned int key);
+  bool check(unsigned int const key) const;
   bool checkPressed(unsigned int key);
   bool checkReleased(unsigned int key);
   bool checkMouse(uint button) const;

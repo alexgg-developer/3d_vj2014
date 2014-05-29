@@ -145,7 +145,7 @@ void Input::read(SDL_Event const & event)
 }
 
 
-bool Input::check(unsigned int key)
+bool Input::check(unsigned int const key) const
 {
   return keys[key] == KEY_ON || keys[key] == KEY_PRESSED;
 }

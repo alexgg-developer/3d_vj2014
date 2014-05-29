@@ -74,14 +74,6 @@ bool Renderer::initGL(const uint mWidth, const uint mHeight)
   return success;
 }
 
-void Renderer::moveCamera(Input const & i)
-{  
-  if (i.checkMouse(Input::BLEFT)) {
-    //std::cout << i.mPositionMousePressed << std::endl;
-  }
-}
-
-
 void Renderer::updateProjection(const uint mWidth, const uint mHeight)
 {
   mProjection = glm::perspective(45.0f, mWidth / float(mHeight), 0.1f, 100.0f);

@@ -25,7 +25,6 @@ float Timer::getDeltaTime()
 {
   Uint32 deltaMilliseconds = SDL_GetTicks() - mLastTime;
   mLastTime = SDL_GetTicks();
-
   return static_cast<float>(deltaMilliseconds) / 1000.0f;
 }
 

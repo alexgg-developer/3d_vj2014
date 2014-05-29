@@ -13,7 +13,7 @@ public:
   bool isStarted() const;
   bool isPaused() const;
 
-  float getLastTimeMS() const { return mLastTime; }
+  float getLastTimeMS() const { return static_cast<float>(mLastTime); }
 
 private:
   Uint32 mStartTime, mPausedTime, mLastTime;
