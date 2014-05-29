@@ -2,15 +2,18 @@
 <enemies_list>
   <!-- Enemy description-->
   <enemy species="marciano"
-	 tiles_per_minute="30">
+	 tiles_per_minute="30"
+	 life="10">
     <weapon_ref name="simple_gun"/>
   </enemy>
   <enemy species="rambo"
-	 tiles_per_minute="20">
+	 tiles_per_minute="20"
+	 life="20">
     <weapon_ref name="shotgun"/>
   </enemy>
   <enemy species="runner"
-	 tiles_per_minute="20">
+	 tiles_per_minute="20"
+	 life="5">
     <weapon_ref name="shotgun"/>
   </enemy>
 </enemies_list>

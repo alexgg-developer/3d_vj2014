@@ -11,6 +11,7 @@
 #include <sstream>
 #include <glm\glm.hpp>
 #include "cAssimpModel.h"
+#include "Level.hpp"
 
 Game::Game()
 {}
@@ -88,11 +89,19 @@ int Game::main() {
   int error = init();
 	cAssimpModel model;
 	model.LoadFromFile("./objs/turret_2_separated.obj");
+  Level aLevel;
+  bool const ret = aLevel.Load("./levels/level00.xml");
+  assert(ret);
+
+  LevelLogic aLevelLogic(&aLevel);
+
   if(!error) {
     uint frame = 0;
     //mWindow.switchFullScreen();
 
     mTimer.start();
+    auto te_ms = mTimer.getTimeElapsed();
+    aLevelLogic.init(te_ms);
     while(!mInput.check(Input::KESC)) {
       SDL_Event event;
       while (SDL_PollEvent(&event)) {
@@ -110,9 +119,13 @@ int Game::main() {
         }
       }
       if(!mWindow.mMinimized) {
+        float const te_ms = mTimer.getLastTimeMS();
+        float const dt_ms = mTimer.getDeltaTime()*1000.0f;
         mRenderer.moveCamera(mInput);
         mRenderer.render();
         model.Render();
+        aLevelLogic.advanceTime(te_ms, dt_ms);
+        aLevelLogic.Render();
         SDL_GL_SwapWindow( mWindow.mWindow );
       }
     }

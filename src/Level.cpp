@@ -6,9 +6,101 @@ Level::Level() { }
 Level::~Level() { }
 
 bool Level::Load(std::string aFilename) {
+  //Open xml
   pugi::xml_document doc;
   if (!doc.load_file(aFilename.c_str())) {
     std::cout << "Could not open file " << aFilename << " on Level::Load" << std::endl;
     return false;
+  }
+  
+  //Load map
+  if(!mMap.Load(doc.child("level").child("map"))) {
+    std::cout << "Level loading error: could not load <map>, son of <level> on " << aFilename << std::endl;
+    assert(0);
+    return false;
+  }
+
+  //Load paths
+  for(pugi::xml_node const& pathNode : doc.child("level").child("paths").children("path")) {
+    Path p;
+    bool const ret_val = p.Load(pathNode);
+    if(!ret_val) {
+      std::cout << "Could not load a <path> node while loading a <level><paths>" << std::endl;
+      assert(0);
+      return false;
+    }
+    mAssociatedPaths.push_back(p);
+  }
+
+  //Load avalanchas
+  for(pugi::xml_node const& avalanchaNode : doc.child("level").child("avalanchas").children()) {
+    Avalancha *const p = BuildAvalancha(avalanchaNode);
+    if(p==nullptr) {
+      std::cout << "Could not load an <avalancha> node while loading a <level><avalanchas>" << std::endl;
+      assert(0);
+      return false;
+    }
+    mAvalanchas.push_back(p);
+  }
+  return true;
+}
+
+
+
+
+
+LevelLogic::LevelLogic(Level const*const aLevel) : mLevel(aLevel) {}
+LevelLogic::~LevelLogic() {}
+
+///Initializes at specified time point
+void LevelLogic::init(float const time_ms) {
+
+}
+///Advances time
+bool LevelLogic::advanceTime(float const init_time_ms, float const dt_ms) {
+  float const end_time_ms = init_time_ms + dt_ms;
+
+  /// Build turrets
+  for(std::vector<std::tuple<TurretLogic*, float >>::iterator it = mBuildingTurrets.begin(); it!=mBuildingTurrets.end();) {
+    std::tuple<TurretLogic*, float > &tupl = *it;
+    TurretLogic*const turret = std::get<0>(tupl);
+    float const init_build_time_ms = std::get<1>(tupl);
+    if(turret->getBuildingDuration() + init_build_time_ms <= end_time_ms) {
+      mAliveTurrets.push_back(turret);
+      it = mBuildingTurrets.erase(it);
+    } else ++it;
+  }
+
+  /// Turrets attacks enemies
+  for(EnemyLogic& enemy : mEnemies) {
+    for (TurretLogic* turret : mAliveTurrets) {
+      if(!enemy.hasDied() && turret->CanHit(enemy.getPosition(), end_time_ms)) {
+        turret->Attack(&enemy, end_time_ms);
+      }
+      //if(!enemy.hasDied() && ) //Enemies can't attack towers, although it would be easy and fun
+    }
+  }
+
+  /// Died enemies dissapear. They can be moved out to another collection and fade out or something like that.
+  //delete died enemies from vector, it's a quadratic search!
+  //they do not die so often and not so much at the same time
+  for(std::vector<EnemyLogic>::iterator it = mEnemies.begin(); it!=mEnemies.end();) {
+    if (it->hasDied())
+      it = mEnemies.erase(it);
+    else ++it;
+  }
+  return true;
+}
+
+void LevelLogic::Render() const {
+  for(TurretLogic* tu : mAliveTurrets) {
+    tu->Render();
+  }
+/*  for(auto& tu : mBuildingTurrets) {
+    //tu->Render();
+    //TODO: Draw with alfa
+  }*/
+  for(EnemyLogic const& el : mEnemies) {
+    el.Render();
   }
 }

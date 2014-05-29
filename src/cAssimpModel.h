@@ -38,7 +38,7 @@ public:
 
 	bool LoadFromFile(const std::string &filename);
 	glm::vec3 *GetBoundingBox();
-	void Render();
+	void Render() const;
 
 private:
 	void Clear();

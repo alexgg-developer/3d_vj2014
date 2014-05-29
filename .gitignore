@@ -44,3 +44,6 @@ Thumbs.db
 /sdlbaseforgame/3dGaem/Debug/3dGaem.ilk
 /sdlbaseforgame/3dGaem/Debug/3dGaem.pdb
 *.xml~
+/libs/assimp--3.0.1270-sdk_bak
+/libs/windows/SDL2/libs/x64_bak
+/p04 (objects)
