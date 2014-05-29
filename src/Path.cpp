@@ -48,3 +48,55 @@ bool Path::Order::Load(pugi::xml_node const& aOrderNode) {
   }
   return true;
 }
+
+#include "Enemy.hpp"
+#include "Map.hpp"
+PathLogic::PathLogic(Path const*const aPath, Defensor *const aDefensor, Map const*const aMap)
+  : mPath(aPath), mDefensor(aDefensor), mMap(aMap) {}
+PathLogic::~PathLogic() {}
+
+void PathLogic::assignEnemy(EnemyLogic* el) {
+  mControlledEnemies.push_back(EnemyMoving(el));
+}
+void PathLogic::advance_time(float const init_time_ms, float const dt_ms) {
+  for(EnemyMoving& em : mControlledEnemies) {
+    glm::vec2 newPosition = em.enemy->getPosition() + em.mVelocity*dt_ms;
+    //TODO: Orientation
+    //TODO: Check for collision
+    int nextX = static_cast<int>(newPosition.x + em.mVelocity.x*0.5f);
+    int nextY = static_cast<int>(newPosition.y + em.mVelocity.y*0.5f);
+    if(mMap->EnemyCanBeIn(nextX,nextY)) {
+      em.enemy->setPosition(newPosition);
+    } else {
+      //Next order
+      ApplyNextOrderTo(em);
+    }
+  }
+  //Delete finished enemies. TODO: Move them to a non-attacking exit path
+  for(std::vector<EnemyMoving>::iterator it = mControlledEnemies.begin(); it!=mControlledEnemies.end();) {
+    if(it->mPathFinished) it=mControlledEnemies.erase(it);
+    else ++it;
+  }
+}
+void PathLogic::ApplyNextOrderTo(EnemyMoving& em) {
+  if(em.mActualOrder==mPath->mOrders.size()-1) {
+    em.mPathFinished=true;//finished this path
+  } else {
+    em.mActualOrder++;
+    Path::Order const& ord = mPath->mOrders[em.mActualOrder];
+    if(ord.mOrderType==Path::Order::OrderType::DOWN) em.mVelocity=glm::vec2(0,-1);
+    else if(ord.mOrderType==Path::Order::OrderType::UP) em.mVelocity=glm::vec2(0,1);
+    else if(ord.mOrderType==Path::Order::OrderType::LEFT) em.mVelocity=glm::vec2(-1,0);
+    else if(ord.mOrderType==Path::Order::OrderType::RIGHT) em.mVelocity=glm::vec2(1,0);
+    else if(ord.mOrderType==Path::Order::OrderType::ATTACK_BASE) {
+      em.mVelocity = glm::vec2(0, 0); //Do not move
+      em.enemy->Attack(*mDefensor);  //Attacks prota
+    }
+    else { 
+      std::cout << "Order type not recognized " << ord.mOrderType << std::endl;
+      assert(0);
+    }
+  }
+}
+
+PathLogic::EnemyMoving::EnemyMoving(EnemyLogic* el) : enemy(el) {}

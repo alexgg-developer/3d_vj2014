@@ -1,5 +1,8 @@
 #include "Avalancha.hpp"
 #include <iostream>
+#include "Level.hpp"
+#include "Enemy.hpp"
+#include "Weapon.hpp"
 
 Avalancha::Avalancha() : mOrder(-1) {}
 Avalancha::~Avalancha() {}
@@ -43,6 +46,22 @@ Avalancha* BuildAvalancha(pugi::xml_node const& someAvalanchaNode) {
 SimpleAvalancha::SimpleAvalancha() : Avalancha() {}
 SimpleAvalancha::~SimpleAvalancha() {}
 
+std::map<std::string, unsigned int> SimpleAvalancha::HowMuchToSpawn(float const t_avalancha_started_ms, float const init_t_ms, float const dt_ms, LevelLogic *const aLevel) const {
+  float const ms_per_enemy = 1.0f / (mEnemiesPerMinute * (1.0f/60.0f*1000.0f));
+  float const t_avalancha_started_ms_real = t_avalancha_started_ms + mStartMiliSeconds;
+  float const end_t_ms = init_t_ms+dt_ms;
+  //Avalancha has not started
+  if(t_avalancha_started_ms_real > end_t_ms) return std::map<std::string, unsigned int>();
+  float const avalancha_end_ms_real = t_avalancha_started_ms_real + mTemporalLengthSeconds*1000.0f;
+  std::map<std::string, unsigned int> ret;
+  for(float enemySpawnTime = t_avalancha_started_ms_real; enemySpawnTime<avalancha_end_ms_real; enemySpawnTime+=ms_per_enemy) {
+    if(enemySpawnTime>=init_t_ms && enemySpawnTime<end_t_ms) {
+      ret[mEnemyUniqueID]++;//auto-initialized to 0
+    } else if(enemySpawnTime>=end_t_ms) return ret;//early return
+  }
+  return ret;
+}
+
 bool SimpleAvalancha::Load(pugi::xml_node const& aSimpleAvalanchaNode) {
   pugi::xml_attribute orderAttr = aSimpleAvalanchaNode.attribute("order");
   if(orderAttr) mOrder = orderAttr.as_uint();
@@ -84,4 +103,37 @@ bool CompoundAvalancha::Load(pugi::xml_node const& aCompoundAvalanchaNode) {
     mSons.push_back(a);
   }
   return true;
+}
+#include <algorithm>
+#include "Enemy.hpp"
+#include "Weapon.hpp"
+//std::vector<Weapon> const& availableWeapons, 
+void AvalanchaLogic::advance_time(float const init_t_ms, float const dt_ms, LevelLogic *const aLevel, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons) {
+  Avalancha const*const actualAvalancha = mAvalancha;
+  std::map<std::string, unsigned int> const& toSpawn = mAvalancha->HowMuchToSpawn(mInitTime, init_t_ms, dt_ms, aLevel);
+  for(auto const& p : toSpawn) {
+    //search enemy
+    std::string const enemyName = p.first;
+    auto itE = std::find_if(availableEnemies.begin(), availableEnemies.end(),
+      [&enemyName](Enemy const& en){ return en.getName() == enemyName; });
+    if(itE==availableEnemies.end()) {
+      std::cout << "Couldn't find enemy " << enemyName << std::endl;
+      assert(0);
+    } else {
+      //search weapon
+      std::string const weaponName = itE->getWeaponName();
+      auto itW = std::find_if(availableWeapons.begin(), availableWeapons.end(),
+        [&weaponName](Weapon const& en){ return en.getName() == weaponName; });
+      if(itW==availableWeapons.end()) {
+        std::cout << "Couldn't find weapon " << weaponName << std::endl;
+        assert(0);
+      } else {
+        Weapon const& w = *itW;
+        Enemy const& e = *itE;
+        WeaponLogic wl(&w);
+        EnemyLogic el(&e, std::move(wl));
+        aLevel->spawnsEnemy(el);
+      }
+    }
+  }
 }

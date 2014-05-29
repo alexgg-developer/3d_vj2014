@@ -3,7 +3,6 @@
 #include "Map.hpp"
 #include "Avalancha.hpp"
 
-struct LevelLogic;
 struct Level {
   Level();
   ~Level();
@@ -14,25 +13,29 @@ protected:
   Map mMap;
   std::vector<Path> mAssociatedPaths;
   std::vector<Avalancha*> mAvalanchas;
-  friend struct LevelPlayer;
+  friend struct LevelLogic;
 };
 
 #include "Turret.hpp"
 #include "Enemy.hpp"
 #include <tuple>
+#include "Avalancha.hpp"
 struct LevelLogic {
   /// @param aLevel not owning pointer
-  LevelLogic(Level const*const aLevel);
+  LevelLogic(Level const*const aLevel, Defensor *const aDefensor);
   ~LevelLogic();
 
   ///Initializes at specified time point
   void init(float const time_ms);
   ///Advances time from init_time_ms by dt_ms
-  bool advanceTime(float const init_time_ms, float const dt_ms);
+  bool advanceTime(float const init_time_ms, float const dt_ms, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons);
   void Render() const;
+
+  void spawnsEnemy(EnemyLogic const& el) { mEnemies.push_back(el); }
 
 protected:
   Level const*const mLevel;
+  Defensor *const mDefensor;
 
   ///Turrets: alive and being constructed
   std::vector<TurretLogic*> mAliveTurrets;
@@ -40,4 +43,7 @@ protected:
 
   ///Active enemies
   std::vector<EnemyLogic> mEnemies;
+  ///Path that the enemies should go on
+  std::vector<PathLogic> mPaths;
+  std::vector<AvalanchaLogic> mAvalanchas;
 };
