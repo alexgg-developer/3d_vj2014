@@ -5,6 +5,7 @@ Enemy::Enemy() {}
 Enemy::~Enemy() {}
 
 bool Enemy::Load(pugi::xml_node aEnemyNode) {
+  mSpecies = aEnemyNode.attribute("species").value();
   mLife = aEnemyNode.attribute("life").as_float();
   mWeaponUniqueID = aEnemyNode.child("weapon_ref").attribute("name").value();
   mTilesPerMinute = aEnemyNode.attribute("tiles_per_minute").as_float();
@@ -37,6 +38,9 @@ void EnemyLogic::init(float const time_ms) { mLastMovedMS = time_ms; }
 }*/
 void EnemyLogic::ReceiveDamage(float const damage) {
   mActualLife -= damage;
+}
+void EnemyLogic::Attack(Defensor& df) {
+  df.receiveDamage(mWeaponLogic.getDamage());
 }
 void EnemyLogic::Render() const {
 //TODO: Animation, rotation

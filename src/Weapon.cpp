@@ -6,6 +6,7 @@ Weapon::Weapon() {}
 Weapon::~Weapon() {}
 
 bool Weapon::Load(pugi::xml_node aWeaponNode) {
+  mName = aWeaponNode.attribute("name").value();
   mBulletsPerMinute = aWeaponNode.attribute("fire_rate_per_minute").as_float();
   mDamage = aWeaponNode.attribute("damage_per_bullet").as_float();
   mRadiusTiles = aWeaponNode.attribute("range_tiles").as_float();

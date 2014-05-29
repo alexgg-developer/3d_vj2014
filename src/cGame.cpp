@@ -12,6 +12,7 @@
 #include <glm\glm.hpp>
 #include "cAssimpModel.h"
 #include "Level.hpp"
+#include "Defensor.hpp"
 
 Game::Game()
 {}
@@ -87,13 +88,29 @@ int Game::quit()
 
 int Game::main() {
   int error = init();
+
+  //Load model
 	cAssimpModel model;
 	model.LoadFromFile("./objs/turret_2_separated.obj");
+
+  //Load weapons
+  std::vector<Weapon> mWeapons;
+  loadWeapons("./levels/weapons.xml", std::back_inserter(mWeapons));
+
+  //Load enemies
+  std::vector<Enemy> mEnemies;
+  loadEnemies("./levels/enemies.xml", std::back_inserter(mEnemies));
+  
+  //Load level
   Level aLevel;
   bool const ret = aLevel.Load("./levels/level00.xml");
   assert(ret);
 
-  LevelLogic aLevelLogic(&aLevel);
+  //Instantiate defensor (player, the one who builds and wins/loses)
+  Defensor df(100, 100);
+
+  //Instantiate empty full level
+  LevelLogic aLevelLogic(&aLevel, &df);
 
   if(!error) {
     uint frame = 0;
@@ -124,7 +141,7 @@ int Game::main() {
         mRenderer.moveCamera(mInput);
         mRenderer.render();
         model.Render();
-        aLevelLogic.advanceTime(te_ms, dt_ms);
+        aLevelLogic.advanceTime(te_ms, dt_ms, mEnemies, mWeapons);
         aLevelLogic.Render();
         SDL_GL_SwapWindow( mWindow.mWindow );
       }

@@ -28,7 +28,7 @@ void TurretLogic::Attack(EnemyLogic* const enemy, float const timeMS) {
 }
 bool TurretLogic::CanHit(glm::vec2 const& apos, float const timeMS) {
   if(mWeaponLogic->CanHit(timeMS)) {
-    int manhattanDistance = std::abs(apos.x-mPosition.x) + std::abs(apos.y-mPosition.y);
+    float const manhattanDistance = std::abs(apos.x-mPosition.x) + std::abs(apos.y-mPosition.y);
     return manhattanDistance<=mTurret->mWeapon->get_radius_tiles();
   }
   return false;

@@ -46,3 +46,6 @@ bool Map::Load(pugi::xml_node const& mapNode) {
 
   return true;
 }
+bool Map::EnemyCanBeIn(unsigned int const x, unsigned int const y) const {
+  return this->mTileTypeMatrix[x][y]=='P';
+}
