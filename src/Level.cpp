@@ -49,7 +49,8 @@ bool Level::Load(std::string aFilename) {
 
 
 
-LevelLogic::LevelLogic(Level const*const aLevel, Defensor *const aDefensor) : mLevel(aLevel), mDefensor(aDefensor){
+LevelLogic::LevelLogic(Level const*const aLevel, Defensor *const aDefensor)
+    : mLevel(aLevel), mDefensor(aDefensor), mMap(&aLevel->mMap) {
   mEnemies.reserve(1000);//TODO: If there are more than a thousand enemies it's location will be changed
 }
 LevelLogic::~LevelLogic() {}
@@ -72,6 +73,7 @@ void LevelLogic::init(float const time_ms) {
     al.init(time_ms);
     mAvalanchas.push_back(al);
   }
+  this->mMap.init_and_load();
 }
 ///Advances time
 bool LevelLogic::advanceTime(float const init_time_ms, float const dt_ms, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons) {
@@ -130,6 +132,8 @@ void LevelLogic::Render() const {
   for(EnemyLogic const& el : mEnemies) {
     el.Render();
   }
+
+  this->mMap.render();
 }
 
 void LevelLogic::spawnsEnemy(EnemyLogic const& el) {

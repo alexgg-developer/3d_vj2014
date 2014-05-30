@@ -39,6 +39,7 @@ public:
 	bool LoadFromFile(const std::string &filename);
 	glm::vec3 *GetBoundingBox();
 	void Render() const;
+  void RenderRaw() const;
 
 private:
 	void Clear();
@@ -47,4 +48,7 @@ private:
 	bool InitMaterials(const aiScene* pScene, const std::string& filename);
 	void ComputeBoundingBox();
 	void CompileDisplayList();
+  void RenderInternal() const;
 };
+#include <map>
+extern std::map<std::string, cAssimpModel> gLoadedModels;
