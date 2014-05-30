@@ -142,8 +142,8 @@ int Game::main() {
         logic(dt);
         mRenderer.render();
         model.Render();
-        aLevelLogic.advanceTime(te_ms, dt_ms, mEnemies, mWeapons);
-        aLevelLogic.Render();
+        //aLevelLogic.advanceTime(te_ms, dt_ms, mEnemies, mWeapons);
+        //aLevelLogic.Render();
         SDL_GL_SwapWindow( mWindow.mWindow );
       }
     }
