@@ -65,10 +65,18 @@ void PathLogic::advance_time(float const init_time_ms, float const dt_ms) {
     glm::vec2 const deltaPos = em.mVelocity*dt_ms/1000.0f;
     glm::vec2 const newPosition = em.enemy->getPosition() + deltaPos;
     //TODO: Orientation
-    //TODO: Check for collision
-    int nextX = static_cast<int>(newPosition.x + em.mVelocity.x*0.5f);
-    int nextY = static_cast<int>(newPosition.y + em.mVelocity.y*0.5f);
-    if(mMap->EnemyCanBeIn(nextX,nextY)) {
+    int const nextX = static_cast<int>(newPosition.x + em.mVelocity.x*0.5f);
+    int const nextY = static_cast<int>(newPosition.y + em.mVelocity.y*0.5f);
+    bool next_order = !mMap->EnemyCanBeIn(nextX,nextY);
+    if(mPath->mOrders[em.mActualOrder].mIndefinitely==false) {
+      //Check if enemy has advanced more than the specified quantity
+      float const maxQuantity = mPath->mOrders[em.mActualOrder].mQuantity;
+      auto const delta = em.mPositionWhenStartedOrder - em.enemy->getPosition();
+      float const actual_separation_squared = delta.x*delta.x + delta.y*delta.y;
+      if(actual_separation_squared >= maxQuantity*maxQuantity)
+        next_order = true;
+    }
+    if(!next_order) {
       //std::cout << "Changing position to " << newPosition.x << newPosition.y << std::endl;
       em.enemy->setPosition(newPosition);
     } else {
@@ -90,6 +98,7 @@ void PathLogic::ApplyNextOrderTo(EnemyMoving& em) {
     em.mPathFinished=true;//finished this path
   } else {
     em.mActualOrder++;
+    em.mPositionWhenStartedOrder = em.enemy->getPosition();
     Path::Order const& ord = mPath->mOrders[em.mActualOrder];
     if(ord.mOrderType==Path::Order::OrderType::DOWN) em.mVelocity=glm::vec2(0,-1);
     else if(ord.mOrderType==Path::Order::OrderType::UP) em.mVelocity=glm::vec2(0,1);

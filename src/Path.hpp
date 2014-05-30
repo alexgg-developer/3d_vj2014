@@ -50,6 +50,7 @@ protected:
     EnemyLogic* enemy=nullptr;
     int mActualOrder=-1;
     glm::vec2 mVelocity;
+    glm::vec2 mPositionWhenStartedOrder;
     bool mPathFinished=false;
     //TODO: Orientation
   };
