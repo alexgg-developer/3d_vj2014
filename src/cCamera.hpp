@@ -13,5 +13,6 @@ public:
 private:
   glm::vec3 mPosition, mLookAt, mUp;
   float mVelocity;
-  const float DEFAULT_VELOCITY = 10.0f;
+  const float DEFAULT_VELOCITY = 50.0f;
+  glm::mat4 mTranslation;
 };
