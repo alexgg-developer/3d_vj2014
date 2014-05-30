@@ -50,5 +50,81 @@ bool Map::Load(pugi::xml_node const& mapNode) {
 bool Map::EnemyCanBeIn(int const x, int const y) const {
   int const x_index = std::max<int>(0, std::min<int>(x, mTileTypeMatrix.size()-1));
   int const y_index = std::max<int>(0,std::min<int>(y, mTileTypeMatrix[0].size()-1));
-  return this->mTileTypeMatrix[y_index][x_index] == TileType::PASSABLE;
+  return operator()(x_index, y_index) == TileType::PASSABLE;
+}
+std::size_t Map::sizeX() const {
+  return mTileTypeMatrix[0].size();}
+std::size_t Map::sizeY() const {
+  return mTileTypeMatrix.size();}
+
+Map::TileType const& Map::operator()(std::size_t x, std::size_t y) const {
+  return this->mTileTypeMatrix[y][x];
+}
+
+MapLogic::MapLogic(Map const*const aMap) : mMap(aMap) {}
+bool MapLogic::init_and_load() {
+  bool ret = true;
+  ret &= mModelBuildable.LoadFromFile("./objs/mountain/mount.blend12.obj");
+  ret &= mModelPassable.LoadFromFile("./objs/mountain/mount.blend12.obj");
+  ret &= mModelUseless.LoadFromFile("./objs/roundabout-dec.obj");
+  assert(ret);
+  CompileDisplayList();
+  return ret;
+}
+void MapLogic::CompileDisplayList() {
+	displayList = glGenLists(1);
+	glNewList(displayList, GL_COMPILE);
+  glMatrixMode(GL_MODELVIEW);
+  for(std::size_t x=0; x<mMap->sizeX(); ++x) {
+    for(std::size_t y=0; y<mMap->sizeY(); ++y) {
+      Map::TileType const& tt = (*mMap)(x,y);
+      glPushMatrix();
+      glTranslatef(-x, 1.0f, -y);
+      //glTranslatef(-x/2.0f, 1.0f, -y/2.0f);
+      //glTranslatef(-x*5.0f, 1.0f, -y*5.0f);
+      if(tt==Map::TileType::BUILDABLE) {
+        mModelBuildable.RenderRaw();
+      } else if(tt==Map::TileType::PASSABLE) {
+        mModelPassable.RenderRaw();
+      } else if(tt==Map::TileType::USELESS) {
+        mModelUseless.RenderRaw();
+        //only one
+        //glEndList();
+        //return;
+      } else {
+        std::cout << "Non recognized tile type" << std::endl;
+        assert(0);
+      }
+      glPopMatrix();
+    }
+  }
+      glPushMatrix();
+      glTranslatef(-2.0f, 1.0f, 0.0f);
+      mModelUseless.RenderRaw();
+      glPopMatrix();
+      glPushMatrix();
+      glTranslatef(-1.0f, 1.0f, 0.0f);
+      mModelUseless.RenderRaw();
+      glPopMatrix();
+	glEndList();
+}
+void MapLogic::render() const {
+	glCallList(displayList);
+
+  /*
+  for(std::size_t x=0; x<mMap->sizeX(); ++x) {
+    for(std::size_t y=0; y<mMap->sizeY(); ++y) {
+      Map::TileType const& tt = (*mMap)(x,y);
+      glPushMatrix();
+      glTranslatef(-x, 0.5f, -y);
+      if(tt==Map::TileType::BUILDABLE) {
+        //mModelBuildable.RenderRaw();
+      } else if(tt==Map::TileType::PASSABLE) {
+        //mModelPassable.RenderRaw();
+      } else if(tt==Map::TileType::USELESS) {
+        mModelUseless.RenderRaw();
+      }
+      glPopMatrix();
+    }
+  }*/
 }

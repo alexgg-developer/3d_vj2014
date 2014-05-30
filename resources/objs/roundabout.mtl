@@ -1,0 +1,46 @@
+# Blender3D MTL File: roundabout.blend
+# Material Count: 4
+newmtl beton
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd asphalt02.jpg
+
+
+newmtl cobbles
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd asphalt02.jpg
+
+
+newmtl grass
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.445732 0.497048 0.404094
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd grass.jpg
+
+
+newmtl asphalt01
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd asphalt01.jpg
+
+

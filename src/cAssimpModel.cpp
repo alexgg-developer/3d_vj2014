@@ -2,6 +2,7 @@
 #include "cAssimpModel.h"
 
 
+std::map<std::string, cAssimpModel> gLoadedModels;
 cAssimpModel::cAssimpModel()
 {
 }
@@ -14,7 +15,15 @@ cAssimpModel::~cAssimpModel()
 
 bool cAssimpModel::LoadFromFile(const std::string &filename)
 {
-	bool retCode = false;
+  ///Load once every model. Fast-to-code solution
+  {
+    auto it = gLoadedModels.find(filename);
+    if (it != gLoadedModels.end()) {
+      *this = it->second;
+      return true;
+    }
+  }
+  bool retCode = false;
 	Assimp::Importer Importer;
 	const aiScene* pScene;
 
@@ -22,8 +31,11 @@ bool cAssimpModel::LoadFromFile(const std::string &filename)
 	pScene = Importer.ReadFile(filename.c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs);
 	if(pScene)
 		retCode = InitFromScene(pScene, filename);
-	else
+	else {
 		std::cerr << "Error parsing '" << filename << "': '" << Importer.GetErrorString() << std::endl;
+    assert(0);
+    return false;
+  }
 	ComputeBoundingBox();
 	CompileDisplayList();
 
@@ -35,25 +47,21 @@ glm::vec3 *cAssimpModel::GetBoundingBox()
 	return bbox;
 }
 
+float get_bbox_max(glm::vec3 const bbox[2]) {
+  return std::max(std::abs(bbox[0].x - bbox[1].x), std::max(std::abs(bbox[0].y - bbox[1].y), std::abs(bbox[0].z - bbox[1].z)));
+}
 void cAssimpModel::Render() const {
 	glPushMatrix();
-	glScalef(1/height, 1/height, 1/height);
+  float const bbox_max = get_bbox_max(bbox);;
+	glScalef(1/bbox_max, 1/bbox_max, 1/bbox_max);
 	glTranslatef(-center.x, -center.y, -center.z);
 	glCallList(displayList);
 	glPopMatrix();
 }
 
-void cAssimpModel::CompileDisplayList()
-{
-	unsigned int index;
-	glm::vec3 V, N;
-	glm::vec2 tC;
-
-	displayList = glGenLists(1);
-	glNewList(displayList, GL_COMPILE);
+void cAssimpModel::RenderInternal() const {
 	// Render all submeshes
-	for(unsigned int i=0; i<meshes.size(); i++)
-	{
+	for(unsigned int i=0; i<meshes.size(); i++)	{
 		if(textures[meshes[i].textureIndex] != NULL)
       //textures[meshes[i].textureIndex]->bind();
 			glBindTexture(GL_TEXTURE_2D, textures[meshes[i].textureIndex]->GetID());
@@ -63,10 +71,10 @@ void cAssimpModel::CompileDisplayList()
 		glBegin(GL_TRIANGLES);
 		for(unsigned int j=0; j<meshes[i].triangles.size(); j++)
 		{
-			index = meshes[i].triangles[j];
-			V = meshes[i].vertices[index];
-			N = meshes[i].normals[index];
-			tC = meshes[i].texCoords[index];
+			unsigned int index = meshes[i].triangles[j];
+			glm::vec3 V = meshes[i].vertices[index];
+			glm::vec3 N = meshes[i].normals[index];
+			glm::vec2 tC = meshes[i].texCoords[index];
 			glNormal3f(N.x, N.y, N.z);
 			glTexCoord2f(tC.x, tC.y);
 			glVertex3f(V.x, V.y, V.z);
@@ -74,6 +82,20 @@ void cAssimpModel::CompileDisplayList()
 		glEnd();
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+void cAssimpModel::RenderRaw() const {
+	//glPushMatrix();
+  float const bbox_max = get_bbox_max(bbox);
+	glScalef(1/bbox_max, 1/bbox_max, 1/bbox_max);
+	glTranslatef(-center.x, -center.y, -center.z);
+	RenderInternal();
+	//glPopMatrix();
+}
+
+void cAssimpModel::CompileDisplayList() {
+	displayList = glGenLists(1);
+	glNewList(displayList, GL_COMPILE);
+  RenderInternal();
 	glEndList();
 }
 

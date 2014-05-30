@@ -36,6 +36,7 @@ struct LevelLogic {
 protected:
   Level const*const mLevel;
   Defensor *const mDefensor;
+  MapLogic mMap;
 
   ///Turrets: alive and being constructed
   std::vector<TurretLogic*> mAliveTurrets;

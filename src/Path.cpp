@@ -69,7 +69,7 @@ void PathLogic::advance_time(float const init_time_ms, float const dt_ms) {
     int nextX = static_cast<int>(newPosition.x + em.mVelocity.x*0.5f);
     int nextY = static_cast<int>(newPosition.y + em.mVelocity.y*0.5f);
     if(mMap->EnemyCanBeIn(nextX,nextY)) {
-      std::cout << "Changing position to " << newPosition.x << newPosition.y << std::endl;
+      //std::cout << "Changing position to " << newPosition.x << newPosition.y << std::endl;
       em.enemy->setPosition(newPosition);
     } else {
       //Next order

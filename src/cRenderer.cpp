@@ -122,7 +122,7 @@ void Renderer::render()
   glMatrixMode(GL_MODELVIEW);
   glLoadMatrixf(&(viewMatrix[0][0]));
   // mTerrain[0].setMatrix(glm::mat4(1.0f), glm::mat4(1.0f));
-  mTerrain[0].render();
+  //mTerrain[0].render();
 }
 
 void Renderer::free()
