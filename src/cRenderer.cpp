@@ -41,6 +41,7 @@ bool Renderer::initApp()
       mTerrain.push_back(terr);
       glm::vec3 position, lookAt, up;
       position = glm::vec3(0.707f * 20.0f, 0.707f * 20.0f, 0.707f * 20.0f);
+      position.y -= 10.0f;
       lookAt = glm::vec3(0, 0, 0);
       up = glm::vec3(0, 1, 0);
       mCamera.init(position, lookAt, up);
