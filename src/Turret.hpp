@@ -9,23 +9,25 @@
 struct TurretLogic;
 struct Weapon;
 struct Turret {
-  Turret(Weapon const* aWeapon);
+  Turret(Weapon const* aWeapon, float const aBuildingTime=0, float const aMonetaryCost=10);
   ~Turret();
   
-  bool Load(pugi::xml_node const& aTurretNode);
+  //bool Load(pugi::xml_node const& aTurretNode);
   void LoadModel(char const*const filename);
+  float MonetaryCost() const { return mMonetaryCost; }
 
 protected:
   Weapon const* mWeapon;
   cAssimpModel mAssimpModel;
   float mBuildingTime;
+  float mMonetaryCost;
   friend struct TurretLogic;
 };
 
-struct WeaponLogic;
+#include "Weapon.hpp"
 struct EnemyLogic;
 struct TurretLogic {
-  TurretLogic(Turret const*const turret, WeaponLogic* aWeaponLogic);
+  TurretLogic(Turret const*const turret, Weapon const*const aWeapon);
   ~TurretLogic();
 
   virtual void Attack(EnemyLogic* const enemy, float const timeMS);
@@ -35,10 +37,11 @@ struct TurretLogic {
   void Render() const;
 
   float getBuildingDuration() const { return mTurret->mBuildingTime; }
-
+  glm::vec2 const& getPosition() const { return mPosition;}
+  void setPosition(glm::vec2 const& p) { mPosition=p;}
 protected:
   Turret const* mTurret;
-  WeaponLogic* mWeaponLogic;
+  WeaponLogic mWeaponLogic;
   glm::vec2 mPosition{-1,-1};
 };
 

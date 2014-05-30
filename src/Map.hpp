@@ -30,6 +30,7 @@ struct MapLogic {
   bool init_and_load();
   void render() const;
   void CompileDisplayList();
+  Map::TileType const& operator()(std::size_t x, std::size_t y) const { return (*mMap)(x,y);}
 protected:
   Map const* mMap;
   cAssimpModel mModelBuildable, mModelPassable, mModelUseless;

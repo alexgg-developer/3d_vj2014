@@ -70,7 +70,7 @@ void PathLogic::advance_time(float const init_time_ms, float const dt_ms) {
     bool next_order = !mMap->EnemyCanBeIn(nextX,nextY);
     if(mPath->mOrders[em.mActualOrder].mIndefinitely==false) {
       //Check if enemy has advanced more than the specified quantity
-      float const maxQuantity = mPath->mOrders[em.mActualOrder].mQuantity;
+      float const maxQuantity = static_cast<float>(mPath->mOrders[em.mActualOrder].mQuantity);
       auto const delta = em.mPositionWhenStartedOrder - em.enemy->getPosition();
       float const actual_separation_squared = delta.x*delta.x + delta.y*delta.y;
       if(actual_separation_squared >= maxQuantity*maxQuantity)

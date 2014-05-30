@@ -9,6 +9,8 @@ public:
   Camera(glm::vec3 const &position, glm::vec3 const &lookAt, glm::vec3 const &up);
   void init(glm::vec3 const &position, glm::vec3 const &lookAt, glm::vec3 const &up);
   void getViewMatrix(glm::mat4& viewMatrix) const;
+  glm::mat4 getViewMatrix() const;
+
   void pan(glm::vec3 const direction, float const dt);
 private:
   glm::vec3 mPosition, mLookAt, mUp;

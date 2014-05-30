@@ -17,8 +17,9 @@ public:
   bool checkPressed(unsigned int key);
   bool checkReleased(unsigned int key);
   bool checkMouse(uint button) const;
-  bool checkMousePressed(uint button);
-  bool checkMouseReleased(uint button);
+  bool checkMousePressed(uint button) const;
+  bool checkMouseReleased(uint button) const;
+  void UseMouseLastRelease(uint button);
 
   vec3 mPositionMousePressed, mPositionMouseRealased;
   glm::vec2 mMouseMovement;

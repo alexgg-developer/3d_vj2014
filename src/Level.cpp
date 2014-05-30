@@ -58,8 +58,8 @@ LevelLogic::~LevelLogic() {}
 ///Initializes at specified time point
 void LevelLogic::init(float const time_ms) {
   //No-insert alive turrets by default
-  for(auto& a:mAliveTurrets) a->init(time_ms);
-  for(auto& a:mBuildingTurrets) std::get<0>(a)->init(time_ms);
+  for(auto& a:mAliveTurrets) a.init(time_ms);
+  for(auto& a:mBuildingTurrets) std::get<0>(a).init(time_ms);
   for(auto& a:mEnemies) a.init(time_ms);
   //Insert paths
   for(Path const& p : mLevel->mAssociatedPaths) {
@@ -80,11 +80,11 @@ bool LevelLogic::advanceTime(float const init_time_ms, float const dt_ms, std::v
   float const end_time_ms = init_time_ms + dt_ms;
 
   /// Build turrets
-  for(std::vector<std::tuple<TurretLogic*, float >>::iterator it = mBuildingTurrets.begin(); it!=mBuildingTurrets.end();) {
-    std::tuple<TurretLogic*, float > &tupl = *it;
-    TurretLogic*const turret = std::get<0>(tupl);
+  for(std::vector<std::tuple<TurretLogic, float >>::iterator it = mBuildingTurrets.begin(); it!=mBuildingTurrets.end();) {
+    std::tuple<TurretLogic, float > &tupl = *it;
+    TurretLogic const& turret = std::get<0>(tupl);
     float const init_build_time_ms = std::get<1>(tupl);
-    if(turret->getBuildingDuration() + init_build_time_ms <= end_time_ms) {
+    if(turret.getBuildingDuration() + init_build_time_ms <= end_time_ms) {
       mAliveTurrets.push_back(turret);
       it = mBuildingTurrets.erase(it);
     } else ++it;
@@ -92,9 +92,9 @@ bool LevelLogic::advanceTime(float const init_time_ms, float const dt_ms, std::v
 
   /// Turrets attacks enemies
   for(EnemyLogic& enemy : mEnemies) {
-    for (TurretLogic* turret : mAliveTurrets) {
-      if(!enemy.hasDied() && turret->CanHit(enemy.getPosition(), end_time_ms)) {
-        turret->Attack(&enemy, end_time_ms);
+    for (TurretLogic& turret : mAliveTurrets) {
+      if(!enemy.hasDied() && turret.CanHit(enemy.getPosition(), end_time_ms)) {
+        turret.Attack(&enemy, end_time_ms);
       }
       //if(!enemy.hasDied() && ) //Enemies can't attack towers, although it would be easy and fun
     }
@@ -122,8 +122,8 @@ bool LevelLogic::advanceTime(float const init_time_ms, float const dt_ms, std::v
 }
 
 void LevelLogic::Render() const {
-  for(TurretLogic* tu : mAliveTurrets) {
-    tu->Render();
+  for(TurretLogic const& tu : mAliveTurrets) {
+    tu.Render();
   }
 /*  for(auto& tu : mBuildingTurrets) {
     //tu->Render();
@@ -140,4 +140,7 @@ void LevelLogic::spawnsEnemy(EnemyLogic const& el) {
   mEnemies.push_back(el);
   assert(!mPaths.empty() && "There should be some path there");
   mPaths[rand()%mPaths.size()].assignEnemy(&mEnemies.back());
+}
+void LevelLogic::spawnsTurret(TurretLogic&& el) {
+  this->mAliveTurrets.push_back(el);
 }

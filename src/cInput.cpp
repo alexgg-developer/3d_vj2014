@@ -165,14 +165,18 @@ bool Input::checkMouse(uint button) const
   return mouse[button] == KEY_ON || mouse[button] == KEY_PRESSED;
 }
 
-bool Input::checkMousePressed(uint button)
+bool Input::checkMousePressed(uint button) const
 {
   return mouse[button] == KEY_PRESSED;
 }
 
-bool Input::checkMouseReleased(uint button)
+bool Input::checkMouseReleased(uint button) const
 {
   return mouse[button] == KEY_RELEASED;
+}
+void Input::UseMouseLastRelease(uint button) {
+  assert(mouse[button] == KEY_RELEASED);
+  mouse[button] = KEY_OFF;
 }
 
 

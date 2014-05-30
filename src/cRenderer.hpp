@@ -24,6 +24,7 @@ public:
   static bool link(GLuint program);
   void updateProjection(const uint mWidth, const uint mHeight);
   Camera mCamera;
+  glm::mat4 const& getProjMatrix() const { return mProjection; }
 private:
   GLuint mProgramID;
   //std::vector<GLShader> mVertexShader;

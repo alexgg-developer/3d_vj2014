@@ -14,6 +14,9 @@ void Camera::init(glm::vec3 const &position, glm::vec3 const &lookAt, glm::vec3 
 }
 
 #include <iostream>
+glm::mat4 Camera::getViewMatrix() const {
+  return glm::lookAt(mPosition, mLookAt, mUp) * mTranslation;;
+}
 void Camera::getViewMatrix(glm::mat4& viewMatrix) const
 {
   viewMatrix = glm::lookAt(mPosition, mLookAt, mUp) * mTranslation;

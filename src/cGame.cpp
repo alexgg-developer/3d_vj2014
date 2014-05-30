@@ -89,10 +89,6 @@ int Game::quit()
 int Game::main() {
   int error = init();
 
-  //Load model
-	cAssimpModel model;
-	model.LoadFromFile("./objs/turret_2_separated.obj");
-
   //Load weapons
   std::vector<Weapon> mWeapons;
   loadWeapons("./levels/weapons.xml", std::back_inserter(mWeapons));
@@ -112,6 +108,25 @@ int Game::main() {
   //Instantiate empty full level
   LevelLogic aLevelLogic(&aLevel, &df);
 
+  //Create turrets
+  std::vector<Turret> mTurrets;
+  mTurrets.push_back(Turret(&mWeapons[0])); //simple_gun
+  mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
+  mTurrets.push_back(Turret(&mWeapons[1], 1.0f, 20.0f)); //metralleta
+  mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
+  mTurrets.push_back(Turret(&mWeapons[2],10.0f, 15.0f)); //shotgun
+  mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
+  mTurrets.push_back(Turret(&mWeapons[3], 3.0f, 30.0f)); //ice_gun
+  mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
+  //loadTurrets("./levels/turret.xml", std::back_inserter(mEnemies));
+
+  //Instantiate one turret
+  {
+    TurretLogic tl(&mTurrets[0], &mWeapons[0]);
+    tl.setPosition(glm::vec2(6,5));
+    aLevelLogic.spawnsTurret(std::move(tl));
+  }
+
   if(!error) {
     uint frame = 0;
     //mWindow.switchFullScreen();
@@ -120,6 +135,7 @@ int Game::main() {
     auto te_ms = mTimer.getTimeElapsed();
     aLevelLogic.init(static_cast<float>(te_ms));
     while(!mInput.check(Input::KESC)) {
+      //Prepare input
       SDL_Event event;
       while (SDL_PollEvent(&event)) {
         if(event.type == SDL_WINDOWEVENT) {
@@ -135,13 +151,14 @@ int Game::main() {
           mInput.readWithScanCode(event);
         }
       }
+      //Advance game
       if(!mWindow.mMinimized) {
         float const dt = mTimer.getDeltaTime();
         float const te_ms = mTimer.getLastTimeMS();
         float const dt_ms = dt *1000.0f;
         logic(dt);
         mRenderer.render();
-        model.Render();
+        df.receive_input(mInput, aLevelLogic, mRenderer.getProjMatrix(), mRenderer.mCamera.getViewMatrix(), mTurrets, mWeapons);
         aLevelLogic.advanceTime(te_ms, dt_ms, mEnemies, mWeapons);
         aLevelLogic.Render();
         SDL_GL_SwapWindow( mWindow.mWindow );

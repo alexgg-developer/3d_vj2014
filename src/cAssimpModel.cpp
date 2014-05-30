@@ -46,8 +46,12 @@ glm::vec3 *cAssimpModel::GetBoundingBox()
 {
 	return bbox;
 }
+glm::vec3 const& cAssimpModel::GetCenter() const
+{
+	return this->center;
+}
 
-float get_bbox_max(glm::vec3 const bbox[2]) {
+static float get_bbox_max(glm::vec3 const bbox[2]) {
   return std::max(std::abs(bbox[0].x - bbox[1].x), std::max(std::abs(bbox[0].y - bbox[1].y), std::abs(bbox[0].z - bbox[1].z)));
 }
 void cAssimpModel::Render() const {

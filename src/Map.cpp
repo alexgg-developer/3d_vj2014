@@ -48,9 +48,7 @@ bool Map::Load(pugi::xml_node const& mapNode) {
 }
 #include <algorithm>
 bool Map::EnemyCanBeIn(int const x, int const y) const {
-  int const x_index = std::max<int>(0, std::min<int>(x, mTileTypeMatrix.size()-1));
-  int const y_index = std::max<int>(0,std::min<int>(y, mTileTypeMatrix[0].size()-1));
-  return operator()(x_index, y_index) == TileType::PASSABLE;
+  return operator()(x, y) == TileType::PASSABLE;
 }
 std::size_t Map::sizeX() const {
   return mTileTypeMatrix[0].size();}
@@ -58,7 +56,9 @@ std::size_t Map::sizeY() const {
   return mTileTypeMatrix.size();}
 
 Map::TileType const& Map::operator()(std::size_t x, std::size_t y) const {
-  return this->mTileTypeMatrix[y][x];
+  int const x_index = std::max<int>(0, std::min<int>(x, mTileTypeMatrix[0].size() - 1));
+  int const y_index = std::max<int>(0,std::min<int>(y, mTileTypeMatrix.size()-1));
+  return this->mTileTypeMatrix[y_index][x_index];
 }
 
 MapLogic::MapLogic(Map const*const aMap) : mMap(aMap) {}
@@ -71,6 +71,9 @@ bool MapLogic::init_and_load() {
   CompileDisplayList();
   return ret;
 }
+static float get_bbox_max(glm::vec3 const bbox[2]) {
+  return std::max(std::abs(bbox[0].x - bbox[1].x), std::max(std::abs(bbox[0].y - bbox[1].y), std::abs(bbox[0].z - bbox[1].z)));
+}
 void MapLogic::CompileDisplayList() {
 	displayList = glGenLists(1);
 	glNewList(displayList, GL_COMPILE);
@@ -79,13 +82,19 @@ void MapLogic::CompileDisplayList() {
     for(std::size_t y=0; y<mMap->sizeY(); ++y) {
       Map::TileType const& tt = (*mMap)(x,y);
       glPushMatrix();
-      glTranslatef(-static_cast<float>(x), -0.9f, -static_cast<float>(y));
+      glTranslatef(-static_cast<float>(x), 0.0f, -static_cast<float>(y)*1.0f);
       if(tt==Map::TileType::BUILDABLE) {
         mModelBuildable.RenderRaw();
       } else if(tt==Map::TileType::PASSABLE) {
         mModelPassable.RenderRaw();
       } else if(tt==Map::TileType::USELESS) {
-        mModelUseless.RenderRaw();
+        glm::vec3 *bb = mModelUseless.GetBoundingBox();
+        auto const& center = mModelUseless.GetCenter();
+	      glScalef(1.0f/(bb[1].x-bb[0].x), 1.0f/get_bbox_max(bb), 1.0f/(bb[1].z-bb[0].z));
+	      glTranslatef(-center.x, -center.y, -center.z);
+	      mModelUseless.RenderInternal();
+
+        //mModelUseless.RenderRaw();
       } else {
         std::cout << "Non recognized tile type" << std::endl;
         assert(0);

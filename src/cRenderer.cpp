@@ -44,6 +44,11 @@ bool Renderer::initApp()
       position.y -= 10.0f;
       lookAt = glm::vec3(0, 0, 0);
       up = glm::vec3(0, 1, 0);
+      //temp
+      position=glm::vec3(0,10,0);
+      lookAt=glm::vec3(0,0,0);
+      up = glm::vec3(0, 0, 1);
+      //end temp
       mCamera.init(position, lookAt, up);
     }
 
