@@ -118,7 +118,7 @@ int Game::main() {
 
     mTimer.start();
     auto te_ms = mTimer.getTimeElapsed();
-    aLevelLogic.init(te_ms);
+    aLevelLogic.init(static_cast<float>(te_ms));
     while(!mInput.check(Input::KESC)) {
       SDL_Event event;
       while (SDL_PollEvent(&event)) {

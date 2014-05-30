@@ -84,12 +84,12 @@ void cAssimpModel::RenderInternal() const {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 void cAssimpModel::RenderRaw() const {
-	//glPushMatrix();
+	glPushMatrix();
   float const bbox_max = get_bbox_max(bbox);
 	glScalef(1/bbox_max, 1/bbox_max, 1/bbox_max);
 	glTranslatef(-center.x, -center.y, -center.z);
 	RenderInternal();
-	//glPopMatrix();
+	glPopMatrix();
 }
 
 void cAssimpModel::CompileDisplayList() {
