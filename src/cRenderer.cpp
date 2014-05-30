@@ -117,6 +117,10 @@ void Renderer::render()
   glm::mat4 viewMatrix;
   mCamera.getViewMatrix(viewMatrix);
   mTerrain[0].setMatrix(mProjection, viewMatrix);
+  glMatrixMode(GL_PROJECTION);
+  glLoadMatrixf(&(mProjection[0][0]));
+  glMatrixMode(GL_MODELVIEW);
+  glLoadMatrixf(&(viewMatrix[0][0]));
   // mTerrain[0].setMatrix(glm::mat4(1.0f), glm::mat4(1.0f));
   mTerrain[0].render();
 }

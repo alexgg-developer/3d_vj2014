@@ -48,7 +48,7 @@ protected:
   struct EnemyMoving {
     EnemyMoving(EnemyLogic* el);
     EnemyLogic* enemy=nullptr;
-    int mActualOrder=0;
+    int mActualOrder=-1;
     glm::vec2 mVelocity;
     bool mPathFinished=false;
     //TODO: Orientation

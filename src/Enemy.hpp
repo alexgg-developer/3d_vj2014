@@ -36,6 +36,7 @@ void loadEnemies(char const*const filename, BI bi) {
   for(pugi::xml_node wn : doc.child("enemies_list").children("enemy")) {
     Enemy w;
     bool const ret = w.Load(wn);
+    w.LoadModel("./objs/turret_2_separated.obj");
     if(!ret) assert(0);
     bi = w;
     ++bi;

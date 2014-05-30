@@ -57,15 +57,19 @@ PathLogic::~PathLogic() {}
 
 void PathLogic::assignEnemy(EnemyLogic* el) {
   mControlledEnemies.push_back(EnemyMoving(el));
+  mControlledEnemies.back().enemy->setPosition(mPath->mStartPosition);
+  ApplyNextOrderTo(mControlledEnemies.back());
 }
 void PathLogic::advance_time(float const init_time_ms, float const dt_ms) {
   for(EnemyMoving& em : mControlledEnemies) {
-    glm::vec2 newPosition = em.enemy->getPosition() + em.mVelocity*dt_ms;
+    glm::vec2 const deltaPos = em.mVelocity*dt_ms/1000.0f;
+    glm::vec2 const newPosition = em.enemy->getPosition() + deltaPos;
     //TODO: Orientation
     //TODO: Check for collision
     int nextX = static_cast<int>(newPosition.x + em.mVelocity.x*0.5f);
     int nextY = static_cast<int>(newPosition.y + em.mVelocity.y*0.5f);
     if(mMap->EnemyCanBeIn(nextX,nextY)) {
+      std::cout << "Changing position to " << newPosition.x << newPosition.y << std::endl;
       em.enemy->setPosition(newPosition);
     } else {
       //Next order
@@ -74,7 +78,10 @@ void PathLogic::advance_time(float const init_time_ms, float const dt_ms) {
   }
   //Delete finished enemies. TODO: Move them to a non-attacking exit path
   for(std::vector<EnemyMoving>::iterator it = mControlledEnemies.begin(); it!=mControlledEnemies.end();) {
-    if(it->mPathFinished) it=mControlledEnemies.erase(it);
+    if(it->mPathFinished) {
+      std::cout << "an enemy died" << std::endl;
+      it = mControlledEnemies.erase(it);
+    }
     else ++it;
   }
 }

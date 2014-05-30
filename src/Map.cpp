@@ -46,6 +46,9 @@ bool Map::Load(pugi::xml_node const& mapNode) {
 
   return true;
 }
-bool Map::EnemyCanBeIn(unsigned int const x, unsigned int const y) const {
-  return this->mTileTypeMatrix[x][y]=='P';
+#include <algorithm>
+bool Map::EnemyCanBeIn(int const x, int const y) const {
+  int const x_index = std::max<int>(0, std::min<int>(x, mTileTypeMatrix.size()-1));
+  int const y_index = std::max<int>(0,std::min<int>(y, mTileTypeMatrix[0].size()-1));
+  return this->mTileTypeMatrix[y_index][x_index] == TileType::PASSABLE;
 }
