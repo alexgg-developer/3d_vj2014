@@ -65,7 +65,7 @@ MapLogic::MapLogic(Map const*const aMap) : mMap(aMap) {}
 bool MapLogic::init_and_load() {
   bool ret = true;
   ret &= mModelBuildable.LoadFromFile("./objs/mountain/mount.blend12.obj");
-  ret &= mModelPassable.LoadFromFile("./objs/mountain/mount.blend12.obj");
+  ret &= mModelPassable.LoadFromFile("./objs/pallet.obj");
   ret &= mModelUseless.LoadFromFile("./objs/roundabout-dec.obj");
   assert(ret);
   CompileDisplayList();
@@ -79,7 +79,7 @@ void MapLogic::CompileDisplayList() {
     for(std::size_t y=0; y<mMap->sizeY(); ++y) {
       Map::TileType const& tt = (*mMap)(x,y);
       glPushMatrix();
-      glTranslatef(-static_cast<float>(x), 1.0f, -static_cast<float>(y));
+      glTranslatef(-static_cast<float>(x), -0.9f, -static_cast<float>(y));
       if(tt==Map::TileType::BUILDABLE) {
         mModelBuildable.RenderRaw();
       } else if(tt==Map::TileType::PASSABLE) {

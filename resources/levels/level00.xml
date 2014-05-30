@@ -21,22 +21,22 @@
   <paths>
     <path name="LeftPath">
       <start_point x="9" y="5"/>
-      <order code="up"/>
+      <order code="left"/>
+      <order code="down"/>
       <order code="left"/>
       <order code="up"/>
-      <order code="right"/>
-      <order code="up"/>
-      <order code="right" quantity="3"/> <!-- When quantity is not specified it continues indefinitely-->
-      <order code="up" quantity="1"/>
+      <order code="left"/>
+      <order code="up" quantity="3"/>
+      <order code="left"/>
       <order code="attack-base"/> <!-- Specified as order for flexibility: they may attack us through magic portals, isn't it? :-P -->
     </path>
     <path name="RightPath">
       <start_point x="9" y="5"/>
+      <order code="left"/>
       <order code="up"/>
-      <order code="right"/>
-      <order code="up"/>
-      <order code="left" quantity="1"/>
-      <order code="up"/>
+      <order code="left"/>
+      <order code="down" quantity="1"/>
+      <order code="left"/>
       <order code="attack-base"/> <!-- Specified as order for flexibility: they may attack us through magic portals, isn't it? :-P -->
     </path>
   </paths>
