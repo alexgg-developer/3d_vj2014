@@ -32,7 +32,7 @@ bool Map::Load(pugi::xml_node const& mapNode) {
 
   for (int y = 0; y < mSize.y; ++y) {
     for (int x = 0; x < mSize.x; ++x) {
-      char c = mapClean[x + y*mSize.x];
+      char c = mapClean[x + y*static_cast<unsigned int>(mSize.x)];
       if(c=='U') mTileTypeMatrix[x][y] = TileType::USELESS;
       else if(c=='P') mTileTypeMatrix[x][y] = TileType::PASSABLE;
       else if(c=='B') mTileTypeMatrix[x][y] = TileType::BUILDABLE;
@@ -79,18 +79,13 @@ void MapLogic::CompileDisplayList() {
     for(std::size_t y=0; y<mMap->sizeY(); ++y) {
       Map::TileType const& tt = (*mMap)(x,y);
       glPushMatrix();
-      glTranslatef(-x, 1.0f, -y);
-      //glTranslatef(-x/2.0f, 1.0f, -y/2.0f);
-      //glTranslatef(-x*5.0f, 1.0f, -y*5.0f);
+      glTranslatef(-static_cast<float>(x), 1.0f, -static_cast<float>(y));
       if(tt==Map::TileType::BUILDABLE) {
         mModelBuildable.RenderRaw();
       } else if(tt==Map::TileType::PASSABLE) {
         mModelPassable.RenderRaw();
       } else if(tt==Map::TileType::USELESS) {
         mModelUseless.RenderRaw();
-        //only one
-        //glEndList();
-        //return;
       } else {
         std::cout << "Non recognized tile type" << std::endl;
         assert(0);
@@ -98,33 +93,8 @@ void MapLogic::CompileDisplayList() {
       glPopMatrix();
     }
   }
-      glPushMatrix();
-      glTranslatef(-2.0f, 1.0f, 0.0f);
-      mModelUseless.RenderRaw();
-      glPopMatrix();
-      glPushMatrix();
-      glTranslatef(-1.0f, 1.0f, 0.0f);
-      mModelUseless.RenderRaw();
-      glPopMatrix();
 	glEndList();
 }
 void MapLogic::render() const {
 	glCallList(displayList);
-
-  /*
-  for(std::size_t x=0; x<mMap->sizeX(); ++x) {
-    for(std::size_t y=0; y<mMap->sizeY(); ++y) {
-      Map::TileType const& tt = (*mMap)(x,y);
-      glPushMatrix();
-      glTranslatef(-x, 0.5f, -y);
-      if(tt==Map::TileType::BUILDABLE) {
-        //mModelBuildable.RenderRaw();
-      } else if(tt==Map::TileType::PASSABLE) {
-        //mModelPassable.RenderRaw();
-      } else if(tt==Map::TileType::USELESS) {
-        mModelUseless.RenderRaw();
-      }
-      glPopMatrix();
-    }
-  }*/
 }
