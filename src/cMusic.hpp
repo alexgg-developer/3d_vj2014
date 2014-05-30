@@ -10,7 +10,7 @@ public:
   ~Music();
   bool load(std::string const path);
   void free();
-  void play(bool loop);
+  void play(bool loop=false);
   void pause();
   void resume();
   void stop();

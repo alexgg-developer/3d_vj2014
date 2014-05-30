@@ -4,6 +4,7 @@
 #include "Weapon.hpp"
 #include "cAssimpModel.h"
 #include "Defensor.hpp"
+#include "cSound.hpp"
 
 struct EnemyLogic;
 struct Enemy {
@@ -23,6 +24,8 @@ protected:
   cAssimpModel mAssimpModel;
   std::string mSpecies;
   friend struct EnemyLogic;
+  float mMonetaryValue=2;
+  Sound mDieSound;
 };
 template<typename BI>
 void loadEnemies(char const*const filename, BI bi) {
@@ -61,6 +64,7 @@ struct EnemyLogic {
   void Render() const;
   glm::vec2 const& getPosition() const { return mPosition; }
   void setPosition(glm::vec2 const& p) { mPosition=p; }
+  float getEnemyMonetaryValue() const { return mEnemy->mMonetaryValue; }
 protected:
   Enemy const* mEnemy;
   WeaponLogic mWeaponLogic;

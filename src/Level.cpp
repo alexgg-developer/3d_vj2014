@@ -52,11 +52,17 @@ bool Level::Load(std::string aFilename) {
 LevelLogic::LevelLogic(Level const*const aLevel, Defensor *const aDefensor)
     : mLevel(aLevel), mDefensor(aDefensor), mMap(&aLevel->mMap) {
   mEnemies.reserve(1000);//TODO: If there are more than a thousand enemies it's location will be changed
+  mAliveTurrets.reserve(1000);
+  mBuildingTurrets.reserve(1000);
+  mEnemies.reserve(1000);
+  mPaths.reserve(1000);
+  mAvalanchas.reserve(1000);
 }
 LevelLogic::~LevelLogic() {}
 
 ///Initializes at specified time point
 void LevelLogic::init(float const time_ms) {
+  mBuyTurret.load("./music/several_coins_placed_lightly_down_on_table.wav");
   //No-insert alive turrets by default
   for(auto& a:mAliveTurrets) a.init(time_ms);
   for(auto& a:mBuildingTurrets) std::get<0>(a).init(time_ms);
@@ -76,7 +82,7 @@ void LevelLogic::init(float const time_ms) {
   this->mMap.init_and_load();
 }
 ///Advances time
-bool LevelLogic::advanceTime(float const init_time_ms, float const dt_ms, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons) {
+bool LevelLogic::advanceTime(Defensor& theDefensor, float const init_time_ms, float const dt_ms, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons) {
   float const end_time_ms = init_time_ms + dt_ms;
 
   /// Build turrets
@@ -104,8 +110,10 @@ bool LevelLogic::advanceTime(float const init_time_ms, float const dt_ms, std::v
   //delete died enemies from vector, it's a quadratic search!
   //they do not die so often and not so much at the same time
   for(std::vector<EnemyLogic>::iterator it = mEnemies.begin(); it!=mEnemies.end();) {
-    if (it->hasDied())
+    if (it->hasDied()) {
+      theDefensor.add_money(it->getEnemyMonetaryValue());
       it = mEnemies.erase(it);
+    }
     else ++it;
   }
   
@@ -143,4 +151,5 @@ void LevelLogic::spawnsEnemy(EnemyLogic const& el) {
 }
 void LevelLogic::spawnsTurret(TurretLogic&& el) {
   this->mAliveTurrets.push_back(el);
+  mBuyTurret.play();
 }

@@ -2,7 +2,8 @@
 #include <iostream>
 #include "Enemy.hpp"
 
-Weapon::Weapon() {}
+Weapon::Weapon() {
+}
 Weapon::~Weapon() {}
 
 bool Weapon::Load(pugi::xml_node aWeaponNode) {
@@ -11,6 +12,9 @@ bool Weapon::Load(pugi::xml_node aWeaponNode) {
   mDamage = aWeaponNode.attribute("damage_per_bullet").as_float();
   mRadiusTiles = aWeaponNode.attribute("range_tiles").as_float();
   mSpecialEffect = SpecialEffect::NONE;
+  std::string audio_name = aWeaponNode.attribute("audio_file").value();
+  mShootWeapon.load(audio_name);
+
   pugi::xml_attribute special_effect = aWeaponNode.attribute("special_effect");
   if(special_effect) {
     std::string const code = special_effect.value();
@@ -41,6 +45,7 @@ void WeaponLogic::Attack(EnemyLogic*const en, float const timeMS) {
   assert(CanHit(timeMS));
   en->ReceiveDamage(mWeapon->mDamage);
   mLastShotMS = timeMS;
+  mWeapon->mShootWeapon.play();
 }
 void WeaponLogic::init(float const time_ms) {
   mLastShotMS = time_ms;

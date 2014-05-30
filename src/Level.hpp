@@ -21,6 +21,7 @@ protected:
 #include <tuple>
 #include "Avalancha.hpp"
 #include "Turret.hpp"
+#include "cSound.hpp"
 struct LevelLogic {
   /// @param aLevel not owning pointer
   LevelLogic(Level const*const aLevel, Defensor *const aDefensor);
@@ -29,7 +30,7 @@ struct LevelLogic {
   ///Initializes at specified time point
   void init(float const time_ms);
   ///Advances time from init_time_ms by dt_ms
-  bool advanceTime(float const init_time_ms, float const dt_ms, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons);
+  bool advanceTime(Defensor& theDefensor, float const init_time_ms, float const dt_ms, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons);
   void Render() const;
   
   void spawnsEnemy (EnemyLogic const& el);
@@ -40,6 +41,7 @@ protected:
   Level const*const mLevel;
   Defensor *const mDefensor;
   MapLogic mMap;
+  Sound mBuyTurret;
 
   ///Turrets: alive and being constructed
   std::vector<TurretLogic> mAliveTurrets;

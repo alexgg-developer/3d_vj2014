@@ -10,7 +10,7 @@ public:
   ~Sound();
   void load(std::string path);
   void free();
-  void play();
+  void play() const;
 
 private:
   Mix_Chunk* mSound;

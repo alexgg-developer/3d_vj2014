@@ -9,6 +9,9 @@ bool Enemy::Load(pugi::xml_node aEnemyNode) {
   mLife = aEnemyNode.attribute("life").as_float();
   mWeaponUniqueID = aEnemyNode.child("weapon_ref").attribute("name").value();
   mTilesPerMinute = aEnemyNode.attribute("tiles_per_minute").as_float();
+  mMonetaryValue= aEnemyNode.attribute("monetary_value").as_float();
+  std::string die_sound_name = aEnemyNode.attribute("die_sound").value();
+  mDieSound.load(die_sound_name);
   return true;
 }
 void Enemy::LoadModel(char const*const filename) {
@@ -38,6 +41,8 @@ void EnemyLogic::init(float const time_ms) { mLastMovedMS = time_ms; }
 }*/
 void EnemyLogic::ReceiveDamage(float const damage) {
   mActualLife -= damage;
+  if(hasDied())
+    mEnemy->mDieSound.play();
 }
 void EnemyLogic::Attack(Defensor& df) {
   df.receiveDamage(mWeaponLogic.getDamage());

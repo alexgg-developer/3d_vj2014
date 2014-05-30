@@ -2,6 +2,7 @@
 #include <string>
 #include "pugixml.hpp"
 #include "glm/glm.hpp"
+#include "cSound.hpp"
 
 struct WeaponLogic;
 struct Weapon {
@@ -20,6 +21,7 @@ protected:
   std::string mName;
   enum SpecialEffect { NONE, ICE, BURN } mSpecialEffect;
   friend struct WeaponLogic;
+  Sound mShootWeapon;
 };
 
 template<typename BI>

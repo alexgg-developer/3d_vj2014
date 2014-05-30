@@ -4,6 +4,14 @@
 
 Defensor::~Defensor() {}
 
+void Defensor::receiveDamage(float const dam) {
+  mActualLife -= dam;
+}
+
+void Defensor::init() {
+  mNotEnoughMoney.load("./music/comedy_trumpet_playing_sad_song_wah_wah_wah_wah.wav");
+}
+
 glm::vec4 MouseToWorld(glm::vec4 const& p, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix) {
   return glm::inverse(aMVMatrix) * glm::inverse(aProjectionMatrix) * p;
 }
@@ -69,6 +77,7 @@ void Defensor::receive_input(Input& in, LevelLogic& ll, glm::mat4x4 const& aProj
         tl.setPosition(glm::vec2(tileCoordinates.x-0.5f,tileCoordinates.y-0.5f));
         ll.spawnsTurret(std::move(tl));
       } else {
+        mNotEnoughMoney.play();
         std::cout << "Do not have enough money to buy" << std::endl;
       }
     } else {
