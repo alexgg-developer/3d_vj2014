@@ -31,7 +31,7 @@ struct LevelLogic {
   bool advanceTime(float const init_time_ms, float const dt_ms, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons);
   void Render() const;
 
-  void spawnsEnemy(EnemyLogic const& el) { mEnemies.push_back(el); }
+  void spawnsEnemy(EnemyLogic const& el);
 
 protected:
   Level const*const mLevel;

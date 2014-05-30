@@ -47,7 +47,7 @@ SimpleAvalancha::SimpleAvalancha() : Avalancha() {}
 SimpleAvalancha::~SimpleAvalancha() {}
 
 std::map<std::string, unsigned int> SimpleAvalancha::HowMuchToSpawn(float const t_avalancha_started_ms, float const init_t_ms, float const dt_ms, LevelLogic *const aLevel) const {
-  float const ms_per_enemy = 1.0f / (mEnemiesPerMinute * (1.0f/60.0f*1000.0f));
+  float const ms_per_enemy = 1.0f / (mEnemiesPerMinute / (60.0f*1000.0f));
   float const t_avalancha_started_ms_real = t_avalancha_started_ms + mStartMiliSeconds;
   float const end_t_ms = init_t_ms+dt_ms;
   //Avalancha has not started
@@ -132,7 +132,12 @@ void AvalanchaLogic::advance_time(float const init_t_ms, float const dt_ms, Leve
         Enemy const& e = *itE;
         WeaponLogic wl(&w);
         EnemyLogic el(&e, std::move(wl));
-        aLevel->spawnsEnemy(el);
+        if(p.second>100) {
+          std::cout << "Something went wrong, too much enemies are spawned on a single frame" << std::endl;
+          assert(0);
+        }
+        for(std::size_t i=0; i<p.second; ++i)
+          aLevel->spawnsEnemy(el);
       }
     }
   }

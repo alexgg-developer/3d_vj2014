@@ -45,7 +45,7 @@ void EnemyLogic::Attack(Defensor& df) {
 void EnemyLogic::Render() const {
 //TODO: Animation, rotation
 	glPushMatrix();
-	glTranslatef(-mPosition.x, -mPosition.y, 0.0f);
+	glTranslatef(-mPosition.x, 1.0f, -mPosition.y);
   mEnemy->mAssimpModel.Render();
 	glPopMatrix();
 }

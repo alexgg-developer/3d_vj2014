@@ -53,7 +53,11 @@
       <temporal_length seconds="30"/>
     </empty_avalancha>
     <!-- Next example is a COMPOUND avalancha. We want 20 marcianos and 20 rambo interleaving.-->
-    <compound_avalancha order="2"><!-- This "container" avalancha does not need temporal_length: it will be calculated on the fly.-->
+
+
+    <!-- This "container" avalancha does not need temporal_length: it will be calculated on the fly.-->
+<!--
+    <compound_avalancha order="2">
       <simple_avalancha start_time_ms="0">
 	<enemy_ref species="marciano"/>
 	<frequency per_minute="20"/>
@@ -65,5 +69,6 @@
 	<temporal_length seconds="60"/>
       </simple_avalancha>
     </compound_avalancha>
+-->
   </avalanchas>
 </level>
