@@ -23,6 +23,11 @@ int Game::init()
   if(error == 0) error = initGLEW();
   if(error == 0) error = initGL();
 
+  if (!mMusic.load("./music/Sardonica_-_Through_to_Reality__Original_.mp3")) {
+    error = 30;
+  }
+  mMusic.play(true);
+
   return error;
 }
 
@@ -78,6 +83,7 @@ int Game::quit()
 {
   mWindow.free();
   mRenderer.free();
+  mMusic.free();
   Mix_Quit();
   TTF_Quit();
   IMG_Quit();
@@ -126,9 +132,11 @@ int Game::main() {
           mWindow.handleEvent(event);
           if(mWindow.mMinimized) {
             mTimer.pause();
+            mMusic.pause();
           }
           else {
             mTimer.resume();
+            mMusic.resume();
           }
         }
         else {

@@ -8,7 +8,7 @@ class Music
 public:
   Music();
   ~Music();
-  void load(std::string path);
+  bool load(std::string const path);
   void free();
   void play(bool loop);
   void pause();

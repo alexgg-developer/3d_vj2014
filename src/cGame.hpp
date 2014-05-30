@@ -4,6 +4,7 @@
 #include "cTimer.hpp"
 #include "cWindow.hpp"
 #include "cRenderer.hpp"
+#include "cMusic.hpp"
 #include "SDL.h"
 #include "SDL_image.h"
 #include <GL/glew.h>
@@ -19,6 +20,7 @@ private:
   Input mInput;
   Timer mTimer;
   Renderer mRenderer;
+  Music mMusic;
 
   int init();
   int initSDL();

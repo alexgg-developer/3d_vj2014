@@ -8,18 +8,23 @@ Music::~Music()
 {
 }
 
-void Music::load(std::string path)
+bool Music::load(std::string path)
 {
   free();
+  bool success = true;
   mMusic = Mix_LoadMUS( path.c_str() );
   if( mMusic == nullptr ) {
       std::cout << "Failed to load beat music! SDL_mixer Error:" << Mix_GetError() << std::endl;
+      success = false;
   }
+  return success;
 }
 
 void Music::free()
 {
-  Mix_FreeMusic( mMusic );
+  if (mMusic != nullptr) {
+    Mix_FreeMusic(mMusic);
+  }
 }
 
 void Music::play(bool loop)
