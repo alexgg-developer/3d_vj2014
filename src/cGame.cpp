@@ -28,6 +28,10 @@ int Game::init()
   }
   mMusic.play(true);
 
+  if (!mHud.init()) {
+    error = 40;
+  }
+
   return error;
 }
 
@@ -105,6 +109,7 @@ int Game::main() {
     mTimer.start();
     auto te_ms = mTimer.getTimeElapsed();
     lm.init(static_cast<float>(te_ms));
+    mHud.update(10, 100, 2, 1);
     while(!mInput.check(Input::KESC)) {
       //Prepare input
       SDL_Event event;
@@ -132,7 +137,9 @@ int Game::main() {
         logic(dt);
 
         //Render must be first
+        
         mRenderer.render();
+        mHud.draw();
         lm.render();
 
         lm.receive_input(te_ms+dt_ms, mInput, mRenderer.getProjMatrix(), mRenderer.mCamera.getViewMatrix());

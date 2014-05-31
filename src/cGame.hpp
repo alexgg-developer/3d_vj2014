@@ -5,6 +5,7 @@
 #include "cWindow.hpp"
 #include "cRenderer.hpp"
 #include "cMusic.hpp"
+#include "cHud.hpp"
 #include "SDL.h"
 #include "SDL_image.h"
 #include <GL/glew.h>
@@ -21,6 +22,7 @@ private:
   Timer mTimer;
   Renderer mRenderer;
   Music mMusic;
+  Hud mHud;
 
   int init();
   int initSDL();

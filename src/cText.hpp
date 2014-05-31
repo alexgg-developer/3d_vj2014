@@ -7,6 +7,8 @@
 #include <string>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <glm/gtc/matrix_transform.hpp> 
+#include <glm/gtx/transform.hpp>
 
 class Text
 {

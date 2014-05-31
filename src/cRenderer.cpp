@@ -65,7 +65,6 @@ bool Renderer::initGL(const uint mWidth, const uint mHeight)
   glEnable(GL_TEXTURE_2D); 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  //glDisable(GL_DEPTH_TEST);
   glShadeModel( GL_SMOOTH );
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
@@ -126,7 +125,7 @@ void Renderer::render()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
   glm::mat4 viewMatrix;
   mCamera.getViewMatrix(viewMatrix);
-  mTerrain[0].setMatrix(mProjection, viewMatrix);
+  //mTerrain[0].setMatrix(mProjection, viewMatrix);
   glMatrixMode(GL_PROJECTION);
   glLoadMatrixf(&(mProjection[0][0]));
   glMatrixMode(GL_MODELVIEW);

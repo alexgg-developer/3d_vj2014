@@ -45,6 +45,8 @@ bool Text::init()
     std::cout << "Error initializing App!" << gluErrorString(error) << std::endl;
     success = false;
   }
+
+  mPosition = vec3(-0.0f, 0.75f, 0);
   return success;
 }
 
@@ -133,7 +135,11 @@ void Text::setPosition(vec3 const & position)
 
 void Text::draw()
 {
+  glDisable(GL_DEPTH_TEST);
   glUseProgram(mProgramID);
+  glm::mat4 modelMatrix = glm::translate(glm::vec3(mPosition.x, mPosition.y, 0)) * glm::scale(glm::vec3(1.f, 0.15f, 0.15f));
+  GLuint MatrixID = glGetUniformLocation(mProgramID, "MVP");
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &modelMatrix[0][0]);
   glBindTexture(GL_TEXTURE_2D, mTexture);
   GLuint attributeLocation = mVertexShader.setAttribute("LVertexPos2D");
   glEnableVertexAttribArray(attributeLocation);
@@ -144,4 +150,5 @@ void Text::draw()
   mVertexShader.unsetAttribute(attributeLocation);
   glBindTexture(GL_TEXTURE_2D, NULL);
   glUseProgram(NULL);
+  glEnable(GL_DEPTH_TEST);
 }
