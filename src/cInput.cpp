@@ -328,6 +328,11 @@ void Input::readWithScanCode(SDL_Event const & event)
         }
         break;
       }
+      //update actual mouse position
+      int x, y;
+      SDL_GetMouseState(&x, &y);
+      mPositionMouse.x=x;
+      mPositionMouse.y=y;
     }
     break;
     case SDL_QUIT:

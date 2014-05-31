@@ -41,14 +41,18 @@ bool Renderer::initApp()
       mTerrain.push_back(terr);
       glm::vec3 position, lookAt, up;
       position = glm::vec3(0.707f * 20.0f, 0.707f * 20.0f, 0.707f * 20.0f);
-      position.y -= 10.0f;
       lookAt = glm::vec3(0, 0, 0);
       up = glm::vec3(0, 1, 0);
+      ///////////////////
       //temp
-      position=glm::vec3(0,10,0);
+      position.y -= 10.0f;
+      position.x -= 12.0f;
+      position.z -= 5.0f;
+      /*position=glm::vec3(0,10,0);
       lookAt=glm::vec3(0,0,0);
-      up = glm::vec3(0, 0, 1);
+      up = glm::vec3(0, 0, 1);*/
       //end temp
+      ///////////////////
       mCamera.init(position, lookAt, up);
     }
 

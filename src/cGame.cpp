@@ -131,11 +131,13 @@ int Game::main() {
         float const dt_ms = dt *1000.0f;
         logic(dt);
 
-        lm.receive_input(mInput, mRenderer.getProjMatrix(), mRenderer.mCamera.getViewMatrix());
-        lm.advance_time(te_ms, dt_ms);
-
+        //Render must be first
         mRenderer.render();
         lm.render();
+
+        lm.receive_input(te_ms+dt_ms, mInput, mRenderer.getProjMatrix(), mRenderer.mCamera.getViewMatrix());
+        lm.advance_time(te_ms, dt_ms);
+
         SDL_GL_SwapWindow( mWindow.mWindow );
       }
     }

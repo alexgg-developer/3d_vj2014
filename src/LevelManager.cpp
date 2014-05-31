@@ -3,8 +3,8 @@
 LevelManager::LevelManager() {}
 LevelManager::~LevelManager() {
   if(mActiveLevel!=nullptr) delete mActiveLevel;}
-void LevelManager::receive_input(Input& in, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix) {
-  mDefensor.receive_input(in, *mActiveLevel, aProjectionMatrix, aMVMatrix, mTurrets, mWeapons);
+void LevelManager::receive_input(float const end_frame_t, Input& in, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix) {
+  mDefensor.receive_input(end_frame_t, in, *mActiveLevel, aProjectionMatrix, aMVMatrix, mTurrets, mWeapons);
 }
 
 bool LevelManager::init(float const te_ms) {
@@ -30,13 +30,13 @@ bool LevelManager::load() {
   assert(ret);
 
   //Create turrets
-  mTurrets.push_back(Turret(&mWeapons[0])); //simple_gun
+  mTurrets.push_back(Turret(&mWeapons[0], 1000.0f, 10.0f)); //simple_gun
   mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
-  mTurrets.push_back(Turret(&mWeapons[1], 1.0f, 20.0f)); //metralleta
+  mTurrets.push_back(Turret(&mWeapons[1], 1000.0f, 20.0f)); //metralleta
   mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
-  mTurrets.push_back(Turret(&mWeapons[2],10.0f, 15.0f)); //shotgun
+  mTurrets.push_back(Turret(&mWeapons[2],10000.0f, 15.0f)); //shotgun
   mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
-  mTurrets.push_back(Turret(&mWeapons[3], 3.0f, 30.0f)); //ice_gun
+  mTurrets.push_back(Turret(&mWeapons[3], 3000.0f, 30.0f)); //ice_gun
   mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
   //loadTurrets("./levels/turret.xml", std::back_inserter(mEnemies));
 

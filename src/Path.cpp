@@ -65,8 +65,8 @@ void PathLogic::advance_time(float const init_time_ms, float const dt_ms) {
     glm::vec2 const deltaPos = em.mVelocity*dt_ms/1000.0f;
     glm::vec2 const newPosition = em.enemy->getPosition() + deltaPos;
     //TODO: Orientation
-    int const nextX = static_cast<int>(newPosition.x + em.mVelocity.x*0.5f);
-    int const nextY = static_cast<int>(newPosition.y + em.mVelocity.y*0.5f);
+    int const nextX = static_cast<int>(newPosition.x + em.mVelocity.x*0.25f);
+    int const nextY = static_cast<int>(newPosition.y /*+ em.mVelocity.y*0.25f*/);
     bool next_order = !mMap->EnemyCanBeIn(nextX,nextY);
     if(mPath->mOrders[em.mActualOrder].mIndefinitely==false) {
       //Check if enemy has advanced more than the specified quantity

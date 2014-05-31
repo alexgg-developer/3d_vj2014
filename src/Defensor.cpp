@@ -55,14 +55,23 @@ glm::vec3 IntersectionWithYE0(glm::vec2 const aMousePositionXY, glm::mat4x4 cons
   return clickedEarth;
 }
 
-void Defensor::receive_input(Input& in, LevelLogic& ll, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix, std::vector<Turret> const& aTurrets, std::vector<Weapon> const& aWeapons) {
+void Defensor::receive_input(float const end_frame_t, Input& in, LevelLogic& ll, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix, std::vector<Turret> const& aTurrets, std::vector<Weapon> const& aWeapons) {
   if (in.checkMouse(Input::BLEFT)) {
-    glm::vec3 const clickedEarth = IntersectionWithYE0(glm::vec2(in.mPositionMousePressed.x, in.mPositionMousePressed.y), aProjectionMatrix, aMVMatrix);
     //user has clicked: show a visualization of the will-be-bought tower
+    glm::vec3 const clickedEarth = IntersectionWithYE0(glm::vec2(in.mPositionMouse.x, in.mPositionMouse.y), aProjectionMatrix, aMVMatrix);
+    glm::vec2 const tileCoordinates(-clickedEarth.x+0.5f,-clickedEarth.z+0.5f);
+    
+    if (ll.getMap()(tileCoordinates.x, tileCoordinates.y)==Map::TileType::BUILDABLE) {
+      TurretLogic tl(&aTurrets[mSelectedTurretIndex], &aWeapons[mSelectedWeaponIndex]); //fast to construct
+      tl.setPosition(glm::vec2(tileCoordinates.x-0.5f,tileCoordinates.y-0.5f));
+      tl.setScale(0.3f);
+      tl.setHeight(0.15f);
+      tl.Render(); //warning todo not render here madafacka
+    }
 
     std::cout << "Earth clic is on " << clickedEarth.x << ", " << clickedEarth.y << ", " << clickedEarth.z << std::endl;
   } else if(in.checkMouseReleased(Input::BLEFT)) {
-    glm::vec3 const clickedEarth = IntersectionWithYE0(glm::vec2(in.mPositionMousePressed.x, in.mPositionMousePressed.y), aProjectionMatrix, aMVMatrix);
+    glm::vec3 const clickedEarth = IntersectionWithYE0(glm::vec2(in.mPositionMouseRealased.x, in.mPositionMouseRealased.y), aProjectionMatrix, aMVMatrix);
     //user has released button: try to purchase
     in.UseMouseLastRelease(Input::BLEFT);
 
@@ -71,11 +80,11 @@ void Defensor::receive_input(Input& in, LevelLogic& ll, glm::mat4x4 const& aProj
       std::cout << "Build a turret on tile " << (int)tileCoordinates.x << ", " << (int)tileCoordinates.y << std::endl;
  
       //Instantiate one turret
-      if(this->mMoney>=aTurrets[0].MonetaryCost()) {
-        this->mMoney -= aTurrets[0].MonetaryCost();
-        TurretLogic tl(&aTurrets[0], &aWeapons[0]);
+      if(this->mMoney>=aTurrets[mSelectedTurretIndex].MonetaryCost()) {
+        this->mMoney -= aTurrets[mSelectedTurretIndex].MonetaryCost();
+        TurretLogic tl(&aTurrets[mSelectedTurretIndex], &aWeapons[mSelectedWeaponIndex]);
         tl.setPosition(glm::vec2(tileCoordinates.x-0.5f,tileCoordinates.y-0.5f));
-        ll.spawnsTurret(std::move(tl));
+        ll.spawnsTurret(std::move(tl), end_frame_t);
       } else {
         mNotEnoughMoney.play();
         std::cout << "Do not have enough money to buy" << std::endl;

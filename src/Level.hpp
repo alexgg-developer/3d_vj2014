@@ -34,7 +34,7 @@ struct LevelLogic {
   void Render() const;
   
   void spawnsEnemy (EnemyLogic const& el);
-  void spawnsTurret(TurretLogic&& el);
+  void spawnsTurret(TurretLogic&& el, float const build_init_time);
   MapLogic const& getMap() { return mMap; }
 
 protected:

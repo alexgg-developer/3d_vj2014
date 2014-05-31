@@ -46,6 +46,11 @@ void WeaponLogic::Attack(EnemyLogic*const en, float const timeMS) {
   en->ReceiveDamage(mWeapon->mDamage);
   mLastShotMS = timeMS;
   mWeapon->mShootWeapon.play();
+
+  if(mWeapon->mSpecialEffect==Weapon::SpecialEffect::ICE) {
+    //can't move enemy
+    //maybe draw it with another color
+  }
 }
 void WeaponLogic::init(float const time_ms) {
   mLastShotMS = time_ms;

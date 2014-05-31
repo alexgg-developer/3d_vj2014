@@ -4,7 +4,7 @@
 #include "Enemy.hpp"
 
 Turret::Turret(Weapon const* aWeapon, float const aBuildingTime, float const aMonetaryCost)
-  : mWeapon(aWeapon), mBuildingTime(aBuildingTime), mMonetaryCost(aMonetaryCost) {}
+  : mWeapon(aWeapon), mBuildingTimeMS(aBuildingTime), mMonetaryCost(aMonetaryCost) {}
 Turret::~Turret() {}
 
 void Turret::LoadModel(char const*const filename) {
@@ -19,9 +19,12 @@ void Turret::LoadModel(char const*const filename) {
 TurretLogic::TurretLogic(Turret const*const turret, Weapon const*const aWeapon)
   : mTurret(turret), mWeaponLogic(aWeapon) {}
 TurretLogic::~TurretLogic() {}
+void TurretLogic::setScale(float const sc) {mScale = sc;}
+void TurretLogic::setHeight(float const sc) {mHeight = sc;}
 void TurretLogic::Render() const {
 	glPushMatrix();
-	glTranslatef(-mPosition.x, 0.5f, -mPosition.y);
+	glTranslatef(-mPosition.x, mHeight, -mPosition.y);
+  glScalef(mScale, mScale, mScale);
   mTurret->mAssimpModel.Render();
 	glPopMatrix();
 }

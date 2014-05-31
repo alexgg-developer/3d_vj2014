@@ -16,11 +16,15 @@ struct Defensor {
   bool IsAlive() const { return mActualLife>0; }
   void init();
   void receiveDamage(float const dam);
-  void receive_input(Input& in, LevelLogic& ll, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix, std::vector<Turret> const& aTurrets, std::vector<Weapon> const& aWeapons);
+  void receive_input(float const end_frame_t, Input& in, LevelLogic& ll, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix, std::vector<Turret> const& aTurrets, std::vector<Weapon> const& aWeapons);
   void add_money(float const m) { mMoney+=m;}
+  /// changes the selected turret and weapon
+  void set_selected_turret_and_weapon(std::size_t const turret, std::size_t weapon) {
+    mSelectedTurretIndex = turret; mSelectedWeaponIndex = weapon;}
 protected:
   float mMaxLife;
   float mActualLife;
   float mMoney;
   Sound mNotEnoughMoney;
+  std::size_t mSelectedTurretIndex=0, mSelectedWeaponIndex=0;
 };

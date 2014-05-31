@@ -88,9 +88,11 @@ bool LevelLogic::advanceTime(Defensor& theDefensor, float const init_time_ms, fl
   /// Build turrets
   for(std::vector<std::tuple<TurretLogic, float >>::iterator it = mBuildingTurrets.begin(); it!=mBuildingTurrets.end();) {
     std::tuple<TurretLogic, float > &tupl = *it;
-    TurretLogic const& turret = std::get<0>(tupl);
+    TurretLogic& turret = std::get<0>(tupl);
     float const init_build_time_ms = std::get<1>(tupl);
     if(turret.getBuildingDuration() + init_build_time_ms <= end_time_ms) {
+      turret.setScale(1.0f);
+      turret.setHeight(0.5f);
       mAliveTurrets.push_back(turret);
       it = mBuildingTurrets.erase(it);
     } else ++it;
@@ -126,6 +128,19 @@ bool LevelLogic::advanceTime(Defensor& theDefensor, float const init_time_ms, fl
   for(PathLogic & al : mPaths) {
     al.advance_time(init_time_ms, dt_ms);
   }
+
+  //Build turrets
+  for(auto& tu : mBuildingTurrets) {
+    TurretLogic& tl = std::get<0>(tu);
+    float const init_build_time = std::get<1>(tu);
+    float const delta_build_time = tl.getBuildingDuration();
+    float const sc = 0.3f + 0.7f*(end_time_ms-init_build_time)/delta_build_time;
+    tl.setScale(sc);
+    tl.setHeight(sc/2.0f);
+    tl.Render(); //warning todo not render here madafacka
+    //tu->Render();
+    //TODO: Draw with alfa
+  }
   return true;
 }
 
@@ -133,10 +148,10 @@ void LevelLogic::Render() const {
   for(TurretLogic const& tu : mAliveTurrets) {
     tu.Render();
   }
-/*  for(auto& tu : mBuildingTurrets) {
-    //tu->Render();
-    //TODO: Draw with alfa
-  }*/
+  for(auto const& tu : mBuildingTurrets) {
+    TurretLogic const& tl = std::get<0>(tu);
+    tl.Render(); 
+  }
   for(EnemyLogic const& el : mEnemies) {
     el.Render();
   }
@@ -149,7 +164,8 @@ void LevelLogic::spawnsEnemy(EnemyLogic const& el) {
   assert(!mPaths.empty() && "There should be some path there");
   mPaths[rand()%mPaths.size()].assignEnemy(&mEnemies.back());
 }
-void LevelLogic::spawnsTurret(TurretLogic&& el) {
-  this->mAliveTurrets.push_back(el);
+void LevelLogic::spawnsTurret(TurretLogic&& el, float const build_init_time) {
+  //this->mAliveTurrets.push_back(el);
+  this->mBuildingTurrets.push_back(std::tuple<TurretLogic, float>(el,build_init_time));
   mBuyTurret.play();
 }
