@@ -15,10 +15,22 @@ bool LevelManager::has_ended_level(float const time_ms) const {
 bool LevelManager::user_won(float const time_ms) const {
   return is_level_active() && mActiveLevel->user_won(time_ms);
 }
-void LevelManager::next_level() {
+bool LevelManager::has_next_level() const { 
+  return mActiveLevelIndex+1<mLevels.size();
+}
+void LevelManager::reset_level(float const time_ms) {
+  mActiveLevelIndex--;
+  mDefensor.restoreMoney(mDefensorMoneyLastLevel);
+  next_level(time_ms);
+}
+void LevelManager::next_level(float const time_ms) {
 //TODO: Code correctly
+  mActiveLevelIndex++;
   if(mActiveLevel!=nullptr) delete mActiveLevel;
-  mActiveLevel = new LevelLogic(&mLevels[1], &mDefensor);
+  mActiveLevel = new LevelLogic(&mLevels[mActiveLevelIndex], &mDefensor);
+  mActiveLevel->init(time_ms);
+  mDefensor.restoreLife();
+  mDefensorMoneyLastLevel = mDefensor.getMoney();
 }
 void LevelManager::stop() {
 //TODO: Animation for stoping. Maybe stop time and scale down everything?
@@ -66,7 +78,7 @@ bool LevelManager::load() {
   //loadTurrets("./levels/turret.xml", std::back_inserter(mEnemies));
 
   if(mActiveLevel!=nullptr) delete mActiveLevel;
-  mActiveLevel = new LevelLogic(&mLevels[0], &mDefensor);
+  mActiveLevel = new LevelLogic(&mLevels[mActiveLevelIndex], &mDefensor);
 
   return true;
 }

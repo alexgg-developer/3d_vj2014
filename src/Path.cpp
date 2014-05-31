@@ -107,6 +107,7 @@ void PathLogic::ApplyNextOrderTo(EnemyMoving& em) {
     else if(ord.mOrderType==Path::Order::OrderType::ATTACK_BASE) {
       em.mVelocity = glm::vec2(0, 0); //Do not move
       em.enemy->Attack(*mDefensor);  //Attacks prota
+      em.mPathFinished=true;//attack only once
     }
     else { 
       std::cout << "Order type not recognized " << ord.mOrderType << std::endl;

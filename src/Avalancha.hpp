@@ -30,7 +30,7 @@ struct SimpleAvalancha : public Avalancha {
   bool Load(pugi::xml_node const& aSimpleAvalanchaNode);
   virtual std::map<std::string, unsigned int> HowMuchToSpawn(float const t_avalancha_started_ms, float const init_t_ms, float const dt_ms, LevelLogic *const aLevel) const override;
   
-  virtual float temporal_length() const override { return mStartMiliSeconds + mTemporalLengthSeconds; }
+  virtual float temporal_length() const override { return mStartMiliSeconds + mTemporalLengthSeconds*1000.0f; }
 protected:
   std::string mEnemyUniqueID;
   float mEnemiesPerMinute;

@@ -103,8 +103,7 @@ int Game::main() {
     //mWindow.switchFullScreen();
 
     mTimer.start();
-    auto te_ms = mTimer.getTimeElapsed();
-    lm.init(static_cast<float>(te_ms));
+    lm.init(static_cast<float>(mTimer.getLastTimeMS()));
     while(!mInput.check(Input::KESC)) {
       //Prepare input
       SDL_Event event;
@@ -137,6 +136,23 @@ int Game::main() {
 
         lm.receive_input(te_ms+dt_ms, mInput, mRenderer.getProjMatrix(), mRenderer.mCamera.getViewMatrix());
         lm.advance_time(te_ms, dt_ms);
+
+        /// Treat end of levels, wins and loses
+        if(lm.has_ended_level(te_ms+dt_ms)) {
+          if(lm.user_won(te_ms+dt_ms)) {
+            if(lm.has_next_level())
+              lm.next_level(te_ms+dt_ms);
+            else {
+              std::cout << "You won the game" << std::endl;
+              //TODO Go to won scene or to main menu
+              exit(0);
+            }
+          } else {
+            std::cout << "You lost the game" << std::endl;
+            //TODO return to main menu or reset level
+            lm.reset_level(te_ms+dt_ms);
+          }
+        }
 
         SDL_GL_SwapWindow( mWindow.mWindow );
       }

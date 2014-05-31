@@ -6,6 +6,7 @@
 	 life="10"
 	 monetary_value="2"
 	 die_sound="./music/rat_die.wav"
+	 attack_sound="./music/solarplexis_hit.wav"
 	 >
     <weapon_ref name="simple_gun"/>
   </enemy>
@@ -13,14 +14,16 @@
 	 tiles_per_minute="20"
 	 life="20"
 	 monetary_value="5"
-	 die_sound="./music/skeleton_die.wav">
+	 die_sound="./music/skeleton_die.wav"
+	 attack_sound="./music/solarplexis_hit.wav">
     <weapon_ref name="shotgun"/>
   </enemy>
   <enemy species="runner"
 	 tiles_per_minute="20"
 	 life="5"
 	 monetary_value="1"
-	 die_sound="./music/rat_die.wav">
+	 die_sound="./music/rat_die.wav"
+	 attack_sound="./music/solarplexis_hit.wav">
     <weapon_ref name="shotgun"/>
   </enemy>
 </enemies_list>

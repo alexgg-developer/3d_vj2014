@@ -1,6 +1,7 @@
 #include "Enemy.hpp"
 #include <iostream>
 
+
 Enemy::Enemy() {}
 Enemy::~Enemy() {}
 
@@ -12,6 +13,9 @@ bool Enemy::Load(pugi::xml_node aEnemyNode) {
   mMonetaryValue= aEnemyNode.attribute("monetary_value").as_float();
   std::string die_sound_name = aEnemyNode.attribute("die_sound").value();
   mDieSound.load(die_sound_name);
+  std::string attack_sound_name = aEnemyNode.attribute("attack_sound").value();
+  mAttackDefensorSound.load(attack_sound_name);
+  
   return true;
 }
 void Enemy::LoadModel(char const*const filename) {
@@ -46,6 +50,7 @@ void EnemyLogic::ReceiveDamage(float const damage) {
 }
 void EnemyLogic::Attack(Defensor& df) {
   df.receiveDamage(mWeaponLogic.getDamage());
+  mEnemy->mAttackDefensorSound.play();
 }
 void EnemyLogic::Render() const {
 //TODO: Animation, rotation
