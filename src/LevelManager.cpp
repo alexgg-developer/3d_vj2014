@@ -7,7 +7,28 @@ void LevelManager::receive_input(float const end_frame_t, Input& in, glm::mat4x4
   mDefensor.receive_input(end_frame_t, in, *mActiveLevel, aProjectionMatrix, aMVMatrix, mTurrets, mWeapons);
 }
 
+bool LevelManager::is_level_active() const {
+  return mActiveLevel!=nullptr; }
+bool LevelManager::has_ended_level(float const time_ms) const {
+  return is_level_active() && mActiveLevel->has_ended(time_ms);
+}
+bool LevelManager::user_won(float const time_ms) const {
+  return is_level_active() && mActiveLevel->user_won(time_ms);
+}
+void LevelManager::next_level() {
+//TODO: Code correctly
+  if(mActiveLevel!=nullptr) delete mActiveLevel;
+  mActiveLevel = new LevelLogic(&mLevels[1], &mDefensor);
+}
+void LevelManager::stop() {
+//TODO: Animation for stoping. Maybe stop time and scale down everything?
+  if(mActiveLevel!=nullptr) //I know this check is redundant, but it feels to be the RIGHT WAY
+    delete mActiveLevel;
+  mActiveLevel = nullptr;
+}
+
 bool LevelManager::init(float const te_ms) {
+  assert(mActiveLevel);
   mActiveLevel->init(te_ms);
   mDefensor.init();
   return true;
@@ -26,8 +47,12 @@ bool LevelManager::load() {
   loadEnemies("./levels/enemies.xml", std::back_inserter(mEnemies));
   
   //Load level
-  bool const ret = aLevel.Load("./levels/level00.xml");
-  assert(ret);
+  {
+    Level aLevel;
+    bool const ret = aLevel.Load("./levels/level00.xml");
+    assert(ret);
+    mLevels.push_back(aLevel);
+  }
 
   //Create turrets
   mTurrets.push_back(Turret(&mWeapons[0], 1000.0f, 10.0f)); //simple_gun
@@ -41,7 +66,7 @@ bool LevelManager::load() {
   //loadTurrets("./levels/turret.xml", std::back_inserter(mEnemies));
 
   if(mActiveLevel!=nullptr) delete mActiveLevel;
-  mActiveLevel = new LevelLogic(&aLevel, &mDefensor);
+  mActiveLevel = new LevelLogic(&mLevels[0], &mDefensor);
 
   return true;
 }

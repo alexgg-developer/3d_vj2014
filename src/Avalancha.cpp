@@ -107,6 +107,10 @@ bool CompoundAvalancha::Load(pugi::xml_node const& aCompoundAvalanchaNode) {
 #include <algorithm>
 #include "Enemy.hpp"
 #include "Weapon.hpp"
+bool AvalanchaLogic::has_ended(float const time_ms) const {
+  float const avalancha_end = mAvalancha->temporal_length() + mInitTime;
+  return avalancha_end<time_ms;
+}
 //std::vector<Weapon> const& availableWeapons, 
 void AvalanchaLogic::advance_time(float const init_t_ms, float const dt_ms, LevelLogic *const aLevel, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons) {
   Avalancha const*const actualAvalancha = mAvalancha;

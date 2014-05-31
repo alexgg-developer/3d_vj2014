@@ -13,6 +13,7 @@ struct Avalancha {
   Avalancha();
   ~Avalancha();
   
+  virtual float temporal_length() const =0;
   void ChangeOrder(int const aOrder) { mOrder = aOrder; }
   virtual std::map<std::string, unsigned int> HowMuchToSpawn(float const t_avalancha_started_ms, float const init_t_ms, float const dt_ms, LevelLogic *const aLevel) const =0;
 protected:
@@ -28,7 +29,8 @@ struct SimpleAvalancha : public Avalancha {
 
   bool Load(pugi::xml_node const& aSimpleAvalanchaNode);
   virtual std::map<std::string, unsigned int> HowMuchToSpawn(float const t_avalancha_started_ms, float const init_t_ms, float const dt_ms, LevelLogic *const aLevel) const override;
-
+  
+  virtual float temporal_length() const override { return mStartMiliSeconds + mTemporalLengthSeconds; }
 protected:
   std::string mEnemyUniqueID;
   float mEnemiesPerMinute;
@@ -42,11 +44,12 @@ struct EmptyAvalancha : public Avalancha{
 
   bool Load(pugi::xml_node const& anEmptyAvalanchaNode);
   virtual std::map<std::string, unsigned int> HowMuchToSpawn(float const t_avalancha_started_ms, float const init_t_ms, float const dt_ms, LevelLogic *const aLevel) const override { return std::map<std::string, unsigned int>(); }
-
+  
+  virtual float temporal_length() const override { return 0; }
 protected:
   float mTemporalLengthSeconds;
 };
-
+#include <algorithm>
 /// Avalancha formed by other avalanchas
 struct CompoundAvalancha : public Avalancha{
   CompoundAvalancha();
@@ -60,6 +63,13 @@ struct CompoundAvalancha : public Avalancha{
       for(auto const& p : ret2) {
         ret[p.first] += p.second;
       }
+    }
+    return ret;
+  }
+  virtual float temporal_length() const override { 
+    float ret=0;
+    for(auto av: mSons) {
+      ret = std::max(ret,av->temporal_length());
     }
     return ret;
   }
@@ -77,6 +87,7 @@ struct AvalanchaLogic {
   void init(float time_ms) { mInitTime=time_ms; }
   /// Spawns new enemies at aLevel if needed
   void advance_time(float const init_t_ms, float const dt_ms, LevelLogic *const aLevel, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons);
+  bool has_ended(float const time_ms) const;
 protected:
   Avalancha const* mAvalancha;
   float mInitTime=0;

@@ -169,3 +169,16 @@ void LevelLogic::spawnsTurret(TurretLogic&& el, float const build_init_time) {
   this->mBuildingTurrets.push_back(std::tuple<TurretLogic, float>(el,build_init_time));
   mBuyTurret.play();
 }
+bool LevelLogic::has_ended(float const time_ms) const {
+  for(AvalanchaLogic const& al : mAvalanchas) {
+    if(!al.has_ended(time_ms)) return false;
+  }
+  return true;
+}
+bool LevelLogic::user_won(float const time_ms) const {
+  for(AvalanchaLogic const& al : mAvalanchas) {
+    if(!al.has_ended(time_ms)) return false;
+  }
+  return mDefensor->IsAlive();
+
+}

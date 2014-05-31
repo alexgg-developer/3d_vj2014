@@ -37,6 +37,8 @@ struct LevelLogic {
   void spawnsTurret(TurretLogic&& el, float const build_init_time);
   MapLogic const& getMap() { return mMap; }
 
+  bool has_ended(float const time_ms) const;
+  bool user_won(float const time_ms) const;
 protected:
   Level const*const mLevel;
   Defensor *const mDefensor;
