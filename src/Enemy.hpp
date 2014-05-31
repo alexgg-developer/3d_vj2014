@@ -25,7 +25,7 @@ protected:
   std::string mSpecies;
   friend struct EnemyLogic;
   float mMonetaryValue=2;
-  Sound mDieSound;
+  Sound mDieSound, mAttackDefensorSound;
 };
 template<typename BI>
 void loadEnemies(char const*const filename, BI bi) {

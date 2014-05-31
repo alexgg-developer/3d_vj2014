@@ -21,6 +21,10 @@ struct Defensor {
   /// changes the selected turret and weapon
   void set_selected_turret_and_weapon(std::size_t const turret, std::size_t weapon) {
     mSelectedTurretIndex = turret; mSelectedWeaponIndex = weapon;}
+  float getLife() const { return mActualLife; }
+  void restoreLife() { mActualLife = std::max(mMaxLife, mActualLife); }
+  void restoreMoney(float const aMoney) { mMoney = std::max(aMoney, mMoney); }
+  float getMoney() const { return mMoney;}
 protected:
   float mMaxLife;
   float mActualLife;
