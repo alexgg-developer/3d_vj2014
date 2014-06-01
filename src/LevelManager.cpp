@@ -9,7 +9,7 @@ void LevelManager::receive_input(float const end_frame_t, Input& in, glm::mat4x4
 }
 
 bool LevelManager::is_level_active() const {
-  return mActiveLevel!=nullptr && mLevelInOut!=NONE; }
+  return mActiveLevel!=nullptr && mLevelInOut==NONE; }
 bool LevelManager::has_ended_level(float const time_ms) const {
   return is_level_active() && mActiveLevel->has_ended(time_ms);
 }
