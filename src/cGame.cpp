@@ -40,6 +40,9 @@ int Game::init()
     error = 50;
   }
 
+  mWinSound.load("./sounds/you_win.wav");
+  mLoseSound.load("./sounds/you_lose.wav");
+
   return error;
 }
 
@@ -157,12 +160,14 @@ int Game::main() {
               else {
                 std::cout << "You won the game" << std::endl;
                 mInMenu = true;
+                mWinSound.play();
                 //exit(0);
               }
             } else {
               std::cout << "You lost the game" << std::endl;
               //TODO return to main menu or reset level
               lm.reset_level(te_ms+dt_ms);
+              mLoseSound.play();
             }
           }
         }
