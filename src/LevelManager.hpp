@@ -19,7 +19,7 @@ struct LevelManager {
   float get_money() const { return mDefensor.getMoney(); }  
   float get_life() const { return mDefensor.getLife(); }
   unsigned int how_much_waves_in_actual_level() const { return mActiveLevel->how_much_waves(); }
-  unsigned int actual_wave_in_actual_leve(float const time_ms) const { return mActiveLevel->actual_wave(time_ms); }
+  unsigned int actual_wave_in_actual_leve(float const time_ms) const { return mActiveLevel->actual_wave(time_ms)+1; }
 
   ///Advances time from init_time_ms by dt_ms
   bool advance_time(float const init_time_ms, float const dt_ms);
