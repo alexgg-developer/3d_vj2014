@@ -88,10 +88,16 @@ bool LevelManager::load() {
   
   //Load level
   {
-    Level aLevel;
+    Level aLevel, aLevel1, aLevel2;
     bool const ret = aLevel.Load("./levels/level00.xml");
     assert(ret);
     mLevels.push_back(aLevel);
+    bool const ret1 = aLevel1.Load("./levels/level01.xml");
+    assert(ret1);
+    mLevels.push_back(aLevel1);
+    bool const ret2 = aLevel2.Load("./levels/level02.xml");
+    assert(ret2);
+    mLevels.push_back(aLevel2);
   }
 
   //Create turrets

@@ -7,6 +7,7 @@
 #include "cMusic.hpp"
 #include "cHud.hpp"
 #include "cMenu.hpp"
+#include "cSound.hpp"
 #include "SDL.h"
 #include "SDL_image.h"
 #include <GL/glew.h>
@@ -28,6 +29,7 @@ private:
   Music mMusic;
   Hud mHud;
   Menu mMenu;
+  Sound mWinSound, mLoseSound;
   bool mInMenu;
   bool mQuitDone;
   size_t mLevel;

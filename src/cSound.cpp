@@ -21,7 +21,9 @@ void Sound::load(std::string path)
 
 void Sound::free()
 {
-  Mix_FreeChunk( mSound );
+  if (mSound != nullptr) {
+    Mix_FreeChunk(mSound);
+  }
 }
 
 void Sound::play() const

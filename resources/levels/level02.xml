@@ -1,0 +1,97 @@
+<!-- Every xml document contains a single level formed by: map, -->
+<level name="First contact">
+  <!-- Tile types are: (B)uildable, (P)assable and (U)seless-->
+  <map
+      map_sizeX="15"
+      map_sizeY="11"
+      map_tile_types=
+      "       
+       UUUUUUBPBUUUUUU
+       UPPPPPPPPPPPPPU
+       UPBUBUBUBUBUBPU
+       UPUUUUUUUUUUBPU
+       UPBUUUUUUUUUUPU
+       UPUUUUUUUUUUBPU
+       UPBUUUUUUUUUUPU
+       UPBUBUUPUBUUBPU
+       UPPPPPPPPPPPPPU
+       UUPBUUUUUUUBPUU
+       UUPUUUUUUUUUPUU
+       ">
+  </map>
+  <paths>
+    <path name="LeftPath">
+      <start_point x="10" y="12"/>
+      <order code="left" quantity="2"/>
+      <order code="up" quantity="1"/>
+      <order code="left" quantity="7"/>
+      <order code="down" quantity="6"/>
+      <order code="left" quantity="1"/>
+      <order code="attack-base"/> <!-- Specified as order for flexibility: they may attack us through magic portals, isn't it? :-P -->
+    </path>
+    
+    <path name="RightPath">
+      <start_point x="10" y="2"/>
+      <order code="left" quantity="2"/>
+      <order code="down" quantity="1"/>
+      <order code="left" quantity="7"/>
+      <order code="up" quantity="6"/>
+      <order code="left" quantity="1"/>
+      <order code="attack-base"/> <!-- Specified as order for flexibility: they may attack us through magic portals, isn't it? :-P -->
+    </path>
+    <path name="CenterPath">
+      <start_point x="7" y="7"/>
+      <order code="right" quantity="1"/>
+      <order code="down" quantity="6"/>
+      <order code="left" quantity="7"/>
+      <order code="up" quantity="6"/>
+      <order code="left" quantity="1"/>
+      <order code="attack-base"/> <!-- Specified as order for flexibility: they may attack us through magic portals, isn't it? :-P -->
+    </path>
+  </paths>
+  <!-- I can't find a better word. Most of the time it defines a bunch of enemies running to your base.-->
+  <!-- First example is a SIMPLE avalancha: 20 marciano, 1 every 3 seconds.-->
+  <avalanchas>
+    <simple_avalancha order="0" start_time_ms="0">
+      <enemy_ref species="marciano"/>
+      <frequency per_minute="40"/>
+      <temporal_length seconds="60"/>
+    </simple_avalancha>
+    <simple_avalancha order="1" start_time_ms="100">
+      <enemy_ref species="rambo"/>
+      <frequency per_minute="40"/>
+      <temporal_length seconds="60"/>
+    </simple_avalancha>
+    <simple_avalancha order="2" start_time_ms="200">
+      <enemy_ref species="runner"/>
+      <frequency per_minute="40"/>
+      <temporal_length seconds="60"/>
+    </simple_avalancha>
+    <!-- Empty avalancha for letting the user build and upgrade shit and stuff.-->
+    <empty_avalancha order="3">
+      <temporal_length seconds="10"/>
+    </empty_avalancha>
+    <!-- Next example is a COMPOUND avalancha. We want 20 marcianos and 20 rambo interleaving.-->
+
+
+    <!-- This "container" avalancha does not need temporal_length: it will be calculated on the fly.-->
+
+    <compound_avalancha order="4">
+      <simple_avalancha start_time_ms="400">
+        <enemy_ref species="marciano"/>
+        <frequency per_minute="40"/>
+        <temporal_length seconds="60"/>
+      </simple_avalancha>
+      <simple_avalancha start_time_ms="500">
+        <enemy_ref species="rambo"/>
+        <frequency per_minute="40"/>
+        <temporal_length seconds="60"/>
+      </simple_avalancha>
+      <simple_avalancha start_time_ms="600">
+        <enemy_ref species="runner"/>
+        <frequency per_minute="40"/>
+        <temporal_length seconds="60"/>
+      </simple_avalancha>
+    </compound_avalancha>
+  </avalanchas>
+</level>
