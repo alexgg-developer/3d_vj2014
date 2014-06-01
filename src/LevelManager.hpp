@@ -15,6 +15,11 @@ struct LevelManager {
   bool load();
   bool init(float const te_ms);
   void render();
+  
+  float get_money() const { return mDefensor.getMoney(); }  
+  float get_life() const { return mDefensor.getLife(); }
+  unsigned int how_much_waves_in_actual_level() const { return mActiveLevel->how_much_waves(); }
+  unsigned int actual_wave_in_actual_leve(float const time_ms) const { return mActiveLevel->actual_wave(time_ms); }
 
   ///Advances time from init_time_ms by dt_ms
   bool advance_time(float const init_time_ms, float const dt_ms);
@@ -34,6 +39,8 @@ struct LevelManager {
   ///Deletes active level and stops from rendering nor updating anything
   void stop();
   void reset_level(float const time_ms);
+
+  void change_to_level(unsigned const int level, float const time_ms);
 protected:
   std::vector<Weapon> mWeapons;
   std::vector<Enemy> mEnemies;

@@ -83,6 +83,15 @@ void LevelLogic::init(float const time_ms) {
   }
   this->mMap.init_and_load();
 }
+unsigned int LevelLogic::how_much_waves() const {
+  return mAvalanchas.size(); }
+unsigned int LevelLogic::actual_wave(float const time_ms) const {
+  unsigned int result=0;
+  for(AvalanchaLogic const& al : mAvalanchas) {
+    if(al.has_ended(time_ms)) ++result;
+  }
+  return result;
+}
 ///Advances time
 bool LevelLogic::advanceTime(Defensor& theDefensor, float const init_time_ms, float const dt_ms, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons) {
   float const end_time_ms = init_time_ms + dt_ms;

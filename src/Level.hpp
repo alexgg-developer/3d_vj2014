@@ -39,6 +39,8 @@ struct LevelLogic {
 
   bool has_ended(float const time_ms) const;
   bool user_won(float const time_ms) const;
+  unsigned int how_much_waves() const;
+  unsigned int actual_wave(float const time_ms) const;
 protected:
   Level const*const mLevel;
   Defensor *const mDefensor;

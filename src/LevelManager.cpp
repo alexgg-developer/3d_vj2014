@@ -23,14 +23,18 @@ void LevelManager::reset_level(float const time_ms) {
   mDefensor.restoreMoney(mDefensorMoneyLastLevel);
   next_level(time_ms);
 }
-void LevelManager::next_level(float const time_ms) {
-//TODO: Code correctly
-  mActiveLevelIndex++;
+void LevelManager::change_to_level(unsigned const int level, float const time_ms) {
+  mActiveLevelIndex = level;
   if(mActiveLevel!=nullptr) delete mActiveLevel;
   mActiveLevel = new LevelLogic(&mLevels[mActiveLevelIndex], &mDefensor);
   mActiveLevel->init(time_ms);
   mDefensor.restoreLife();
   mDefensorMoneyLastLevel = mDefensor.getMoney();
+}
+void LevelManager::next_level(float const time_ms) {
+//TODO: Code correctly
+  mActiveLevelIndex++;
+  change_to_level(mActiveLevelIndex, time_ms);
 }
 void LevelManager::stop() {
 //TODO: Animation for stoping. Maybe stop time and scale down everything?
