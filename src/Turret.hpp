@@ -24,7 +24,7 @@ protected:
   friend struct TurretLogic;
 };
 
-#include "Weapon.hpp"
+#include "WeaponLogic.hpp"
 struct EnemyLogic;
 struct TurretLogic {
   TurretLogic(Turret const*const turret, Weapon const*const aWeapon);

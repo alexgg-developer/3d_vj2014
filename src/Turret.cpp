@@ -33,6 +33,7 @@ void TurretLogic::Attack(EnemyLogic* const enemy, float const timeMS) {
   assert(mWeaponLogic.CanHit(timeMS));
   mWeaponLogic.Attack(enemy,timeMS);
 }
+#include "Weapon.hpp"
 bool TurretLogic::CanHit(glm::vec2 const& apos, float const timeMS) {
   if(mWeaponLogic.CanHit(timeMS)) {
     float const manhattanDistance = std::abs(apos.x-mPosition.x) + std::abs(apos.y-mPosition.y);

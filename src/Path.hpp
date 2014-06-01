@@ -29,29 +29,3 @@ protected:
   std::vector<Order> mOrders;
   friend struct PathLogic;
 };
-
-struct Defensor;
-struct EnemyLogic;
-struct Map;
-struct PathLogic {
-  PathLogic(Path const*const aPath, Defensor *const aDefensor, Map const*const aMap);
-  ~PathLogic();
-
-  void assignEnemy(EnemyLogic* el);
-  void advance_time(float const init_time_ms, float const dt_ms);
-
-protected:
-  Path const* mPath;
-  Defensor * mDefensor;
-  Map const* mMap; 
-  struct EnemyMoving {
-    EnemyMoving(EnemyLogic* el);
-    EnemyLogic* enemy=nullptr;
-    int mActualOrder=-1;
-    glm::vec2 mNextPosition;
-    glm::vec2 mPositionWhenStartedOrder;
-    //TODO: Orientation
-  };
-  std::vector<EnemyMoving> mControlledEnemies;
-  void ApplyNextOrderTo(EnemyMoving& em);
-};
