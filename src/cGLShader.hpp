@@ -22,7 +22,7 @@ public:
   static bool linkProgram(GLuint program);
   static void printProgramLog(GLuint program);
 private:
-  uint mID;
+  uint mID=0;
   std::string mShaderSource;
 };
 

@@ -29,6 +29,13 @@ bool Text::init()
   };
 
   GLuint indexData[] = { 0, 1, 2, 3 };
+  
+  if (mVBO != 0) {
+    glDeleteBuffers(1, &mVBO);
+  }
+  if (mIBO != 0) {
+    glDeleteBuffers(1, &mIBO);
+  }
 
   glGenBuffers(1, &mVBO);
   glBindBuffer(GL_ARRAY_BUFFER, mVBO);
@@ -63,6 +70,10 @@ bool Text::loadFont(std::string path, uint size)
 bool Text::loadText(std::string text, SDL_Color color, Quality q)
 {
   bool success = true;
+  if (mTextureSurface != nullptr) {
+    SDL_FreeSurface(mTextureSurface);
+    mTextureSurface = nullptr;
+  }
   switch(q) {
     case LOW:
       mTextureSurface = TTF_RenderText_Solid( mFont, text.c_str(), color);
@@ -84,6 +95,10 @@ bool Text::loadText(std::string text, SDL_Color color, Quality q)
     mWidth  = mTextureSurface->w;
     mHeight = mTextureSurface->h;
     
+    if( mTexture != 0 ) {
+      glDeleteTextures( 1, &mTexture );
+      mTexture = 0;
+    }
     glGenTextures( 1, &mTexture );
     glBindTexture(GL_TEXTURE_2D, mTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, mTextureSurface->pixels);
