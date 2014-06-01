@@ -11,6 +11,7 @@
 #include "SDL_image.h"
 #include <GL/glew.h>
 #include <GL/glu.h>
+#include "LevelManager.hpp"
 
 class Game
 {
@@ -34,6 +35,6 @@ private:
   int initGLEW();
   int initGL();
   int quit();
-  void logic(float const dt);
+  void logic(float const dt, LevelManager & lm, float const te);
 
 };

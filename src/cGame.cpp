@@ -109,13 +109,8 @@ int Game::main() {
   int error = init();
   LevelManager lm;
   lm.load();
-
   if(!error) {
     uint frame = 0;
-
-    mTimer.start();
-    lm.init(static_cast<float>(mTimer.getLastTimeMS()));
-    mHud.update(10, 100, 2, 1);
     while(!mInput.check(Input::KESC) && !mQuitDone) {
       //Prepare input
       SDL_Event event;
@@ -136,11 +131,14 @@ int Game::main() {
         }
       }
       //Advance game
-      if(!mWindow.mMinimized) {        
+      if (!mWindow.mMinimized) {
         float const dt = mTimer.getDeltaTime();
         float const te_ms = mTimer.getLastTimeMS();
         float const dt_ms = dt *1000.0f;
-        logic(dt);
+        mTimer.start();
+        lm.init(static_cast<float>(mTimer.getLastTimeMS()));
+        mHud.update(lm.get_life(), lm.get_money(), lm.how_much_waves_in_actual_level(), lm.actual_wave_in_actual_leve(te_ms));    
+        logic(dt, lm, te_ms);
 
         //Render must be first
         if (!mInMenu && !mQuitDone) {
@@ -158,8 +156,8 @@ int Game::main() {
                 lm.next_level(te_ms+dt_ms);
               else {
                 std::cout << "You won the game" << std::endl;
-                //TODO Go to won scene or to main menu
-                exit(0);
+                mInMenu = true;
+                //exit(0);
               }
             } else {
               std::cout << "You lost the game" << std::endl;
@@ -184,7 +182,7 @@ int Game::main() {
   return error;
 }
 
-void Game::logic(float const dt)
+void Game::logic(float const dt, LevelManager & lm, float const te)
 {
   if (mInput.check(Input::KLEFT)) {
     mRenderer.mCamera.pan(glm::vec3(1, 0, -1), dt);
@@ -203,14 +201,17 @@ void Game::logic(float const dt)
     switch (mMenuOption) {
     case 1:
       mLevel = 1;
+      lm.change_to_level(mLevel - 1, te);
       mInMenu = false;
       break;
     case 2:
       mLevel = 2;
+      lm.change_to_level(mLevel - 1, te);
       mInMenu = false;
       break;
     case 3:
       mLevel = 3;
+      lm.change_to_level(mLevel - 1, te);
       mInMenu = false;
       break;
     case 4:
