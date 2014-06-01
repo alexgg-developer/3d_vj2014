@@ -190,16 +190,16 @@ int Game::main() {
 void Game::logic(float const dt, LevelManager & lm, float const te)
 {
   if (mInput.check(Input::KLEFT)) {
-    mRenderer.mCamera.pan(glm::vec3(1, 0, -1), dt);
+    mRenderer.mCamera.pan(glm::vec3(1, 0, 0), dt);
   }
   if (mInput.check(Input::KRIGHT)) {
-    mRenderer.mCamera.pan(glm::vec3(-1, 0, 1), dt);
+    mRenderer.mCamera.pan(glm::vec3(-1, 0, 0), dt);
   }
   if (mInput.check(Input::KDOWN)) {
-    mRenderer.mCamera.pan(glm::vec3(-1, 0, -1), dt);
+    mRenderer.mCamera.pan(glm::vec3(0, 0, -1), dt);
   }
   if (mInput.check(Input::KUP)) {
-    mRenderer.mCamera.pan(glm::vec3(1, 0, 1), dt);
+    mRenderer.mCamera.pan(glm::vec3(0, 0, 1), dt);
   }
   if (mInMenu) {
     mMenuOption = mMenu.logic(mInput);
