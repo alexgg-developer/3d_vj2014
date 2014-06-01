@@ -71,12 +71,14 @@ void LevelLogic::init(float const time_ms) {
   for(auto& a:mBuildingTurrets) std::get<0>(a).init(time_ms);
   for(auto& a:mEnemies) a->init(time_ms);
   //Insert paths
+  mPaths.clear();
   for(Path const& p : mLevel->mAssociatedPaths) {
     PathLogic pl(&p, mDefensor, &mLevel->mMap);
     //pl.init(time_ms);
     mPaths.push_back(pl);
   }
   //Insert avalanchas
+  mAvalanchas.clear();
   for(Avalancha const*const av : mLevel->mAvalanchas) {
     AvalanchaLogic al(av);
     al.init(time_ms);
