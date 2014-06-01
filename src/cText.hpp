@@ -20,14 +20,16 @@ public:
   bool loadFont(std::string path, uint size);
   bool loadText(std::string text, SDL_Color color, Quality q);
   void free();
-  void draw();
+  void draw() const;
   void setPosition(vec3 const & position);
+  void setScale(glm::vec3 const & scale);
   uint mWidth, mHeight;
 private:
   TTF_Font* mFont;
   GLuint mTexture;
   SDL_Surface* mTextureSurface;
   vec3 mPosition;
+  glm::vec3 mScale;
   GLuint mProgramID;
   GLShader mVertexShader, mFragmentShader;
   GLuint mVBO, mIBO;

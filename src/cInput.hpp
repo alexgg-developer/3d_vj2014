@@ -21,8 +21,8 @@ public:
   bool checkMouseReleased(uint button) const;
   void UseMouseLastRelease(uint button);
 
-  vec3 mPositionMousePressed, mPositionMouseRealased, mPositionMouse;
-  glm::vec2 mMouseMovement;
+  vec3 mPositionMousePressed, mPositionMouseRealased;
+  glm::vec2 mMouseMovement, mPositionMouse;
 
 private:
   //KEY_OFF: The key hasn't been pressed

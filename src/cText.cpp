@@ -46,7 +46,6 @@ bool Text::init()
     success = false;
   }
 
-  mPosition = vec3(-0.0f, 0.75f, 0);
   return success;
 }
 
@@ -133,11 +132,16 @@ void Text::setPosition(vec3 const & position)
   mPosition = position;
 }
 
-void Text::draw()
+void Text::setScale(glm::vec3 const & scale)
+{
+  mScale = scale;
+}
+
+void Text::draw() const
 {
   glDisable(GL_DEPTH_TEST);
   glUseProgram(mProgramID);
-  glm::mat4 modelMatrix = glm::translate(glm::vec3(mPosition.x, mPosition.y, 0)) * glm::scale(glm::vec3(1.f, 0.15f, 0.15f));
+  glm::mat4 modelMatrix = glm::translate(glm::vec3(mPosition.x, mPosition.y, 0)) * glm::scale(mScale);
   GLuint MatrixID = glGetUniformLocation(mProgramID, "MVP");
   glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &modelMatrix[0][0]);
   glBindTexture(GL_TEXTURE_2D, mTexture);

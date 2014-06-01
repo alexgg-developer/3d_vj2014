@@ -19,6 +19,9 @@ Game::Game()
 
 int Game::init()
 {
+  mInMenu = true;
+  mMenuOption = 0;
+  mLevel = 0;
   int error = initSDL();
   if(error == 0) error = initGLEW();
   if(error == 0) error = initGL();
@@ -30,6 +33,10 @@ int Game::init()
 
   if (!mHud.init()) {
     error = 40;
+  }
+
+  if (!mMenu.init()){
+    error = 50;
   }
 
   return error;
@@ -129,38 +136,41 @@ int Game::main() {
         }
       }
       //Advance game
-      if(!mWindow.mMinimized) {
+      if(!mWindow.mMinimized) {        
         float const dt = mTimer.getDeltaTime();
         float const te_ms = mTimer.getLastTimeMS();
         float const dt_ms = dt *1000.0f;
         logic(dt);
 
         //Render must be first
-        
-        mRenderer.render();
-        mHud.draw();
-        lm.render();
+        if (!mInMenu) {
+          mRenderer.render();
+          mHud.draw();
+          lm.render();
 
-        lm.receive_input(te_ms+dt_ms, mInput, mRenderer.getProjMatrix(), mRenderer.mCamera.getViewMatrix());
-        lm.advance_time(te_ms, dt_ms);
+          lm.receive_input(te_ms+dt_ms, mInput, mRenderer.getProjMatrix(), mRenderer.mCamera.getViewMatrix());
+          lm.advance_time(te_ms, dt_ms);
 
-        /// Treat end of levels, wins and loses
-        if(lm.has_ended_level(te_ms+dt_ms)) {
-          if(lm.user_won(te_ms+dt_ms)) {
-            if(lm.has_next_level())
-              lm.next_level(te_ms+dt_ms);
-            else {
-              std::cout << "You won the game" << std::endl;
-              //TODO Go to won scene or to main menu
-              exit(0);
+          /// Treat end of levels, wins and loses
+          if(lm.has_ended_level(te_ms+dt_ms)) {
+            if(lm.user_won(te_ms+dt_ms)) {
+              if(lm.has_next_level())
+                lm.next_level(te_ms+dt_ms);
+              else {
+                std::cout << "You won the game" << std::endl;
+                //TODO Go to won scene or to main menu
+                exit(0);
+              }
+            } else {
+              std::cout << "You lost the game" << std::endl;
+              //TODO return to main menu or reset level
+              lm.reset_level(te_ms+dt_ms);
             }
-          } else {
-            std::cout << "You lost the game" << std::endl;
-            //TODO return to main menu or reset level
-            lm.reset_level(te_ms+dt_ms);
           }
         }
-
+        else {
+          mMenu.draw();
+        }
         SDL_GL_SwapWindow( mWindow.mWindow );
       }
     }
@@ -189,5 +199,34 @@ void Game::logic(float const dt)
   if (mInput.check(Input::KUP)) {
     mRenderer.mCamera.pan(glm::vec3(1, 0, 1), dt);
   }
+  mMenuOption = mMenu.logic(mInput);
+  switch (mMenuOption) {
+    case 1:
+      std::cout << "OPTION 1" << std::endl;
+      mLevel = mMenuOption;
+      mInMenu = false;
+      break;
+    case 2:
+      std::cout << "OPTION 2" << std::endl;
+      mLevel = mMenuOption;
+      mInMenu = false;
+      break;
+    case 3:
+      std::cout << "OPTION 3" << std::endl;
+      mLevel = mMenuOption;
+      mInMenu = false;
+      break;
+    case 4:
+      std::cout << "QUIT" << std::endl;
+      //quit();
+      break;
+    case 5:
+      std::cout << "FULLSCREEN" << std::endl;      
+      break;
+    default:
+      //std::cout << "mMenuOption: " << mMenuOption << std::endl;
+      break;
+  }
+
 }
 

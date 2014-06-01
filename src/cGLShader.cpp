@@ -120,7 +120,7 @@ void GLShader::printProgramLog(GLuint program)
   }
 }
 
-GLuint GLShader::setAttribute(std::string name)
+GLuint GLShader::setAttribute(std::string name) const
 {
   GLuint attributeLocation = glGetAttribLocation( mProgramID, name.c_str() );
   if( attributeLocation == -1 ) {
@@ -133,7 +133,7 @@ GLuint GLShader::setAttribute(std::string name)
 }
 
 
-void GLShader::unsetAttribute(GLuint attributeLocation )
+void GLShader::unsetAttribute(GLuint attributeLocation ) const
 {
   glDisableVertexAttribArray( attributeLocation );
 }

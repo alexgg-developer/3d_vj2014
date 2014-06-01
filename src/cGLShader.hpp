@@ -13,8 +13,8 @@ public:
   void init(KindOfShader kind, uint programID);
   void init(KindOfShader kind, std::string shaderSource, uint programID);
   void setSource(std::string shaderSource);
-  GLuint setAttribute(std::string name);
-  void unsetAttribute(GLuint attributeLocation);
+  GLuint setAttribute(std::string name) const;
+  void unsetAttribute(GLuint attributeLocation) const;
   void printShaderLog( GLuint shader );
   bool compile();
   void set();

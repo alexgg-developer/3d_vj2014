@@ -6,6 +6,7 @@
 #include "cRenderer.hpp"
 #include "cMusic.hpp"
 #include "cHud.hpp"
+#include "cMenu.hpp"
 #include "SDL.h"
 #include "SDL_image.h"
 #include <GL/glew.h>
@@ -15,16 +16,19 @@ class Game
 {
 public:
   Game();
+  int init();
   int main();
 private:
+  size_t mMenuOption;
   Window mWindow;
   Input mInput;
   Timer mTimer;
   Renderer mRenderer;
   Music mMusic;
   Hud mHud;
-
-  int init();
+  Menu mMenu;
+  bool mInMenu;
+  size_t mLevel;
   int initSDL();
   int initGLEW();
   int initGL();

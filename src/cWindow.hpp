@@ -6,6 +6,8 @@ class Window
 {
   static const uint DEFAULT_WINDOW_WIDTH  = 800;
   static const uint DEFAULT_WINDOW_HEIGHT = 600;
+  //static const uint DEFAULT_WINDOW_WIDTH = 1920;
+  //static const uint DEFAULT_WINDOW_HEIGHT = 1080;
 public:
   uint mWidth, mHeight;
   bool mFullScreen;

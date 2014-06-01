@@ -186,6 +186,12 @@ void Input::readWithScanCode(SDL_Event const & event)
   //Keys PRESSED become ON
   //It is in case that a key stay pressed it doesn't poll and event so you have to be aware of it
   for (uint i = 0; i < nkeys; ++i) keys[i] = keys[i] & 0x0001;
+  //update actual mouse position
+  int x, y;
+  SDL_GetMouseState(&x, &y);
+  mPositionMouse.x = x;
+  mPositionMouse.y = y;
+  std::cout << x << " " << y << std::endl;
   switch(event.type) {
     case SDL_KEYDOWN:
       switch(event.key.keysym.scancode) {
@@ -317,9 +323,7 @@ void Input::readWithScanCode(SDL_Event const & event)
       switch (event.button.button) {
         case SDL_BUTTON_LEFT: {
           if (checkMouse(BLEFT)) {
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            std::cout << "X: " << x << " Y: " << y << std::endl;
+            //std::cout << "X: " << x << " Y: " << y << std::endl;
             //SDL_GetRelativeMouseState(&x, &y);
             //std::cout << "XREL: " << event.motion.xrel << " YREL: " << event.motion.yrel << std::endl;
             //std::cout << "XREL2: " << x << " YREL2: " << y << std::endl;
@@ -328,11 +332,6 @@ void Input::readWithScanCode(SDL_Event const & event)
         }
         break;
       }
-      //update actual mouse position
-      int x, y;
-      SDL_GetMouseState(&x, &y);
-      mPositionMouse.x=x;
-      mPositionMouse.y=y;
     }
     break;
     case SDL_QUIT:
