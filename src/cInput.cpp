@@ -189,8 +189,8 @@ void Input::readWithScanCode(SDL_Event const & event)
   //update actual mouse position
   int x, y;
   SDL_GetMouseState(&x, &y);
-  mPositionMouse.x = x;
-  mPositionMouse.y = y;
+  mPositionMouse.x = static_cast<float>(x);
+  mPositionMouse.y = static_cast<float>(y);
   switch(event.type) {
     case SDL_KEYDOWN:
       switch(event.key.keysym.scancode) {

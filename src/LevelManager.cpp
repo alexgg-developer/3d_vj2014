@@ -19,9 +19,8 @@ bool LevelManager::has_next_level() const {
   return mActiveLevelIndex+1<mLevels.size();
 }
 void LevelManager::reset_level(float const time_ms) {
-  mActiveLevelIndex--;
   mDefensor.restoreMoney(mDefensorMoneyLastLevel);
-  next_level(time_ms);
+  change_to_level(mActiveLevelIndex, time_ms);
 }
 void LevelManager::change_to_level(unsigned const int level, float const time_ms) {
   mActiveLevelIndex = level;
@@ -52,7 +51,7 @@ bool LevelManager::init(float const te_ms) {
 
 bool LevelManager::advance_time(float const init_time_ms, float const dt_ms) {
   if(mActiveLevel)
-    mActiveLevel->advanceTime(mDefensor, init_time_ms, dt_ms, mEnemies, mWeapons);
+    mActiveLevel->advanceTime(init_time_ms, dt_ms, mEnemies, mWeapons);
   return true;
 }
 bool LevelManager::load() {

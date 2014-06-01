@@ -27,15 +27,8 @@ void Enemy::LoadModel(char const*const filename) {
   }
 }
 
+#include "EnemyLogic.hpp"
 
-EnemyLogic& EnemyLogic::operator=(EnemyLogic const& ot) {
-  mEnemy = ot.mEnemy;
-  mActualLife = ot.mActualLife;
-  mWeaponLogic = ot.mWeaponLogic;
-  mPosition = ot.mPosition;
-  mLastMovedMS = ot.mLastMovedMS;
-  return *this;
-}
 EnemyLogic::EnemyLogic(Enemy const*const anEnemy, WeaponLogic&& awl)
  : mEnemy(anEnemy), mWeaponLogic(awl), mActualLife(anEnemy->mLife) {
 }
@@ -51,6 +44,7 @@ void EnemyLogic::ReceiveDamage(float const damage) {
   if(hasDied() && backup>0)
     mEnemy->mDieSound.play();
 }
+#include "Defensor.hpp"
 void EnemyLogic::Attack(Defensor& df) {
   df.receiveDamage(mWeaponLogic.getDamage());
   mEnemy->mAttackDefensorSound.play();

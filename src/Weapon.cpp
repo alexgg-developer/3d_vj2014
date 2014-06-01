@@ -37,8 +37,12 @@ float Weapon::miliseconds_per_bullet() const {
   return 1.0f/(mBulletsPerMinute*MinutesPerMilisecond);
 }
 
+#include "WeaponLogic.hpp"
+#include "EnemyLogic.hpp"
 WeaponLogic::WeaponLogic(Weapon const*const aWeapon) : mWeapon(aWeapon) {}
 WeaponLogic::~WeaponLogic() {}
+float WeaponLogic::getDamage() const {
+  return mWeapon->mDamage; }
 
 bool WeaponLogic::CanHit(float const time_ms) {
   return mLastShotMS+mWeapon->miliseconds_per_bullet()<=time_ms;

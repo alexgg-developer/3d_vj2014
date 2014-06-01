@@ -90,8 +90,8 @@ bool Text::loadText(std::string text, SDL_Color color, Quality q)
     mHeight = mTextureSurface->h;
     
     if( mTexture != 0 ) {
-      glDeleteTextures( 1, &mTexture );
-      mTexture = 0;
+      glDeleteTextures(1, &mTexture);
+      mTexture=0;
     }
     glGenTextures( 1, &mTexture );
     glBindTexture(GL_TEXTURE_2D, mTexture);

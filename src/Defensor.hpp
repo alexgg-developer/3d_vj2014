@@ -1,11 +1,13 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "pugixml.hpp"
 #include <glm/glm.hpp>
-#include "cInput.hpp"
-#include "Level.hpp"
+#include "pugixml.hpp"
 #include "cSound.hpp"
+#include "cInput.hpp"
+#include "LevelLogic.hpp"
+#include "Turret.hpp"
+#include "Weapon.hpp"
 
 /// Represents a path for enemies. It's an starting point and a set of rules that will guide direction of the enemies.
 /// It's name is it's unique ID.
@@ -21,7 +23,8 @@ struct Defensor {
   /// changes the selected turret and weapon
   void set_selected_turret(std::size_t const turret) {
     mSelectedTurretIndex = turret; }
-  float getLife() const { return mActualLife; }
+  float getLife() const {
+   return mActualLife; }
   void restoreLife() { mActualLife = std::max(mMaxLife, mActualLife); }
   void restoreMoney(float const aMoney) { mMoney = std::max(aMoney, mMoney); }
   float getMoney() const { return mMoney;}

@@ -50,25 +50,26 @@ bool Level::Load(std::string aFilename) {
 
 
 
-
+#include "LevelLogic.hpp"
 LevelLogic::LevelLogic(Level const*const aLevel, Defensor *const aDefensor)
     : mLevel(aLevel), mDefensor(aDefensor), mMap(&aLevel->mMap) {
-  mEnemies.reserve(1000);//TODO: If there are more than a thousand enemies it's location will be changed
+//  mEnemies.reserve(1000);//TODO: If there are more than a thousand enemies it's location will be changed
   mAliveTurrets.reserve(1000);
   mBuildingTurrets.reserve(1000);
-  mEnemies.reserve(1000);
   mPaths.reserve(1000);
   mAvalanchas.reserve(1000);
 }
 LevelLogic::~LevelLogic() {}
 
+#include "PathLogic.hpp"
+#include "EnemyLogic.hpp"
 ///Initializes at specified time point
 void LevelLogic::init(float const time_ms) {
   mBuyTurret.load("./music/several_coins_placed_lightly_down_on_table.wav");
   //No-insert alive turrets by default
-  for(auto& a:mAliveTurrets) a.init(time_ms);
+  for(auto& a:mAliveTurrets) a->init(time_ms);
   for(auto& a:mBuildingTurrets) std::get<0>(a).init(time_ms);
-  for(auto& a:mEnemies) a.init(time_ms);
+  for(auto& a:mEnemies) a->init(time_ms);
   //Insert paths
   for(Path const& p : mLevel->mAssociatedPaths) {
     PathLogic pl(&p, mDefensor, &mLevel->mMap);
@@ -93,7 +94,7 @@ unsigned int LevelLogic::actual_wave(float const time_ms) const {
   return result;
 }
 ///Advances time
-bool LevelLogic::advanceTime(Defensor& theDefensor, float const init_time_ms, float const dt_ms, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons) {
+bool LevelLogic::advanceTime(float const init_time_ms, float const dt_ms, std::vector<Enemy> const& availableEnemies, std::vector<Weapon> const& availableWeapons) {
   float const end_time_ms = init_time_ms + dt_ms;
 
   /// Build turrets
@@ -104,33 +105,19 @@ bool LevelLogic::advanceTime(Defensor& theDefensor, float const init_time_ms, fl
     if(turret.getBuildingDuration() + init_build_time_ms <= end_time_ms) {
       turret.setScale(1.0f);
       turret.setHeight(0.5f);
-      mAliveTurrets.push_back(turret);
+      mAliveTurrets.push_back(std::make_unique<TurretLogic>(turret));
       it = mBuildingTurrets.erase(it);
     } else ++it;
   }
 
   /// Turrets attacks enemies
-  for(EnemyLogic& enemy : mEnemies) {
-    for (TurretLogic& turret : mAliveTurrets) {
-      if(!enemy.hasDied() && turret.CanHit(enemy.getPosition(), end_time_ms) && !enemy.is_iced()) {
-        turret.Attack(&enemy, end_time_ms);
+  for(auto const& enemy : mEnemies) {
+    for (auto const& turret : mAliveTurrets) {
+      if(!enemy->hasDied() && turret->CanHit(enemy->getPosition(), end_time_ms) && !enemy->is_iced()) {
+        turret->Attack(&*enemy, end_time_ms);
       }
       //if(!enemy.hasDied() && ) //Enemies can't attack towers, although it would be easy and fun
     }
-  }
-
-  /// Died enemies dissapear. They can be moved out to another collection and fade out or something like that.
-  //delete died enemies from vector, it's a quadratic search!
-  //they do not die so often and not so much at the same time
-  for(std::vector<EnemyLogic>::iterator it = mEnemies.begin(); it!=mEnemies.end();) {
-    if (it->hasDied() || it->mPathFinished) {
-      theDefensor.add_money(it->getEnemyMonetaryValue());
-      it = mEnemies.erase(it);
-    } else if(it->time_to_stop() > it->time_stopped()) {
-      it->add_stopped_time(dt_ms);
-      ++it;
-     }
-    else ++it;
   }
   
   //Avalanchas advance
@@ -155,28 +142,42 @@ bool LevelLogic::advanceTime(Defensor& theDefensor, float const init_time_ms, fl
     //tu->Render();
     //TODO: Draw with alfa
   }
+
+  /// Died enemies dissapear. They can be moved out to another collection and fade out or something like that.
+  //delete died enemies from vector, it's a quadratic search!
+  //they do not die so often and not so much at the same time
+  for(std::vector<std::unique_ptr<EnemyLogic>>::iterator it = mEnemies.begin(); it!=mEnemies.end();) {
+    if ((*it)->hasDied() || (*it)->mPathFinished) {
+      mDefensor->add_money((*it)->getEnemyMonetaryValue());
+      it = mEnemies.erase(it);
+    } else if((*it)->time_to_stop() > (*it)->time_stopped()) {
+      (*it)->add_stopped_time(dt_ms);
+      ++it;
+     }
+    else ++it;
+  }
   return true;
 }
 
 void LevelLogic::Render() const {
-  for(TurretLogic const& tu : mAliveTurrets) {
-    tu.Render();
+  for(auto const& tu : mAliveTurrets) {
+    tu->Render();
   }
   for(auto const& tu : mBuildingTurrets) {
     TurretLogic const& tl = std::get<0>(tu);
     tl.Render(); 
   }
-  for(EnemyLogic const& el : mEnemies) {
-    el.Render();
+  for(auto const& el : mEnemies) {
+    el->Render();
   }
 
   this->mMap.render();
 }
 
 void LevelLogic::spawnsEnemy(EnemyLogic const& el) {
-  mEnemies.push_back(el);
+  mEnemies.push_back(std::make_unique<EnemyLogic>(el));
   assert(!mPaths.empty() && "There should be some path there");
-  mPaths[rand()%mPaths.size()].assignEnemy(&mEnemies.back());
+  mPaths[rand()%mPaths.size()].assignEnemy(&*mEnemies.back());
 }
 void LevelLogic::spawnsTurret(TurretLogic&& el, float const build_init_time) {
   this->mBuildingTurrets.push_back(std::tuple<TurretLogic, float>(el,build_init_time));
