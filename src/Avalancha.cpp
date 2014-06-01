@@ -113,7 +113,7 @@ bool CompoundAvalancha::Load(pugi::xml_node const& aCompoundAvalanchaNode) {
 #include "EnemyLogic.hpp"
 #include "LevelLogic.hpp"
 bool AvalanchaLogic::has_ended(float const time_ms) const {
-  float const length = mAvalancha->temporal_length();
+  float const length = mAvalancha->prepared_en_time_ms();
   float const avalancha_end = length + mInitTime;
   return avalancha_end<time_ms;
 }

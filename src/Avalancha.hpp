@@ -14,6 +14,7 @@ struct Avalancha {
   ~Avalancha();
   
   virtual float temporal_length() const =0;
+  virtual float prepared_en_time_ms() const =0;
   void ChangeOrder(int const aOrder) { mOrder = aOrder; }
   virtual std::map<std::string, unsigned int> HowMuchToSpawn(float const t_avalancha_started_ms, float const init_t_ms, float const dt_ms, LevelLogic *const aLevel) const =0;
 protected:
@@ -30,7 +31,8 @@ struct SimpleAvalancha : public Avalancha {
   bool Load(pugi::xml_node const& aSimpleAvalanchaNode);
   virtual std::map<std::string, unsigned int> HowMuchToSpawn(float const t_avalancha_started_ms, float const init_t_ms, float const dt_ms, LevelLogic *const aLevel) const override;
   
-  virtual float temporal_length() const override { return mStartMiliSeconds + mTemporalLengthSeconds*1000.0f; }
+  virtual float temporal_length() const override { return mTemporalLengthSeconds*1000.0f; }
+  virtual float prepared_en_time_ms() const override {return temporal_length()+ mStartMiliSeconds; }
   void add_to_start_ms(float const dt_ms) { mStartMiliSeconds += dt_ms; }
 protected:
   std::string mEnemyUniqueID;
@@ -46,7 +48,8 @@ struct EmptyAvalancha : public Avalancha{
   bool Load(pugi::xml_node const& anEmptyAvalanchaNode);
   virtual std::map<std::string, unsigned int> HowMuchToSpawn(float const t_avalancha_started_ms, float const init_t_ms, float const dt_ms, LevelLogic *const aLevel) const override { return std::map<std::string, unsigned int>(); }
   
-  virtual float temporal_length() const override { return 0; }
+  virtual float temporal_length() const override { return mTemporalLengthSeconds*1000.0f; }
+  virtual float prepared_en_time_ms() const override {return temporal_length(); }
 protected:
   float mTemporalLengthSeconds;
 };
@@ -75,6 +78,7 @@ struct CompoundAvalancha : public Avalancha{
     return ret;
   }
   void add_to_start_ms(float const dt_ms) { mStartMiliSeconds += dt_ms; }
+  virtual float prepared_en_time_ms() const override {return temporal_length()+ mStartMiliSeconds; }
 
 protected:
   std::vector<Avalancha*> mSons;
