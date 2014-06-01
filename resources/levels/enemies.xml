@@ -3,7 +3,7 @@
   <!-- Enemy description-->
   <enemy species="marciano"
 	 tiles_per_minute="30"
-	 life="10"
+	 life="50"
 	 monetary_value="2"
 	 die_sound="./music/rat_die.wav"
 	 attack_sound="./music/solarplexis_hit.wav"
@@ -13,7 +13,7 @@
   </enemy>
   <enemy species="rambo"
 	 tiles_per_minute="20"
-	 life="20"
+	 life="80"
 	 monetary_value="5"
 	 die_sound="./music/skeleton_die.wav"
 	 attack_sound="./music/solarplexis_hit.wav"
@@ -22,7 +22,7 @@
   </enemy>
   <enemy species="runner"
 	 tiles_per_minute="20"
-	 life="5"
+	 life="25"
 	 monetary_value="1"
 	 die_sound="./music/rat_die.wav"
 	 attack_sound="./music/solarplexis_hit.wav"

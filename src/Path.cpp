@@ -66,13 +66,10 @@ void PathLogic::advance_time(float const init_time_ms, float const dt_ms) {
       glm::vec2 const newPosition = em.enemy->getPosition() + deltaPos;
       //Check if enemy has advanced more than the specified quantity
       float const maxQuantity = static_cast<float>(mPath->mOrders[em.mActualOrder].mQuantity);
-      auto const delta = em.mPositionWhenStartedOrder - em.enemy->getPosition();
+      glm::vec2 const delta = em.mPositionWhenStartedOrder - em.enemy->getPosition();
       float const actual_separation_squared = delta.x*delta.x + delta.y*delta.y;
-      bool const next_order = actual_separation_squared >= maxQuantity*maxQuantity;
-      if(!next_order) {
-        //std::cout << "Changing position to " << newPosition.x << newPosition.y << std::endl;
-        em.enemy->setPosition(newPosition);
-      } else {
+      em.enemy->setPosition(newPosition);
+      if( actual_separation_squared >= maxQuantity*maxQuantity) {
         //Next order
         ApplyNextOrderTo(em);
       }
@@ -94,7 +91,7 @@ void PathLogic::ApplyNextOrderTo(EnemyMoving& em) {
     em.enemy->mPathFinished=true;//finished this path
   } else {
     em.mActualOrder++;
-    em.mPositionWhenStartedOrder = em.enemy->getPosition();
+    em.mPositionWhenStartedOrder = em.mNextPosition;//em.enemy->getPosition();
     Path::Order const& ord = mPath->mOrders[em.mActualOrder];
     if(ord.mOrderType==Path::Order::OrderType::DOWN      ) em.mNextPosition += glm::vec2(0,-ord.mQuantity);
     else if(ord.mOrderType==Path::Order::OrderType::UP   ) em.mNextPosition += glm::vec2(0,ord.mQuantity);
