@@ -28,6 +28,7 @@ private:
   Hud mHud;
   Menu mMenu;
   bool mInMenu;
+  bool mQuitDone;
   size_t mLevel;
   int initSDL();
   int initGLEW();
