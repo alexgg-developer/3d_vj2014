@@ -191,7 +191,6 @@ void Input::readWithScanCode(SDL_Event const & event)
   SDL_GetMouseState(&x, &y);
   mPositionMouse.x = x;
   mPositionMouse.y = y;
-  std::cout << x << " " << y << std::endl;
   switch(event.type) {
     case SDL_KEYDOWN:
       switch(event.key.keysym.scancode) {

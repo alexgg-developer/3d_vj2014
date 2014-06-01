@@ -21,6 +21,7 @@ int Game::init()
 {
   mInMenu = true;
   mMenuOption = 0;
+  mQuitDone = false;
   mLevel = 0;
   int error = initSDL();
   if(error == 0) error = initGLEW();
@@ -108,15 +109,9 @@ int Game::main() {
   int error = init();
   LevelManager lm;
   lm.load();
-
   if(!error) {
     uint frame = 0;
-    //mWindow.switchFullScreen();
-
-    mTimer.start();
-    lm.init(static_cast<float>(mTimer.getLastTimeMS()));
-    mHud.update(10, 100, 2, 1);
-    while(!mInput.check(Input::KESC)) {
+    while(!mInput.check(Input::KESC) && !mQuitDone) {
       //Prepare input
       SDL_Event event;
       while (SDL_PollEvent(&event)) {
@@ -136,14 +131,17 @@ int Game::main() {
         }
       }
       //Advance game
-      if(!mWindow.mMinimized) {        
+      if (!mWindow.mMinimized) {
         float const dt = mTimer.getDeltaTime();
         float const te_ms = mTimer.getLastTimeMS();
         float const dt_ms = dt *1000.0f;
-        logic(dt);
+        mTimer.start();
+        lm.init(static_cast<float>(mTimer.getLastTimeMS()));
+        mHud.update(lm.get_life(), lm.get_money(), lm.how_much_waves_in_actual_level(), lm.actual_wave_in_actual_leve(te_ms));    
+        logic(dt, lm, te_ms);
 
         //Render must be first
-        if (!mInMenu) {
+        if (!mInMenu && !mQuitDone) {
           mRenderer.render();
           mHud.draw();
           lm.render();
@@ -158,8 +156,8 @@ int Game::main() {
                 lm.next_level(te_ms+dt_ms);
               else {
                 std::cout << "You won the game" << std::endl;
-                //TODO Go to won scene or to main menu
-                exit(0);
+                mInMenu = true;
+                //exit(0);
               }
             } else {
               std::cout << "You lost the game" << std::endl;
@@ -168,14 +166,13 @@ int Game::main() {
             }
           }
         }
-        else {
+        else if (!mQuitDone){
           mMenu.draw();
         }
         SDL_GL_SwapWindow( mWindow.mWindow );
       }
     }
-
-    error = quit();
+    if (!mQuitDone) error = quit();
   }
   else {
     std::cout << "Error initiating things" << std::endl;
@@ -185,7 +182,7 @@ int Game::main() {
   return error;
 }
 
-void Game::logic(float const dt)
+void Game::logic(float const dt, LevelManager & lm, float const te)
 {
   if (mInput.check(Input::KLEFT)) {
     mRenderer.mCamera.pan(glm::vec3(1, 0, -1), dt);
@@ -199,33 +196,36 @@ void Game::logic(float const dt)
   if (mInput.check(Input::KUP)) {
     mRenderer.mCamera.pan(glm::vec3(1, 0, 1), dt);
   }
-  mMenuOption = mMenu.logic(mInput);
-  switch (mMenuOption) {
+  if (mInMenu) {
+    mMenuOption = mMenu.logic(mInput);
+    switch (mMenuOption) {
     case 1:
-      std::cout << "OPTION 1" << std::endl;
-      mLevel = mMenuOption;
+      mLevel = 1;
+      lm.change_to_level(mLevel - 1, te);
       mInMenu = false;
       break;
     case 2:
-      std::cout << "OPTION 2" << std::endl;
-      mLevel = mMenuOption;
+      mLevel = 2;
+      lm.change_to_level(mLevel - 1, te);
       mInMenu = false;
       break;
     case 3:
-      std::cout << "OPTION 3" << std::endl;
-      mLevel = mMenuOption;
+      mLevel = 3;
+      lm.change_to_level(mLevel - 1, te);
       mInMenu = false;
       break;
     case 4:
-      std::cout << "QUIT" << std::endl;
-      //quit();
+      quit();
+      mInMenu = false;
+      mQuitDone = true;
       break;
     case 5:
-      std::cout << "FULLSCREEN" << std::endl;      
+      mWindow.switchFullScreen();
       break;
     default:
       //std::cout << "mMenuOption: " << mMenuOption << std::endl;
       break;
+    }
   }
 
 }
