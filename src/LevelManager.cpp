@@ -4,7 +4,8 @@ LevelManager::LevelManager() {}
 LevelManager::~LevelManager() {
   if(mActiveLevel!=nullptr) delete mActiveLevel;}
 void LevelManager::receive_input(float const end_frame_t, Input& in, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix) {
-  mDefensor.receive_input(end_frame_t, in, *mActiveLevel, aProjectionMatrix, aMVMatrix, mTurrets, mWeapons);
+  if (mActiveLevel!=nullptr && mLevelInOut==NONE)
+    mDefensor.receive_input(end_frame_t, in, *mActiveLevel, aProjectionMatrix, aMVMatrix, mTurrets, mWeapons);
 }
 
 bool LevelManager::is_level_active() const {
@@ -23,6 +24,16 @@ void LevelManager::reset_level(float const time_ms) {
   change_to_level(mActiveLevelIndex, time_ms);
 }
 void LevelManager::change_to_level(unsigned const int level, float const time_ms) {
+  mActiveLevelIndex = level;
+  if (mActiveLevel != nullptr)
+    mLevelInOut = OUT;
+  else {
+    change_to_level_inmediate(mActiveLevelIndex, time_ms);
+    mLevelInOut = IN;
+  }
+  mStartedInOutMS= time_ms;
+}
+void LevelManager::change_to_level_inmediate(unsigned const int level, float const time_ms) {
   mActiveLevelIndex = level;
   if(mActiveLevel!=nullptr) delete mActiveLevel;
   mActiveLevel = new LevelLogic(&mLevels[mActiveLevelIndex], &mDefensor);
@@ -50,8 +61,22 @@ bool LevelManager::init(float const te_ms) {
 }
 
 bool LevelManager::advance_time(float const init_time_ms, float const dt_ms) {
-  if(mActiveLevel)
+  if(mActiveLevel && mLevelInOut==NONE)
     mActiveLevel->advanceTime(init_time_ms, dt_ms, mEnemies, mWeapons);
+
+  if(mLevelInOut!=NONE) {
+    if(!is_active_levelinout(init_time_ms)) {
+      if(mLevelInOut==IN) {
+        //change_to_level_inmediate(mActiveLevelIndex, init_time_ms);
+        mActiveLevel->init(init_time_ms + dt_ms);
+        mLevelInOut=NONE;
+      } else {
+        change_to_level_inmediate(mActiveLevelIndex, init_time_ms);
+        mLevelInOut=IN;
+        mStartedInOutMS=init_time_ms;
+      }
+    }
+  }
   return true;
 }
 bool LevelManager::load() {
@@ -80,12 +105,22 @@ bool LevelManager::load() {
   mTurrets.back().LoadModel("./objs/turret_2_separated2.obj");
   //loadTurrets("./levels/turret.xml", std::back_inserter(mEnemies));
 
-  if(mActiveLevel!=nullptr) delete mActiveLevel;
-  mActiveLevel = new LevelLogic(&mLevels[mActiveLevelIndex], &mDefensor);
+  //if(mActiveLevel!=nullptr) delete mActiveLevel;
+  //mActiveLevel = new LevelLogic(&mLevels[mActiveLevelIndex], &mDefensor);
   mDefensorMoneyLastLevel = mDefensor.getMoney();
 
   return true;
 }
-void LevelManager::render() {
-  if(mActiveLevel) mActiveLevel->Render();
+void LevelManager::render(float const time_ms) {
+  glPushMatrix();
+  if (mLevelInOut != NONE) {
+    float scale;
+    if (mLevelInOut == ScaleType::IN)
+      scale = std::max(0.0f, time_ms - mStartedInOutMS) / mLengthInOutMS;
+    else
+      scale = std::max(0.0f, mLengthInOutMS-(time_ms - mStartedInOutMS)) / mLengthInOutMS;
+    glScalef(scale, scale, scale);
+  }
+  if (mActiveLevel) mActiveLevel->Render();
+  glPopMatrix();
 }

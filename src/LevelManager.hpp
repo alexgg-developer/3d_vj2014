@@ -14,7 +14,7 @@ struct LevelManager {
   
   bool load();
   bool init(float const te_ms);
-  void render();
+  void render(float const time_ms);
   
   float get_money() const { return mDefensor.getMoney(); }  
   float get_life() const { return mDefensor.getLife(); }
@@ -39,8 +39,9 @@ struct LevelManager {
   ///Deletes active level and stops from rendering nor updating anything
   void stop();
   void reset_level(float const time_ms);
-
+  
   void change_to_level(unsigned const int level, float const time_ms);
+  void change_to_level_inmediate(unsigned const int level, float const time_ms);
 protected:
   std::vector<Weapon> mWeapons;
   std::vector<Enemy> mEnemies;
@@ -51,4 +52,12 @@ protected:
   Defensor mDefensor{100,1000}; //The same player passes through all the levels. We can restore it's health between levels
   float mDefensorMoneyLastLevel;
   std::size_t mActiveLevelIndex=0;
+
+
+  /// scale in/out
+  enum ScaleType{ NONE, IN, OUT} mLevelInOut;
+  float mStartedInOutMS=0;
+  float mLengthInOutMS=3000.0f;
+  float EndInOut_ms() const { return mLengthInOutMS+mStartedInOutMS;}
+  bool is_active_levelinout(float const time_ms) const { return EndInOut_ms()>time_ms;}
 };

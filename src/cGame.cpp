@@ -112,7 +112,7 @@ int Game::main() {
   if(!error) {
     uint frame = 0;
     mTimer.start();
-    lm.init(static_cast<float>(mTimer.getLastTimeMS()));
+    //lm.init(static_cast<float>(mTimer.getLastTimeMS()));
     while(!mInput.check(Input::KESC) && !mQuitDone) {
       //Prepare input
       SDL_Event event;
@@ -137,20 +137,21 @@ int Game::main() {
         float const dt = mTimer.getDeltaTime();
         float const te_ms = mTimer.getLastTimeMS();
         float const dt_ms = dt *1000.0f;
-        mHud.update(static_cast<unsigned int>(std::max<float>(lm.get_life(),0.0f)), static_cast<unsigned int>(lm.get_money()), lm.how_much_waves_in_actual_level(), lm.actual_wave_in_actual_leve(te_ms));    
         logic(dt, lm, te_ms);
 
         //Render must be first
         if (!mInMenu && !mQuitDone) {
+          if (lm.is_level_active())
+            mHud.update(static_cast<unsigned int>(std::max<float>(lm.get_life(), 0.0f)), static_cast<unsigned int>(lm.get_money()), lm.how_much_waves_in_actual_level(), lm.actual_wave_in_actual_leve(te_ms));
           mRenderer.render();
           mHud.draw();
-          lm.render();
+          lm.render(te_ms);
 
           lm.receive_input(te_ms+dt_ms, mInput, mRenderer.getProjMatrix(), mRenderer.mCamera.getViewMatrix());
           lm.advance_time(te_ms, dt_ms);
 
           /// Treat end of levels, wins and loses
-          if(lm.has_ended_level(te_ms+dt_ms) || lm.get_life()<0.0f) {
+          if(lm.has_ended_level(te_ms+dt_ms) || lm.get_life()<=0.0f) {
             if(lm.user_won(te_ms+dt_ms)) {
               if(lm.has_next_level())
                 lm.next_level(te_ms+dt_ms);
