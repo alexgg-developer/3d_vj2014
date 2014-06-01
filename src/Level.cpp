@@ -33,13 +33,15 @@ bool Level::Load(std::string aFilename) {
   }
 
   //Load avalanchas
+  float accum_time=0.0f;
   for(pugi::xml_node const& avalanchaNode : doc.child("level").child("avalanchas").children()) {
-    Avalancha *const p = BuildAvalancha(avalanchaNode);
+    Avalancha *const p = BuildAvalancha(avalanchaNode, accum_time);
     if(p==nullptr) {
       std::cout << "Could not load an <avalancha> node while loading a <level><avalanchas>" << std::endl;
       assert(0);
       return false;
     }
+    accum_time += p->temporal_length();
     mAvalanchas.push_back(p);
   }
   return true;
@@ -101,7 +103,7 @@ bool LevelLogic::advanceTime(Defensor& theDefensor, float const init_time_ms, fl
   /// Turrets attacks enemies
   for(EnemyLogic& enemy : mEnemies) {
     for (TurretLogic& turret : mAliveTurrets) {
-      if(!enemy.hasDied() && turret.CanHit(enemy.getPosition(), end_time_ms)) {
+      if(!enemy.hasDied() && turret.CanHit(enemy.getPosition(), end_time_ms) && !enemy.is_iced()) {
         turret.Attack(&enemy, end_time_ms);
       }
       //if(!enemy.hasDied() && ) //Enemies can't attack towers, although it would be easy and fun
@@ -112,10 +114,13 @@ bool LevelLogic::advanceTime(Defensor& theDefensor, float const init_time_ms, fl
   //delete died enemies from vector, it's a quadratic search!
   //they do not die so often and not so much at the same time
   for(std::vector<EnemyLogic>::iterator it = mEnemies.begin(); it!=mEnemies.end();) {
-    if (it->hasDied()) {
+    if (it->hasDied() || it->mPathFinished) {
       theDefensor.add_money(it->getEnemyMonetaryValue());
       it = mEnemies.erase(it);
-    }
+    } else if(it->time_to_stop() > it->time_stopped()) {
+      it->add_stopped_time(dt_ms);
+      ++it;
+     }
     else ++it;
   }
   
@@ -165,7 +170,6 @@ void LevelLogic::spawnsEnemy(EnemyLogic const& el) {
   mPaths[rand()%mPaths.size()].assignEnemy(&mEnemies.back());
 }
 void LevelLogic::spawnsTurret(TurretLogic&& el, float const build_init_time) {
-  //this->mAliveTurrets.push_back(el);
   this->mBuildingTurrets.push_back(std::tuple<TurretLogic, float>(el,build_init_time));
   mBuyTurret.play();
 }

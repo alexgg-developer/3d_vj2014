@@ -21,13 +21,15 @@ bool Weapon::Load(pugi::xml_node aWeaponNode) {
     if(code=="ice")
       mSpecialEffect = SpecialEffect::ICE;
     else if(code=="burn")
-      mSpecialEffect = SpecialEffect::ICE;
+      mSpecialEffect = SpecialEffect::BURN;
     else {
       std::cout << "Special effect code type " << code << " not recognized" << std::endl;
       assert(0);
       return false;
     }
+    mSpecialEffectDuration = aWeaponNode.attribute("special_effect_duration_miliseconds").as_float();
   }
+  
   return true;
 }
 float Weapon::miliseconds_per_bullet() const {
@@ -50,6 +52,7 @@ void WeaponLogic::Attack(EnemyLogic*const en, float const timeMS) {
   if(mWeapon->mSpecialEffect==Weapon::SpecialEffect::ICE) {
     //can't move enemy
     //maybe draw it with another color
+    en->add_time_to_stop(this->mWeapon->mSpecialEffectDuration);
   }
 }
 void WeaponLogic::init(float const time_ms) {

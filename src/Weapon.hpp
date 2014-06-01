@@ -4,7 +4,6 @@
 #include "glm/glm.hpp"
 #include "cSound.hpp"
 
-struct WeaponLogic;
 struct Weapon {
   Weapon();
   ~Weapon();
@@ -18,6 +17,7 @@ protected:
   float mBulletsPerMinute=1000;
   float mDamage=1;
   float mRadiusTiles=1.5;
+  float mSpecialEffectDuration=0;
   std::string mName;
   enum SpecialEffect { NONE, ICE, BURN } mSpecialEffect;
   friend struct WeaponLogic;

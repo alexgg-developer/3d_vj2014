@@ -23,8 +23,7 @@ protected:
     bool Load(pugi::xml_node const& aOrderNode);
   protected:
     enum OrderType {UP, LEFT, RIGHT, DOWN, ATTACK_BASE} mOrderType;
-    int mQuantity;
-    bool mIndefinitely;
+    int mQuantity=-1;
     friend struct PathLogic;
   };
   std::vector<Order> mOrders;
@@ -49,9 +48,8 @@ protected:
     EnemyMoving(EnemyLogic* el);
     EnemyLogic* enemy=nullptr;
     int mActualOrder=-1;
-    glm::vec2 mVelocity;
+    glm::vec2 mNextPosition;
     glm::vec2 mPositionWhenStartedOrder;
-    bool mPathFinished=false;
     //TODO: Orientation
   };
   std::vector<EnemyMoving> mControlledEnemies;

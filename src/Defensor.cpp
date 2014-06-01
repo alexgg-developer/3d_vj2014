@@ -23,7 +23,7 @@ glm::vec3 IntersectionWithYE0(glm::vec2 const aMousePositionXY, glm::mat4x4 cons
   glGetDoublev(GL_MODELVIEW_MATRIX, mvmatrix);
   glGetDoublev(GL_PROJECTION_MATRIX, projmatrix);
   GLint realy = viewport[3] - (GLint)aMousePositionXY.y-1;
-  GLint x = aMousePositionXY.x;
+  GLint x = static_cast<GLint>(aMousePositionXY.x);
 
   //near point
   GLdouble nearX, nearY, nearZ;
@@ -61,8 +61,8 @@ void Defensor::receive_input(float const end_frame_t, Input& in, LevelLogic& ll,
     glm::vec3 const clickedEarth = IntersectionWithYE0(glm::vec2(in.mPositionMouse.x, in.mPositionMouse.y), aProjectionMatrix, aMVMatrix);
     glm::vec2 const tileCoordinates(-clickedEarth.x+0.5f,-clickedEarth.z+0.5f);
     
-    if (ll.getMap()(tileCoordinates.x, tileCoordinates.y)==Map::TileType::BUILDABLE) {
-      TurretLogic tl(&aTurrets[mSelectedTurretIndex], &aWeapons[mSelectedWeaponIndex]); //fast to construct
+    if (ll.getMap()(static_cast<std::size_t>(tileCoordinates.x), static_cast<std::size_t>(tileCoordinates.y))==Map::TileType::BUILDABLE) {
+      TurretLogic tl(&aTurrets[mSelectedTurretIndex], &aWeapons[mSelectedTurretIndex]); //fast to construct
       tl.setPosition(glm::vec2(tileCoordinates.x-0.5f,tileCoordinates.y-0.5f));
       tl.setScale(0.3f);
       tl.setHeight(0.15f);
@@ -76,15 +76,22 @@ void Defensor::receive_input(float const end_frame_t, Input& in, LevelLogic& ll,
     in.UseMouseLastRelease(Input::BLEFT);
 
     glm::vec2 const tileCoordinates(-clickedEarth.x+0.5f,-clickedEarth.z+0.5f);
-    if (ll.getMap()(tileCoordinates.x, tileCoordinates.y)==Map::TileType::BUILDABLE) {
+    if (ll.getMap()(static_cast<std::size_t>(tileCoordinates.x), static_cast<std::size_t>(tileCoordinates.y))
+          == Map::TileType::BUILDABLE) {
       std::cout << "Build a turret on tile " << (int)tileCoordinates.x << ", " << (int)tileCoordinates.y << std::endl;
  
       //Instantiate one turret
+      ///temporal
+      mSelectedTurretIndex=3;
+      ///end temporal
       if(this->mMoney>=aTurrets[mSelectedTurretIndex].MonetaryCost()) {
         this->mMoney -= aTurrets[mSelectedTurretIndex].MonetaryCost();
-        TurretLogic tl(&aTurrets[mSelectedTurretIndex], &aWeapons[mSelectedWeaponIndex]);
+        TurretLogic tl(&aTurrets[mSelectedTurretIndex], &aWeapons[mSelectedTurretIndex]);
         tl.setPosition(glm::vec2(tileCoordinates.x-0.5f,tileCoordinates.y-0.5f));
         ll.spawnsTurret(std::move(tl), end_frame_t);
+        //// todo temporal make a switch of turret manually
+        mSelectedTurretIndex = (mSelectedTurretIndex+1)%aTurrets.size();
+        //// end todo temporal delete me i'm bad
       } else {
         mNotEnoughMoney.play();
         std::cout << "Do not have enough money to buy" << std::endl;

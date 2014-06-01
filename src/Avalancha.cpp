@@ -7,7 +7,7 @@
 Avalancha::Avalancha() : mOrder(-1) {}
 Avalancha::~Avalancha() {}
 
-Avalancha* BuildAvalancha(pugi::xml_node const& someAvalanchaNode) {
+Avalancha* BuildAvalancha(pugi::xml_node const& someAvalanchaNode, float const accum_time_ms) {
   std::string const nodename = someAvalanchaNode.name();
   if(nodename=="simple_avalancha") {
     SimpleAvalancha* sa = new SimpleAvalancha();
@@ -16,6 +16,7 @@ Avalancha* BuildAvalancha(pugi::xml_node const& someAvalanchaNode) {
       std::cout << "Error loading a simple avalancha" << std::endl;
       assert(0);
       return false; }
+      sa->add_to_start_ms(accum_time_ms);
     return sa;
   }
   else if(nodename=="empty_avalancha") {
@@ -29,6 +30,7 @@ Avalancha* BuildAvalancha(pugi::xml_node const& someAvalanchaNode) {
   }
   else if(nodename=="compound_avalancha") {
     CompoundAvalancha* sa = new CompoundAvalancha();
+    sa->add_to_start_ms(accum_time_ms);
     bool const ret = sa->Load(someAvalanchaNode);
     if(!ret) {
       std::cout << "Error loading a compund avalancha" << std::endl;
@@ -93,7 +95,7 @@ bool CompoundAvalancha::Load(pugi::xml_node const& aCompoundAvalanchaNode) {
   if(orderAttr) mOrder = orderAttr.as_uint();
 
   for(auto& av : aCompoundAvalanchaNode.children()) {
-    Avalancha*const a = BuildAvalancha(av);
+    Avalancha*const a = BuildAvalancha(av, mStartMiliSeconds);
     if(a==nullptr) {
       std::cout << "Could not load some avalancha node inside some compound avalancha" << std::endl;
       assert(0);

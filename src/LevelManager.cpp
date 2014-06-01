@@ -79,6 +79,7 @@ bool LevelManager::load() {
 
   if(mActiveLevel!=nullptr) delete mActiveLevel;
   mActiveLevel = new LevelLogic(&mLevels[mActiveLevelIndex], &mDefensor);
+  mDefensorMoneyLastLevel = mDefensor.getMoney();
 
   return true;
 }

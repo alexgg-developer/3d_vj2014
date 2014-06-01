@@ -21,7 +21,7 @@ protected:
   int mOrder;
 };
 
-Avalancha* BuildAvalancha(pugi::xml_node const& someAvalanchaNode);
+Avalancha* BuildAvalancha(pugi::xml_node const& someAvalanchaNode, float const accum_time_ms);
 
 struct SimpleAvalancha : public Avalancha {
   SimpleAvalancha();
@@ -31,11 +31,12 @@ struct SimpleAvalancha : public Avalancha {
   virtual std::map<std::string, unsigned int> HowMuchToSpawn(float const t_avalancha_started_ms, float const init_t_ms, float const dt_ms, LevelLogic *const aLevel) const override;
   
   virtual float temporal_length() const override { return mStartMiliSeconds + mTemporalLengthSeconds*1000.0f; }
+  void add_to_start_ms(float const dt_ms) { mStartMiliSeconds += dt_ms; }
 protected:
   std::string mEnemyUniqueID;
-  float mEnemiesPerMinute;
-  float mTemporalLengthSeconds;
-  float mStartMiliSeconds;
+  float mEnemiesPerMinute=0;
+  float mTemporalLengthSeconds=0;
+  float mStartMiliSeconds=0;
 };
 
 struct EmptyAvalancha : public Avalancha{
@@ -73,9 +74,11 @@ struct CompoundAvalancha : public Avalancha{
     }
     return ret;
   }
+  void add_to_start_ms(float const dt_ms) { mStartMiliSeconds += dt_ms; }
 
 protected:
   std::vector<Avalancha*> mSons;
+  float mStartMiliSeconds=0;
 };
 
 struct Enemy;

@@ -178,19 +178,19 @@ bool cAssimpModel::InitMaterials(const aiScene* pScene, const std::string& filen
           aiString Path;
 
           if(pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-              std::string sFullPath = dir + "/" + Path.data;
-				      char fullPath[200];
-				      strcpy_s(fullPath, sFullPath.c_str());
+            std::string sFullPath = dir + "/" + Path.data;
+				    char fullPath[200];
+				    strcpy_s(fullPath, sFullPath.c_str());
 				
-				      textures[i] = new cTexture();
-              if(!textures[i]->Load(fullPath, GL_RGB)) {
-              //if(!textures[i]->load(fullPath)) {
-                  std::cerr << "Error loading texture '" << fullPath << "'" << std::endl;
-                  delete textures[i];
-                  textures[i] = NULL;
-                  retCode = false;
-              }
+				    textures[i] = new cTexture();
+            if(!textures[i]->Load(fullPath, GL_RGB)) {
+            //if(!textures[i]->load(fullPath)) {
+                std::cerr << "Error loading texture '" << fullPath << "'" << std::endl;
+                delete textures[i];
+                textures[i] = NULL;
+                retCode = false;
             }
+          }
        }
     }
 

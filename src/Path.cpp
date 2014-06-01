@@ -38,13 +38,10 @@ bool Path::Order::Load(pugi::xml_node const& aOrderNode) {
     return false;
   }
 
-  pugi::xml_attribute attr = aOrderNode.attribute("quantity");
-  if(attr) {
+  if(code!="attack-base") {
+    pugi::xml_attribute attr = aOrderNode.attribute("quantity");
+    assert(attr);
     mQuantity = attr.as_int();
-    mIndefinitely=false;
-  } else {
-    mQuantity=-1;
-    mIndefinitely=true;
   }
   return true;
 }
@@ -58,36 +55,35 @@ PathLogic::~PathLogic() {}
 void PathLogic::assignEnemy(EnemyLogic* el) {
   mControlledEnemies.push_back(EnemyMoving(el));
   mControlledEnemies.back().enemy->setPosition(mPath->mStartPosition);
+  mControlledEnemies.back().mNextPosition = mPath->mStartPosition;
+  mControlledEnemies.back().mPositionWhenStartedOrder = mPath->mStartPosition;
   ApplyNextOrderTo(mControlledEnemies.back());
 }
 void PathLogic::advance_time(float const init_time_ms, float const dt_ms) {
   for(EnemyMoving& em : mControlledEnemies) {
-    glm::vec2 const deltaPos = em.mVelocity*dt_ms/1000.0f;
-    glm::vec2 const newPosition = em.enemy->getPosition() + deltaPos;
-    //TODO: Orientation
-    int const nextX = static_cast<int>(newPosition.x + em.mVelocity.x*0.25f);
-    int const nextY = static_cast<int>(newPosition.y /*+ em.mVelocity.y*0.25f*/);
-    bool next_order = !mMap->EnemyCanBeIn(nextX,nextY);
-    if(mPath->mOrders[em.mActualOrder].mIndefinitely==false) {
+    if(em.enemy->time_stopped() >= em.enemy->time_to_stop()) {
+      glm::vec2 const deltaPos = glm::normalize(em.mNextPosition-em.mPositionWhenStartedOrder)*em.enemy->getVelocity_tiles_per_ms()*dt_ms;
+      glm::vec2 const newPosition = em.enemy->getPosition() + deltaPos;
       //Check if enemy has advanced more than the specified quantity
       float const maxQuantity = static_cast<float>(mPath->mOrders[em.mActualOrder].mQuantity);
       auto const delta = em.mPositionWhenStartedOrder - em.enemy->getPosition();
       float const actual_separation_squared = delta.x*delta.x + delta.y*delta.y;
-      if(actual_separation_squared >= maxQuantity*maxQuantity)
-        next_order = true;
-    }
-    if(!next_order) {
-      //std::cout << "Changing position to " << newPosition.x << newPosition.y << std::endl;
-      em.enemy->setPosition(newPosition);
-    } else {
-      //Next order
-      ApplyNextOrderTo(em);
+      bool const next_order = actual_separation_squared >= maxQuantity*maxQuantity;
+      if(!next_order) {
+        //std::cout << "Changing position to " << newPosition.x << newPosition.y << std::endl;
+        em.enemy->setPosition(newPosition);
+      } else {
+        //Next order
+        ApplyNextOrderTo(em);
+      }
     }
   }
   //Delete finished enemies. TODO: Move them to a non-attacking exit path
   for(std::vector<EnemyMoving>::iterator it = mControlledEnemies.begin(); it!=mControlledEnemies.end();) {
-    if(it->mPathFinished) {
+    if(it->enemy->mPathFinished || it->enemy->hasDied()) {
       std::cout << "an enemy died" << std::endl;
+      bool const died = it->enemy->hasDied();
+      it->enemy->ReceiveDamage(it->enemy->life()+1.0f);
       it = mControlledEnemies.erase(it);
     }
     else ++it;
@@ -95,19 +91,18 @@ void PathLogic::advance_time(float const init_time_ms, float const dt_ms) {
 }
 void PathLogic::ApplyNextOrderTo(EnemyMoving& em) {
   if(em.mActualOrder==mPath->mOrders.size()-1) {
-    em.mPathFinished=true;//finished this path
+    em.enemy->mPathFinished=true;//finished this path
   } else {
     em.mActualOrder++;
     em.mPositionWhenStartedOrder = em.enemy->getPosition();
     Path::Order const& ord = mPath->mOrders[em.mActualOrder];
-    if(ord.mOrderType==Path::Order::OrderType::DOWN) em.mVelocity=glm::vec2(0,-1);
-    else if(ord.mOrderType==Path::Order::OrderType::UP) em.mVelocity=glm::vec2(0,1);
-    else if(ord.mOrderType==Path::Order::OrderType::LEFT) em.mVelocity=glm::vec2(-1,0);
-    else if(ord.mOrderType==Path::Order::OrderType::RIGHT) em.mVelocity=glm::vec2(1,0);
+    if(ord.mOrderType==Path::Order::OrderType::DOWN      ) em.mNextPosition += glm::vec2(0,-ord.mQuantity);
+    else if(ord.mOrderType==Path::Order::OrderType::UP   ) em.mNextPosition += glm::vec2(0,ord.mQuantity);
+    else if(ord.mOrderType==Path::Order::OrderType::LEFT ) em.mNextPosition += glm::vec2(-ord.mQuantity,0);
+    else if(ord.mOrderType==Path::Order::OrderType::RIGHT) em.mNextPosition += glm::vec2(ord.mQuantity,0);
     else if(ord.mOrderType==Path::Order::OrderType::ATTACK_BASE) {
-      em.mVelocity = glm::vec2(0, 0); //Do not move
       em.enemy->Attack(*mDefensor);  //Attacks prota
-      em.mPathFinished=true;//attack only once
+      em.enemy->mPathFinished=true;//attack only once
     }
     else { 
       std::cout << "Order type not recognized " << ord.mOrderType << std::endl;

@@ -19,8 +19,8 @@ struct Defensor {
   void receive_input(float const end_frame_t, Input& in, LevelLogic& ll, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix, std::vector<Turret> const& aTurrets, std::vector<Weapon> const& aWeapons);
   void add_money(float const m) { mMoney+=m;}
   /// changes the selected turret and weapon
-  void set_selected_turret_and_weapon(std::size_t const turret, std::size_t weapon) {
-    mSelectedTurretIndex = turret; mSelectedWeaponIndex = weapon;}
+  void set_selected_turret(std::size_t const turret) {
+    mSelectedTurretIndex = turret; }
   float getLife() const { return mActualLife; }
   void restoreLife() { mActualLife = std::max(mMaxLife, mActualLife); }
   void restoreMoney(float const aMoney) { mMoney = std::max(aMoney, mMoney); }
@@ -30,5 +30,5 @@ protected:
   float mActualLife;
   float mMoney;
   Sound mNotEnoughMoney;
-  std::size_t mSelectedTurretIndex=0, mSelectedWeaponIndex=0;
+  std::size_t mSelectedTurretIndex=0;
 };

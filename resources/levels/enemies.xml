@@ -7,6 +7,7 @@
 	 monetary_value="2"
 	 die_sound="./music/rat_die.wav"
 	 attack_sound="./music/solarplexis_hit.wav"
+	 three_d_model="./objs/cottus/Cottus_Elec/cottus_elec.obj"
 	 >
     <weapon_ref name="simple_gun"/>
   </enemy>
@@ -15,7 +16,8 @@
 	 life="20"
 	 monetary_value="5"
 	 die_sound="./music/skeleton_die.wav"
-	 attack_sound="./music/solarplexis_hit.wav">
+	 attack_sound="./music/solarplexis_hit.wav"
+	 three_d_model="./objs/cottus/Cottus_Rktlauncher/cottus_rktlauncher.obj">
     <weapon_ref name="shotgun"/>
   </enemy>
   <enemy species="runner"
@@ -23,7 +25,8 @@
 	 life="5"
 	 monetary_value="1"
 	 die_sound="./music/rat_die.wav"
-	 attack_sound="./music/solarplexis_hit.wav">
+	 attack_sound="./music/solarplexis_hit.wav"
+	 three_d_model="./objs/cottus/Cottus_Twincannon/cottus_twincannon.obj">
     <weapon_ref name="shotgun"/>
   </enemy>
 </enemies_list>

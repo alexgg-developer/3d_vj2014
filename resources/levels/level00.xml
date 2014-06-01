@@ -2,41 +2,46 @@
 <level name="First contact">
   <!-- Tile types are: (B)uildable, (P)assable and (U)seless-->
   <map
-      map_sizeX="10"
-      map_sizeY="10"
+      map_sizeX="15"
+      map_sizeY="15"
       map_tile_types=
       "
-       UUUUUUUUUU
-       UUUUBBUPUU
-       UUUBPPPPPB
-       UUBPPBBBPB
-       UUBPBBBBPB
-       UUBPPPPPPB
-       UUUUBPBBBU
-       UUUUBPBUUU
-       UUUUBPBUUU
-       UUUUBPBUUU
+       UUUUUUUUUUUUUUU
+       UUUUUUUUUUUUUUU
+       UUUUUUUUUUUUUUU
+       UUUUUUUUUUUUUUU
+       UUUUUUUUUUUUUUU
+       UUUUUUUUUUUUUUU
+       UUUUBBUPUUUUUUU
+       UUUBPPPPPBUUUUU
+       UUBPPBBBPBUUUUU
+       UUBPBBBBPBUUUUU
+       UUBPPPPPPBUUUUU
+       UUUUBPBBBUUUUUU
+       UUUUBPBUUUUUUUU
+       UUUUBPBUUUUUUUU
+       UUUUBPBUUUUUUUU
        ">
   </map>
   <paths>
-    <path name="LeftPath">
-      <start_point x="9" y="5"/>
-      <order code="left"/>
-      <order code="down"/>
-      <order code="left"/>
-      <order code="up"/>
-      <order code="left"/>
+    <path name="RightPath">
+      <start_point x="14" y="5"/>
+      <order code="left" quantity="4"/>
       <order code="up" quantity="3"/>
-      <order code="left"/>
+      <order code="left" quantity="3"/>
+      <order code="down" quantity="1"/>
+      <order code="left" quantity="1"/>
       <order code="attack-base"/> <!-- Specified as order for flexibility: they may attack us through magic portals, isn't it? :-P -->
     </path>
-    <path name="RightPath">
-      <start_point x="9" y="5"/>
-      <order code="left"/>
-      <order code="up"/>
-      <order code="left"/>
-      <order code="down" quantity="1"/>
-      <order code="left"/>
+    <path name="LeftPath">
+      <start_point x="14" y="5"/>
+      <order code="left" quantity="4"/>
+      <order code="down" quantity="2"/>
+      <order code="left" quantity="2"/>
+      <order code="up" quantity="1"/>
+      <order code="left" quantity="1"/>
+      <order code="up" quantity="3"/>
+      <order code="left" quantity="1"/>
       <order code="attack-base"/> <!-- Specified as order for flexibility: they may attack us through magic portals, isn't it? :-P -->
     </path>
   </paths>
@@ -56,7 +61,7 @@
 
 
     <!-- This "container" avalancha does not need temporal_length: it will be calculated on the fly.-->
-<!--
+
     <compound_avalancha order="2">
       <simple_avalancha start_time_ms="0">
 	<enemy_ref species="marciano"/>
@@ -69,6 +74,5 @@
 	<temporal_length seconds="60"/>
       </simple_avalancha>
     </compound_avalancha>
--->
   </avalanchas>
 </level>

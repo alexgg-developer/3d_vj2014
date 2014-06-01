@@ -15,6 +15,8 @@ bool Enemy::Load(pugi::xml_node aEnemyNode) {
   mDieSound.load(die_sound_name);
   std::string attack_sound_name = aEnemyNode.attribute("attack_sound").value();
   mAttackDefensorSound.load(attack_sound_name);
+  std::string mModelPath = aEnemyNode.attribute("three_d_model").value();
+  LoadModel(mModelPath.c_str());
   
   return true;
 }
@@ -44,8 +46,9 @@ void EnemyLogic::init(float const time_ms) { mLastMovedMS = time_ms; }
 
 }*/
 void EnemyLogic::ReceiveDamage(float const damage) {
+  float const backup = mActualLife;
   mActualLife -= damage;
-  if(hasDied())
+  if(hasDied() && backup>0)
     mEnemy->mDieSound.play();
 }
 void EnemyLogic::Attack(Defensor& df) {
@@ -55,7 +58,13 @@ void EnemyLogic::Attack(Defensor& df) {
 void EnemyLogic::Render() const {
 //TODO: Animation, rotation
 	glPushMatrix();
-	glTranslatef(-mPosition.x, 0.5f, -mPosition.y);
+	glTranslatef(-mPosition.x, 0.3f, -mPosition.y);
+  //Apply ICE as scale reduction
+  if(mTimeToStop>mTimeStopped) {
+    float const last_ms = std::min(1000.0f,mTimeToStop-mTimeStopped);
+    float const scale = std::max(0.2f,(1000.0f-last_ms)/1000.0f);
+    glScalef(scale,scale,scale);
+  }
   mEnemy->mAssimpModel.Render();
 	glPopMatrix();
 }
