@@ -18,7 +18,7 @@
 	  audio_file="./music/metal_caulking_gun_put_down_on_table.wav"/>
   <weapon name="ice_gun"
 	  fire_rate_per_minute="30"
-	  damage_per_bullet="1"
+	  damage_per_bullet="5"
 	  range_tiles="3"
 	  special_effect="ice"
 	  special_effect_duration_miliseconds="1000"

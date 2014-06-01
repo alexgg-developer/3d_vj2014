@@ -41,7 +41,7 @@ protected:
   std::vector<Level> mLevels;
 
   LevelLogic *mActiveLevel=nullptr;//We can only have one active Level within one LevelManager
-  Defensor mDefensor{100,100}; //The same player passes through all the levels. We can restore it's health between levels
+  Defensor mDefensor{100,1000}; //The same player passes through all the levels. We can restore it's health between levels
   float mDefensorMoneyLastLevel;
   std::size_t mActiveLevelIndex=0;
 };

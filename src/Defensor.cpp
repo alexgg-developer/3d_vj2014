@@ -56,6 +56,13 @@ glm::vec3 IntersectionWithYE0(glm::vec2 const aMousePositionXY, glm::mat4x4 cons
 }
 
 void Defensor::receive_input(float const end_frame_t, Input& in, LevelLogic& ll, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix, std::vector<Turret> const& aTurrets, std::vector<Weapon> const& aWeapons) {
+  /// Select tower functionality
+  if(in.checkPressed('a') || in.checkPressed('A')) mSelectedTurretIndex=0;
+  else if(in.checkPressed('s') || in.checkPressed('S')) mSelectedTurretIndex=1;
+  else if(in.checkPressed('d') || in.checkPressed('D')) mSelectedTurretIndex=2;
+  else if(in.checkPressed('f') || in.checkPressed('f')) mSelectedTurretIndex=3;
+
+  /// Buy turret funcionality
   if (in.checkMouse(Input::BLEFT)) {
     //user has clicked: show a visualization of the will-be-bought tower
     glm::vec3 const clickedEarth = IntersectionWithYE0(glm::vec2(in.mPositionMouse.x, in.mPositionMouse.y), aProjectionMatrix, aMVMatrix);
@@ -81,17 +88,11 @@ void Defensor::receive_input(float const end_frame_t, Input& in, LevelLogic& ll,
       std::cout << "Build a turret on tile " << (int)tileCoordinates.x << ", " << (int)tileCoordinates.y << std::endl;
  
       //Instantiate one turret
-      ///temporal
-      mSelectedTurretIndex=3;
-      ///end temporal
       if(this->mMoney>=aTurrets[mSelectedTurretIndex].MonetaryCost()) {
         this->mMoney -= aTurrets[mSelectedTurretIndex].MonetaryCost();
         TurretLogic tl(&aTurrets[mSelectedTurretIndex], &aWeapons[mSelectedTurretIndex]);
         tl.setPosition(glm::vec2(tileCoordinates.x-0.5f,tileCoordinates.y-0.5f));
         ll.spawnsTurret(std::move(tl), end_frame_t);
-        //// todo temporal make a switch of turret manually
-        mSelectedTurretIndex = (mSelectedTurretIndex+1)%aTurrets.size();
-        //// end todo temporal delete me i'm bad
       } else {
         mNotEnoughMoney.play();
         std::cout << "Do not have enough money to buy" << std::endl;
