@@ -111,6 +111,8 @@ int Game::main() {
   lm.load();
   if(!error) {
     uint frame = 0;
+    mTimer.start();
+    lm.init(static_cast<float>(mTimer.getLastTimeMS()));
     while(!mInput.check(Input::KESC) && !mQuitDone) {
       //Prepare input
       SDL_Event event;
@@ -135,8 +137,6 @@ int Game::main() {
         float const dt = mTimer.getDeltaTime();
         float const te_ms = mTimer.getLastTimeMS();
         float const dt_ms = dt *1000.0f;
-        mTimer.start();
-        lm.init(static_cast<float>(mTimer.getLastTimeMS()));
         mHud.update(lm.get_life(), lm.get_money(), lm.how_much_waves_in_actual_level(), lm.actual_wave_in_actual_leve(te_ms));    
         logic(dt, lm, te_ms);
 
