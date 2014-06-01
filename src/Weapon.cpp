@@ -51,7 +51,6 @@ void WeaponLogic::Attack(EnemyLogic*const en, float const timeMS) {
 
   if(mWeapon->mSpecialEffect==Weapon::SpecialEffect::ICE) {
     //can't move enemy
-    //maybe draw it with another color
     en->add_time_to_stop(this->mWeapon->mSpecialEffectDuration);
   }
 }
