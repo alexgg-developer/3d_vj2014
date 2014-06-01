@@ -13,40 +13,34 @@ Text::~Text()
 bool Text::init()
 {
   bool success = true;
-  mProgramID = glCreateProgram();
-  mVertexShader.init(GLShader::VERTEX, mProgramID);
-  success = mVertexShader.compile();
-  mFragmentShader.init(GLShader::FRAGMENT, mProgramID);
-  success = mFragmentShader.compile();
-  success = GLShader::linkProgram(mProgramID);
+  if(mProgramID==0) {
+    mProgramID = glCreateProgram();
+    mVertexShader.init(GLShader::VERTEX, mProgramID);
+    success = mVertexShader.compile();
+    mFragmentShader.init(GLShader::FRAGMENT, mProgramID);
+    success = mFragmentShader.compile();
+    success = GLShader::linkProgram(mProgramID);
 
-  GLfloat vertexData[] =
-  {
-    -0.5f, -0.5f,
-    0.5f, -0.5f,
-    0.5f, 0.5f,
-    -0.5f, 0.5f
-  };
+    GLfloat vertexData[] =
+    {
+      -0.5f, -0.5f,
+      0.5f, -0.5f,
+      0.5f, 0.5f,
+      -0.5f, 0.5f
+    };
 
-  GLuint indexData[] = { 0, 1, 2, 3 };
-  
-  if (mVBO != 0) {
-    glDeleteBuffers(1, &mVBO);
+    GLuint indexData[] = { 0, 1, 2, 3 };
+
+    glGenBuffers(1, &mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glBufferData(GL_ARRAY_BUFFER, 2 * 4 * sizeof(GLfloat), vertexData, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &mIBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indexData, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, NULL); glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
   }
-  if (mIBO != 0) {
-    glDeleteBuffers(1, &mIBO);
-  }
-
-  glGenBuffers(1, &mVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-  glBufferData(GL_ARRAY_BUFFER, 2 * 4 * sizeof(GLfloat), vertexData, GL_STATIC_DRAW);
-
-  glGenBuffers(1, &mIBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indexData, GL_STATIC_DRAW);
-
-  glBindBuffer(GL_ARRAY_BUFFER, NULL); glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
-
   GLenum error = glGetError();
   if (error != GL_NO_ERROR) {
     std::cout << "Error initializing App!" << gluErrorString(error) << std::endl;

@@ -26,7 +26,7 @@ public:
   uint mWidth, mHeight;
 private:
   TTF_Font* mFont;
-  GLuint mTexture;
+  GLuint mTexture=0;
   SDL_Surface* mTextureSurface;
   vec3 mPosition;
   glm::vec3 mScale;
