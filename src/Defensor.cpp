@@ -57,10 +57,14 @@ glm::vec3 IntersectionWithYE0(glm::vec2 const aMousePositionXY, glm::mat4x4 cons
 
 void Defensor::receive_input(float const end_frame_t, Input& in, LevelLogic& ll, glm::mat4x4 const& aProjectionMatrix, glm::mat4x4 const& aMVMatrix, std::vector<Turret> const& aTurrets, std::vector<Weapon> const& aWeapons) {
   /// Select tower functionality
-  if(in.checkPressed('a') || in.checkPressed('A')) mSelectedTurretIndex=0;
-  else if(in.checkPressed('s') || in.checkPressed('S')) mSelectedTurretIndex=1;
-  else if(in.checkPressed('d') || in.checkPressed('D')) mSelectedTurretIndex=2;
-  else if(in.checkPressed('f') || in.checkPressed('f')) mSelectedTurretIndex=3;
+  if(in.check(Input::keysDefined::KA))
+    mSelectedTurretIndex = 0;
+  else if(in.check(Input::keysDefined::KS))
+    mSelectedTurretIndex = 1;
+  else if(in.check(Input::keysDefined::KD))
+    mSelectedTurretIndex = 2;
+  else if(in.check(Input::keysDefined::KW))
+    mSelectedTurretIndex = 3;
 
   /// Buy turret funcionality
   if (in.checkMouse(Input::BLEFT)) {

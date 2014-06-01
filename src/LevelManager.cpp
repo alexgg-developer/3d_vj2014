@@ -74,11 +74,11 @@ bool LevelManager::load() {
   mTurrets.push_back(Turret(&mWeapons[0], 1000.0f, 10.0f)); //simple_gun
   mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
   mTurrets.push_back(Turret(&mWeapons[1], 1000.0f, 20.0f)); //metralleta
-  mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
+  mTurrets.back().LoadModel("./objs/turret_2_separated4.obj");
   mTurrets.push_back(Turret(&mWeapons[2],10000.0f, 15.0f)); //shotgun
-  mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
+  mTurrets.back().LoadModel("./objs/turret_2_separated3.obj");
   mTurrets.push_back(Turret(&mWeapons[3], 3000.0f, 30.0f)); //ice_gun
-  mTurrets.back().LoadModel("./objs/turret_2_separated.obj");
+  mTurrets.back().LoadModel("./objs/turret_2_separated2.obj");
   //loadTurrets("./levels/turret.xml", std::back_inserter(mEnemies));
 
   if(mActiveLevel!=nullptr) delete mActiveLevel;
